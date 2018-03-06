@@ -19,6 +19,7 @@ class Topic(models.Model):
 class Debate(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='debates_owned')
 	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='debates_contained')
+	slvl = models.IntegerField(default=0)
 	question = models.CharField(max_length=300)
 	description = models.TextField(max_length=200000, blank=True)
 	def __str__(self):
@@ -28,6 +29,7 @@ class Argument(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='arguments_owned')
 	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='arguments_contained')
 	debate = models.ForeignKey(Debate, on_delete=models.CASCADE, related_name='arguments_contained')
+	approvedstatus = models.IntegerField(default=0)
 	title = models.CharField(max_length=300)
 	body = models.TextField(max_length=200000)
 	def __str__(self):

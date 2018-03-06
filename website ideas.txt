@@ -1,0 +1,89 @@
+Rules:
+nothing illegal is allowed
+
+no ban evasion
+
+duplicate topics are not allowed
+topic moderators must not abuse their powers
+topics must be based on a subject (an area of knowledge such as psychology or something like games)
+topic moderators must stay reasonably active
+
+questions must be objective, no "which colour is the best", but "what is trump's favourite colour" is technically acceptable
+
+arguments must try to argue for their stance 
+arguments must stay on-topic
+reputable evidence required for all arguments, all statements must be backed by evidence that is properly referenced
+no ad hominems
+proper grammar
+no significant emotional manipulation
+
+
+What is contradictory evidence?
+When opposing sides of an argument both have evidence considered reputable, at least one piece of evidence is false/misleading.
+
+moderators can deny evidence
+
+say it is harder to manipulate
+
+three main topics: religion, politics, and history that are moderated by the website. other topics can be moderated by smaller communities
+
+disallow arguments that are based off other arguments: such as "Abortion is murder" based on "Abortion eliminates the potential societal contributions of a future human being."
+
+https://www.procon.org/debate-topics.php
+
+Always try to think as objectively as possible. To do that, find out what your biggest biases are and think of ways to reduce or eliminate them.
+
+2 types of arguments: valid and invalid (likely due to insufficient evidence)
+
+Arguments can be counter-arguments too
+
+levels of security: open, semi-open, closed
+
+evidence ratings: not reputable, somewhat reputable, reputable, very reputable.
+
+array field for a list of evidence https://docs.djangoproject.com/en/2.0/ref/contrib/postgres/fields/
+
+https://github.com/etianen/django-reversion
+
+https://stackoverflow.com/questions/6830800/how-to-prevent-xss-attacks-when-i-need-to-render-html-from-a-wysiwyg-editor
+
+move to postgresql(or mysql)
+
+
+Users can suggest new arguments and downvote duplicate suggested arguments
+
+Users can downvote suggested arguments
+
+Users can only view currently available arguments
+
+Only moderators can see the submittors' names
+
+moderator chat
+
+comments
+
+karma system will only work relative to each other
+
+Page to view issues
+Page to view approved/suggested/denied arguments
+Page to submit arguments
+Page to report arguments
+Page to change the status of arguments as a moderator
+Page to create a topic
+Page to add moderators and manage permissions
+Page to report a topic
+
+Page to ban a user (later)
+Page to change topic moderators (later)
+
+
+
+Index/home page
+About us
+Contact us
+Terms of Service
+Privacy Policy
+
+
+Page to create an account and one to log in
+Page to view/edit profile

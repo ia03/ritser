@@ -11,7 +11,7 @@ install:
   - pip install -r requirements.txt
 
 before_script:
-  - psql -c "ALTER USER postgres PASSWORD 'Amb9Y9sXHgG993NW';"
+  - sudo psql -c "ALTER USER postgres PASSWORD 'Amb9Y9sXHgG993NW';"
   - psql -c "CREATE DATABASE modebate;" -U postgres
   - python manage.py makemigrations --noinput
   - python manage.py migrate --noinput

@@ -37,3 +37,8 @@ possibly django-markdownx in the future
 django-reversion
 
 when deployed make timezone utc
+
+environment variables:
+SECURE_KEY
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY

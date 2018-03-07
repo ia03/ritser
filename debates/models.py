@@ -20,7 +20,7 @@ class Topic(models.Model):
 
 class Debate(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='debates_owned')
-	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='debates_contained')
+	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='debates')
 	slvl = models.IntegerField(default="0")
 	karma = models.IntegerField(default="0")
 	users_upvoting = models.ManyToManyField(User, related_name='debates_upvoted')
@@ -34,8 +34,8 @@ class Debate(models.Model):
 
 class Argument(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='arguments_owned')
-	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='arguments_contained')
-	debate = models.ForeignKey(Debate, on_delete=models.CASCADE, related_name='arguments_contained')
+	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='arguments')
+	debate = models.ForeignKey(Debate, on_delete=models.CASCADE, related_name='arguments')
 	approvedstatus = models.IntegerField(default=0)
 	order = models.IntegerField(default="0")
 	active = models.BooleanField(default=True)
@@ -61,7 +61,7 @@ class ArgumentRevision(models.Model):
 
 class DebateRevision(models.Model):
 	debate = models.ForeignKey(Debate, on_delete=models.CASCADE, related_name='revisions')
-	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='debaterevisions_contained')
+	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='debaterevisions')
 	slvl = models.IntegerField(default="0")
 	question = models.CharField(max_length=300)
 	description = models.TextField(max_length=200000, blank=True)

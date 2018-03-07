@@ -1,0 +1,24 @@
+language: python
+
+python:
+  - 3.6
+
+addons:
+  - postgresql: "9.5"
+
+before_install:
+  - export DJ_DEBUG=False
+  - export DABATASE_URL=postgres://postgres@localhost/travisdb
+
+install:
+  - pip install -r requirements.txt
+
+before_script:
+  - psql -c "CREATE DATABASE modebate;" -U postgres
+  - psql -c "CREATE USER postgres WITH PASSWORD 'Amb9Y9sXHgG993NW';" -U postgres
+  - python manage.py migrate --noinput
+
+env:
+  - DJANGO=1.9.10
+
+script: python manage.py test --keepdb

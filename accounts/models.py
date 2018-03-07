@@ -4,4 +4,4 @@ from debates.models import Debate
 
 # Create your models here.
 class User(AbstractUser):
-	upvoted = models.ManyToManyField(Debate, related_name='users_upvoting')
+	pass

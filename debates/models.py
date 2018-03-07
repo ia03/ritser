@@ -21,6 +21,7 @@ class Debate(models.Model):
 	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='debates_contained')
 	slvl = models.IntegerField(default="0")
 	karma = models.IntegerField(default="0")
+	users_upvoting = models.ManyToManyField(User, related_name='debates_upvoted')
 	active = models.BooleanField(default=True)
 	question = models.CharField(max_length=300)
 	description = models.TextField(max_length=200000, blank=True)

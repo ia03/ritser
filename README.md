@@ -21,3 +21,15 @@ Add a way to "suggest" more questions, edits to descriptions of them, and edits 
 Map root URL to the app:
 
 https://stackoverflow.com/questions/7580220/django-urls-howto-map-root-to-app
+
+https://github.com/etianen/django-reversion
+
+use django reversion or the following tool to keep track of edits
+
+htmldiff https://www.w3.org/wiki/HtmlDiff
+
+https://docs.python.org/2/library/difflib.html
+
+to order listed models
+
+https://stackoverflow.com/questions/761352/django-queryset-order

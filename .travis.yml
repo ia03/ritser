@@ -16,6 +16,6 @@ before_script:
   - python manage.py makemigrations --noinput
   - python manage.py migrate --noinput
 env:
-  - DJANGO=1.9.10
+  - DJANGO=2.0.3
 
 script: python manage.py test --keepdb

@@ -1,7 +1,8 @@
 from django.test import TestCase
 from django.urls import resolve
 from django.utils import timezone
-from .models import Debate
+from .models import Topic
+from accounts.models import User
 from .views import index, topic
 
 # Create your tests here.
@@ -9,6 +10,10 @@ from .views import index, topic
 #todo: add setup that creates a "test" topic
 
 class ViewTestCase (TestCase):
+    user = User.objects.create_user(username="test", email="test@test.com", password="test123")
+  def setUp(self):
+    test_topic = Topic.objects.create(name="test", private=False, owner=user, moderators=[user], created_by=[user])
+    test_topic.save()
   def test_indexpage(self):
     found = resolve('/')
     self.assertEqual(found.func, index)

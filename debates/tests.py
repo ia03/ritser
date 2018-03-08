@@ -20,3 +20,6 @@ class ViewTestCase (TestCase):
   def test_validtopic(self):
     response = self.client.get('t/test')
     self.assertEqual(response.status_code, 200) #checks to see if a valid topic url will return a 200 (OK)
+  def test_topicnamepassed(self):
+    response = self.client.get('t/test')
+    self.assertEqual(response.context['topic'].name, 'test') #checks to see if a valid topic url will return a 200 (OK)

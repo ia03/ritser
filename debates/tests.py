@@ -10,8 +10,8 @@ from .views import index, topic
 #todo: add setup that creates a "test" topic
 
 class ViewTestCase (TestCase):
-    user = User.objects.create_user(username="test", email="test@test.com", password="test123")
     def setUp(self):
+        user = User.objects.create_user(username="test", email="test@test.com", password="test123")
         test_topic = Topic.objects.create(name="test", private=False, owner=user, moderators=[user], created_by=[user])
         test_topic.save()
     def test_indexpage(self):

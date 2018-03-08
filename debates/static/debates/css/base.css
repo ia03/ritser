@@ -3,3 +3,11 @@
     background-color: #F5FDFD !important;
     border-color: #E7E7E7;
 }
+
+footer {
+    background-color: #E3F2F2 !important;
+    border-color: #E7E7E7;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}

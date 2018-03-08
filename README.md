@@ -37,3 +37,5 @@ environment variables:
 SECURE_KEY
 AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY
+
+https://css-tricks.com/snippets/css/css-triangle/

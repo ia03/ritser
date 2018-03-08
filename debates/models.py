@@ -11,7 +11,7 @@ class Topic(models.Model):
 	description = models.TextField(max_length=600000, default='The description has not been set yet.', blank=True)
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='topics_owned')
 	slvl = models.IntegerField(default='0')
-	defdebslvl = models.IntegerField(default='0')
+	debslvl = models.IntegerField(default='0')
 	moderators = models.ManyToManyField(User, related_name='moderator_of')
 	created_on = models.DateTimeField(default=timezone.now)
 	created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='topics_created')

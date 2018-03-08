@@ -3,19 +3,20 @@ from django.urls import resolve
 from django.utils import timezone
 from .models import Topic
 from accounts.models import User
-from django.apps import apps
+from django.contrib.auth import get_user_model
 from .views import index, topic
 
 # Create your tests here.
 
-User = apps.get_model('accounts', 'User')
 
 class ViewTestCase (TestCase):
     def setUp(self):
-        tuser = User.objects.create_user(username="test", email="test@test.com", password="test123")
+        tuser = get_user_model().objects.create_user(username="test", email="test@test.com", password="test123")
         tuser.save()
-        test_topic = Topic.objects.create(name="test", private=False, owner=tuser, moderators=[tuser], created_by=[tuser])
+        print(isinstance(tuser, User))
+        test_topic = Topic.objects.create(name="test", private=False, owner=tuser, moderators=[tuser], created_by=tuser)
         test_topic.save()
+
     def test_indexpage(self):
         found = resolve('/')
         self.assertEqual(found.func, index)

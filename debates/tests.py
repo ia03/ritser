@@ -7,7 +7,7 @@ from .views import index, topic
 
 # Create your tests here.
 
-#todo: add setup that creates a "test" topic
+User = apps.get_model('accounts', 'User')
 
 class ViewTestCase (TestCase):
     def setUp(self):

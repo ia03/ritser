@@ -39,3 +39,5 @@ AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY
 
 https://css-tricks.com/snippets/css/css-triangle/
+
+customize 404 errors

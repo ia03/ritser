@@ -6,6 +6,7 @@ from .views import index, topic
 
 # Create your tests here.
 
+#todo: add setup that creates a "test" topic
 
 class ViewTestCase (TestCase):
   def test_indexpage(self):

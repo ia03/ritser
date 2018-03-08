@@ -3,6 +3,7 @@ from django.urls import resolve
 from django.utils import timezone
 from .models import Topic
 from accounts.models import User
+from django.apps import apps
 from .views import index, topic
 
 # Create your tests here.

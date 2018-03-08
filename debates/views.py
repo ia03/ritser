@@ -7,7 +7,7 @@ def index(request):
 	context = {
 		'nbar': 'home',
 	}
-	return render(request, 'debates/topic.html', context)
+	return render(request, 'debates/index.html', context)
 
 def topic(request, tname):
 	try:
@@ -21,3 +21,9 @@ def topic(request, tname):
 		'debates': debates,
 	}
 	return render(request, 'debates/topic.html', context)
+
+def privacy(request):
+	return render(request, 'debates/privacy.html')
+
+def terms(request):
+	return render(request, 'debates/terms.html')

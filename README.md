@@ -43,3 +43,5 @@ dbpass
 https://css-tricks.com/snippets/css/css-triangle/
 
 customize 404 errors
+
+2 main aspects: user-submitted content and bias

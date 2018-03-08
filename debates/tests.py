@@ -6,5 +6,5 @@ from .models import Debate
 
 
 class DebateTestCase (TestCase):
-  def badmaths(self):
+  def test_badmaths(self):
     self.assertEqual(1 + 1, 4)

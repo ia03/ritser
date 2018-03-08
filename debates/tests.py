@@ -17,6 +17,6 @@ class ViewTestCase (TestCase):
   def test_invalidtopic(self):
     response = self.client.get('t/akvurov_u439j')
     self.assertEqual(response.status_code, 404) #checks to see if an invalid topic url will return a 404 (NOT FOUND)
-def test_validtopic(self):
+  def test_validtopic(self):
     response = self.client.get('t/test')
     self.assertEqual(response.status_code, 200) #checks to see if a valid topic url will return a 200 (OK)

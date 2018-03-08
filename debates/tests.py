@@ -12,9 +12,9 @@ User = apps.get_model('accounts', 'User')
 
 class ViewTestCase (TestCase):
     def setUp(self):
-        user = User.objects.create_user(username="test", email="test@test.com", password="test123")
-        user.save()
-        test_topic = Topic.objects.create(name="test", private=False, owner=user, moderators=[user], created_by=[user])
+        tuser = User.objects.create_user(username="test", email="test@test.com", password="test123")
+        tuser.save()
+        test_topic = Topic.objects.create(name="test", private=False, owner=tuser, moderators=[tuser], created_by=[tuser])
         test_topic.save()
     def test_indexpage(self):
         found = resolve('/')

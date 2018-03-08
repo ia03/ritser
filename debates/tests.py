@@ -13,7 +13,6 @@ class ViewTestCase (TestCase):
     def setUp(self):
         tuser = get_user_model().objects.create_user(username="test", email="test@test.com", password="test123")
         tuser.save()
-        print(isinstance(tuser, User))
         test_topic = Topic.objects.create(name="test", private=False, owner=tuser, created_by=tuser)
         test_topic.moderators.set([tuser])
         test_topic.save()

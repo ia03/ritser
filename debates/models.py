@@ -7,6 +7,7 @@ from accounts.models import User
 
 class Topic(models.Model):
 	name = models.CharField(max_length=30, unique=True)
+	title = models.CharField(max_length=30, blank=True) #to be displayed in the HTML title of the topic; should also be protected from xss attacks
 	private = models.BooleanField(default=False)
 	description = models.TextField(max_length=600000, default='The description has not been set yet.', blank=True)
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='topics_owned')
@@ -58,6 +59,7 @@ class ArgumentRevision(models.Model):
 	approvedstatus = models.IntegerField(default=0)
 	order = models.IntegerField(default='0')
 	datetime = models.DateTimeField(default=timezone.now)
+	ip = models.CharField(max_length=45, blank=True)
 	def __str__(self):
 		return self.datetime
 
@@ -69,6 +71,7 @@ class DebateRevision(models.Model):
 	question = models.CharField(max_length=300)
 	description = models.TextField(max_length=200000, blank=True)
 	datetime = models.DateTimeField(default=timezone.now)
+	ip = models.CharField(max_length=45, blank=True)
 	def __str__(self):
 		return self.datetime
 
@@ -80,5 +83,6 @@ class TopicRevision(models.Model):
 	description = models.TextField(max_length=600000, default='The description has not been set yet.', blank=True)
 	private = models.BooleanField(default=False)
 	datetime = models.DateTimeField(default=timezone.now)
+	ip = models.CharField(max_length=45, blank=True)
 	def __str__(self):
 		return self.datetime

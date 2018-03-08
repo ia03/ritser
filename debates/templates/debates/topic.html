@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}{% if topic.title != "" %} {{ topic.title }} {% else %} t/{{ topic.name }} {% endif %}{% endblock %}
+
+{% block body %}
+
+Content here
+
+
+{% endblock %}

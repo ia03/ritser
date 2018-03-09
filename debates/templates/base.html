@@ -16,32 +16,32 @@
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbartoggler" aria-controls="navbartoggler" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'debates/img/logo.png' %}" height="48" width="120"></a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbartoggler" aria-controls="navbartoggler" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'debates/img/logo.png' %}" height="48" width="120"></a>
 
 
-    <div class="collapse navbar-collapse" id="navbartoggler">
-      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-        <li class="nav-item{% if nbar == 'home' %} active{% endif %}">
-          <a class="nav-link" href="#">Home {% if nbar == 'home' %}<span class="sr-only">(current)</span>{% endif %}</a>
-        </li>
-        <li class="nav-item{% if nbar == 'about' %} active{% endif %}">
-          <a class="nav-link" href="#">About {% if nbar == 'about' %}<span class="sr-only">(current)</span>{% endif %}</a>
-        </li>
+      <div class="collapse navbar-collapse" id="navbartoggler">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item{% if nbar == 'home' %} active{% endif %}">
+            <a class="nav-link" href="#">Home {% if nbar == 'home' %}<span class="sr-only">(current)</span>{% endif %}</a>
+          </li>
+          <li class="nav-item{% if nbar == 'about' %} active{% endif %}">
+            <a class="nav-link" href="#">About {% if nbar == 'about' %}<span class="sr-only">(current)</span>{% endif %}</a>
+          </li>
 
-      </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search for a topic" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
-    </div>
-  </nav>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search for a topic" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
     {% block body %}{% endblock %}
-    <footer class="page-footer font-small pt-2 pb-2">
-      <div class="container-fluid">
+    <footer class="footer">
+      <div class="container">
           <div class="row">
             <div class="col-md-6 text-md-left">
               © 2018 MoDebate. All rights reserved.

@@ -6,6 +6,8 @@ Useful links:
 
 https://djangobook.com/deploying-django/
 
+https://github.com/trentm/django-markdown-deux
+
 https://docs.djangoproject.com/en/2.0/howto/deployment/wsgi/modwsgi/
 
 http://wesleyzhao.com/tutorial-setting-up-apachessl-to-serve-https

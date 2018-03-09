@@ -24,8 +24,9 @@ def terms(request):
 def topic(request, tname):
 
 	topic = get_object_or_404(Topic, name=tname)
-	fmods = topic.moderators.all()[:10] #first 10 mods
 	mods = topic.moderators.all()
+	fmods = mods[:10] #first 10 mods
+
 
 	debates = topic.debates.all()
 	context = {

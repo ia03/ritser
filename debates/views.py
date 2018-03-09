@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.http import HttpResponse, Http404
+from django.shortcuts import render, get_object_or_404
+#from django.http import HttpResponse, Http404
 from .models import Topic
 
 # Create your views here.
@@ -10,10 +10,9 @@ def index(request):
 	return render(request, 'debates/index.html', context)
 
 def topic(request, tname):
-	try:
-		topic = Topic.objects.get(name=tname)
-	except Topic.DoesNotExist:
-		raise Http404("Topic does not exist.")
+
+	topic = get_object_or_404(Topic, name=tname)
+
 
 	debates = topic.debates.all()
 	context = {

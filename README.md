@@ -21,15 +21,6 @@ https://devops.profitbricks.com/tutorials/how-to-install-django-with-apache-on-c
 Add profiles
 Add a way to "suggest" more questions, edits to descriptions of them, and edits to arguments. No suggestions needed for comments or edits to them.
 
-
-https://github.com/etianen/django-reversion
-
-use django reversion or the following tool to keep track of edits
-
-htmldiff https://www.w3.org/wiki/HtmlDiff
-
-https://docs.python.org/2/library/difflib.html
-
 to order listed models
 
 https://stackoverflow.com/questions/761352/django-queryset-order
@@ -50,3 +41,13 @@ customize 404 errors
 2 main aspects: user-submitted content and bias
 
 rules and add rules link to about page
+
+add mod notes https://django-reversion.readthedocs.io/en/stable/api.html#api
+
+https://github.com/etianen/django-reversion
+
+use django reversion or the following tool to keep track of edits
+
+htmldiff https://www.w3.org/wiki/HtmlDiff
+
+https://docs.python.org/2/library/difflib.html

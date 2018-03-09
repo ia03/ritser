@@ -33,7 +33,6 @@ https://docs.python.org/2/library/difflib.html
 to order listed models
 
 https://stackoverflow.com/questions/761352/django-queryset-order
-possibly django-markdownx in the future
 django-reversion
 
 when deployed make timezone utc

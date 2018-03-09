@@ -29,7 +29,7 @@
             <a class="nav-link" href="#">Home {% if nbar == 'home' %}<span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           <li class="nav-item{% if nbar == 'about' %} active{% endif %}">
-            <a class="nav-link" href="#">About {% if nbar == 'about' %}<span class="sr-only">(current)</span>{% endif %}</a>
+            <a class="nav-link" href="{% url 'about' %}">About {% if nbar == 'about' %}<span class="sr-only">(current)</span>{% endif %}</a>
           </li>
 
         </ul>

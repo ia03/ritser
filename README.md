@@ -12,6 +12,8 @@ http://wesleyzhao.com/tutorial-setting-up-apachessl-to-serve-https
 
 https://www.digitalocean.com/pricing/
 
+https://www.youtube.com/playlist?list=PL6gx4Cwl9DGBlmzzFcLgDhKTTfNLfX1IK
+
 https://devops.profitbricks.com/tutorials/how-to-install-django-with-apache-on-centos-7/
 
 Add profiles

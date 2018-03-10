@@ -33,7 +33,7 @@ def topic(request, tname):
 	if (isinstance(count, int) and count > -1 and count < len(debatesq)): #check if count is an int that is a valid element id
 		s = count
 		e = min(count+30, len(debatesq))
-	else: #if count is not an int that is a valid element id               1 2 3 4
+	else: #if count is not an int that is a valid element id (or does not exist)
 		s = 0
 		e = min(30, len(debatesq))
 

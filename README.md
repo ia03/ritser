@@ -18,12 +18,6 @@ https://www.youtube.com/playlist?list=PL6gx4Cwl9DGBlmzzFcLgDhKTTfNLfX1IK
 
 https://devops.profitbricks.com/tutorials/how-to-install-django-with-apache-on-centos-7/
 
-Add profiles
-Add a way to "suggest" more questions, edits to descriptions of them, and edits to arguments. No suggestions needed for comments or edits to them.
-
-to order listed models
-
-https://stackoverflow.com/questions/761352/django-queryset-order
 django-reversion
 
 when deployed make timezone utc
@@ -35,12 +29,6 @@ AWS_SECRET_ACCESS_KEY
 dbpass
 
 https://css-tricks.com/snippets/css/css-triangle/
-
-customize 404 errors
-
-2 main aspects: user-submitted content and bias
-
-rules and add rules link to about page
 
 add mod notes https://django-reversion.readthedocs.io/en/stable/api.html#api
 

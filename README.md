@@ -51,3 +51,7 @@ use django reversion or the following tool to keep track of edits
 htmldiff https://www.w3.org/wiki/HtmlDiff
 
 https://docs.python.org/2/library/difflib.html
+
+maybe use this for sorting algorithms
+
+http://cython.org/

@@ -26,11 +26,37 @@ def topic(request, tname):
 	topic = get_object_or_404(Topic, name=tname)
 	mods = topic.moderators.all()
 	fmods = mods[:10] #first 10 mods
+	sortc = request.COOKIES.get('dsort')
+	sorta = request.GET.get('sort', '')
+	count = request.GET.get('count', '')
+	debatesq = topic.debates.all()
+	if (isinstance(count, int) and count > -1 and count < len(debatesq)): #check if count is an int that is a valid element id
+		s = count
+		e = min(count+30, len(debatesq))
+	else: #if count is not an int that is a valid element id               1 2 3 4
+		s = 0
+		e = min(30, len(debatesq))
 
 
-	debates = topic.debates.all()
+	if (sorta == 'top'):
+		debates = topic.debates.order_by('-karma') #default
+	elif (sorta == 'new'):
+		debates = topic.debates.order_by('-approved_on')
+	elif (sorta == 'random'):
+		debates = topic.debates.order_by('?')
+	elif (sortc == 'top'):
+		debates = topic.debates.order_by('-karma')
+	elif (sortc == 'new'):
+		debates = topic.debates.order_by('-approved_on')
+	elif (sortc == 'random'):
+		debates = topic.debates.order_by('?')
+	else:
+		debates = topic.debates.order_by('-karma') #default
+
+	debates = debates[s:e]
+
 	context = {
-		'fmods' : fmods,
+		'fmods': fmods,
 		'mods': mods,
 		'topic': topic,
 		'ctopicn': topic.name.capitalize(),

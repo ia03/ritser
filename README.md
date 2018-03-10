@@ -43,3 +43,6 @@ https://docs.python.org/2/library/difflib.html
 maybe use this for sorting algorithms
 
 http://cython.org/
+
+Important: register business
+https://www.ontario.ca/page/register-business-name-limited-partnership

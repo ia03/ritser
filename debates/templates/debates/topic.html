@@ -6,6 +6,9 @@
 
 {% block title %}{% if topic.title != "" %}{{ topic.title }}{% else %}t/{{ topic.name }}{% endif %}{% endblock %}
 
+{% block head %}<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script type="text/javascript" src="{% static "debates/js/topic.js" %}"></script>{% endblock %}
+
 {% block body %}
     <main role="main" class="container">
       <h1 class="mt-5">{{ctopicn}}</h1>
@@ -16,7 +19,15 @@
         <div class="col-md-6 text-md-right">Moderators: {% for mod in fmods %}{% if not forloop.first %}, {% endif %}<a href="{% url 'profile' uname=mod.username %}">{{mod.username}}</a>{% endfor %}{% if mods|length > 10 %}...{% endif %}</div>
       </div>
       <hr />
-      arguments here
+      Sorting method:
+      <select onchange="changesort()" id="sorts">
+        <option value="top">Top</option>
+        <option value="new">New</option>
+        <option value="random">Random</option>
+      </select> <br>
+      {% for debate in debates %}
+      {{debate.question}} <br>
+      {% endfor %}
     </main>
 
 {% endblock %}

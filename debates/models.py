@@ -27,12 +27,13 @@ class Debate(models.Model):
 	slvl = models.IntegerField(default='0')
 	approvedstatus = models.IntegerField(default='0')
 	karma = models.IntegerField(default='0')
-	users_upvoting = models.ManyToManyField(User, related_name='debates_upvoted')
+	users_upvoting = models.ManyToManyField(User, related_name='debates_upvoted', blank=True)
 	active = models.BooleanField(default=True)
-	question = models.CharField(max_length=300)
+	question = models.CharField(max_length=300, unique=True)
 	description = models.TextField(max_length=200000, blank=True)
 	created_on = models.DateTimeField(default=timezone.now)
 	edited_on = models.DateTimeField(default=timezone.now)
+	approved_on = models.DateTimeField(default=timezone.now)
 	def __str__(self):
 		return self.question
 

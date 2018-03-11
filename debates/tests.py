@@ -32,6 +32,6 @@ class ViewTestCase (TestCase):
         self.assertEqual(response.status_code, 200) #checks to see if a valid topic url will return a 200 (OK)
     def test_topicnamepassed(self):
         response = self.client.get('/t/test')
-        self.assertEqual(response.context['topic'].name, 'test') #checks to see if a valid topic url will return a 200 (OK)
+        self.assertEqual(response.context['topic'].name, 'test') #checks to see if a valid topic url will pass the topic name
 
 #todo: test debates page with wrong topic arg in url and see if it returns a 404

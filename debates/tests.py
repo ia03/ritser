@@ -8,6 +8,7 @@ from .views import index, topic
 
 # Create your tests here.
 
+#todo: test topic view with no debates
 
 class ViewTestCase (TestCase):
     def setUp(self):
@@ -32,3 +33,5 @@ class ViewTestCase (TestCase):
     def test_topicnamepassed(self):
         response = self.client.get('/t/test')
         self.assertEqual(response.context['topic'].name, 'test') #checks to see if a valid topic url will return a 200 (OK)
+
+#todo: test debates page with wrong topic arg in url and see if it returns a 404

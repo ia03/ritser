@@ -46,3 +46,7 @@ http://cython.org/
 
 
 for $5 monthly no ads and unlimited upvotes?
+
+
+use celery background processing https://code.tutsplus.com/tutorials/using-celery-with-django-for-background-task-processing--cms-28732 https://www.reddit.com/r/django/comments/7czebj/how_does_reddit_implement_its_upvotedownvote/dpum26s/
+https://simpleisbetterthancomplex.com/tutorial/2017/08/20/how-to-use-celery-with-django.html

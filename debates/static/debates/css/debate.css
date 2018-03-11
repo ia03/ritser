@@ -38,19 +38,19 @@
   margin: 0 auto;
 }
 
-.dtit {
+.atit {
   color: black;
   text-decoration: none;
 }
-.dtit:hover {
+.atit:hover {
   color: black;
   text-decoration: none;
 }
 
-.arglinks {
-  float: right;
-}
-
-.karmad {
+#karmad {
   text-align: center;
+}
+
+#voting {
+  margin-top: 75%;
 }

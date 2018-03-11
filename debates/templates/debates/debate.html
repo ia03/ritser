@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load markdown_deux_tags %}
+
+{% load humanize %}
+{% load static %}
+
+{% block title %}{{debate.question}} - {{topic.name}}{% endblock %}
+
+{% block head %}<link rel="stylesheet" href="{% static "debates/css/debate.css" %}">{% endblock %}
+
+{% block body %}
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-md-1 align-middle" id="karmad">
+          <div class="align-middle" id="voting" data-debate-id="{{debate.id}}" data-vote-url="{% url 'votedebate' %}">
+            {% if request.user.is_authenticated %}<div class="arrow-up{% if vote == 1 %}-selected{% endif %} votebtn"></div>{% endif %}
+            <span class="karmacount" title="karma (votes)">{{debate.karma|intcomma}}</span>
+            {% if request.user.is_authenticated %}<div class="arrow-down{% if vote == -1 %}-selected{% endif %} votebtn"></div>{% endif %}
+          </div>
+        </div>
+        <div class="col-md-11">
+
+
+          <h1 class="mt-5">{{debate.question}}</h1>
+          Topic: <a href="{% url 'topic' tname=topic.name %}">{{topic.name}}</a>
+          <br>
+          Owner:
+          <a href="{% url 'profile' uname=debate.owner.username %}">
+            {{debate.owner.username}}
+          </a>
+          <br>
+          Security Level: {{debate.slvl}}
+          <br>
+          {{debate.description|markdown}}
+        </div>
+      </div>
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="for-tab" data-toggle="tab" href="#for" role="tab" aria-controls="for" aria-selected="true">For</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="against-tab" data-toggle="tab" href="#against" role="tab" aria-controls="against" aria-selected="false">Against</a>
+        </li>
+      </ul>
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="for" role="tabpanel" aria-labelledby="for-tab">...</div>
+          <div class="tab-pane fade" id="against" role="tabpanel" aria-labelledby="against-tab">...</div>
+        </div>
+      {% if arguments %}
+      <div class="list-group" data-vote-url="{% url 'votedebate' %}">
+      {% for argument in arguments %}
+        <div class="list-group-item list-group-item-action flex-column align-items-start" data-debate-id="{{debate.id}}">
+
+
+
+
+
+          <div class="d-flex w-100 justify-content-between">
+            <a href="#" class="atit"><h5 class="mb-1">{{argument.title}}</h5></a>
+          </div>
+
+
+            <p class="mb-1">{{argument.body|markdown}}</p>
+
+            <small><a href="{% url 'profile' uname=argument.owner.username %}">{{argument.owner.username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span></small>
+
+          </div>
+
+        </div>
+      {% endfor %}
+      </div>
+      {% else %}
+      No arguments found.
+      {% endif %}
+
+
+      {% if prevb %}<a class="btn btn-outline-primary" href="{% url 'topic' tname=topic.name%}?count={{count|add:"-10"}}">‹‹ Previous</button>{% endif %}
+      {% if nextb %}<a class="btn btn-outline-primary" href="{% url 'topic' tname=topic.name%}?count={{count|add:"10"}}">Next ››</a>{% endif %}
+
+    </main>
+
+{% endblock %}
+
+{% block endjs %}
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script type="text/javascript" src="{% static "debates/js/debate.js" %}"></script>{% endblock %}

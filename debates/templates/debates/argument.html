@@ -12,17 +12,21 @@
       Status: {% if argument.approvedstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvedstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvedstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
       Topic: <a href="{% url 'topic' tname=argument.topic.name">{{argument.debate.question}}</a>
       Debate: <a href="{% url 'debate' tname=argument.topic.name did=argument.debate.id %}">{{argument.debate.question}}</a>
+      {% if argument.modnote %}<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">View mod notes</button>
+
+      <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <h1>Moderator Notes</h1>
+            {{argument.modnote|markdown}}
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+      {% endif %}
       <hr />
       {{argument.description|markdown}}
-      <!-- Large modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
+            <!-- Large modal -->
 
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      ...
-    </div>
-  </div>
-</div>
     </main>
 {% endblock %}

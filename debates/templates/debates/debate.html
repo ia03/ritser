@@ -22,12 +22,16 @@
           <h1 class="mt-5">{{debate.question}}</h1>
           Topic: <a href="{% url 'topic' tname=topic.name %}">{{topic.name}}</a> -
           Owner:
-          <a href="{% url 'profile' uname=debate.owner.username %}">{{debate.owner.username}}</a> - 
+          <a href="{% url 'profile' uname=debate.owner.username %}">{{debate.owner.username}}</a> -
           Security Level: {{debate.slvl}}
           <br>
           {{debate.description|markdown}}
         </div>
-      </div> test
+      </div>
+      <a href="{% url 'debate' tname=topic.name did=debate.id %}">Default Arguments</a> -
+      <a href="{% url 'debateapproved' tname=topic.name did=debate.id %}">Approved Arguments</a> -
+      <a href="{% url 'debateunapproved' tname=topic.name did=debate.id %}">Unapproved Arguments</a> -
+      <a href="{% url 'debatedenied' tname=topic.name did=debate.id %}">Denied Arguments</a>
       <h1>{% if apprs == 0 %}Approved {% elif apprs == 1 %}Unapproved {% elif apprs == 2 %}Denied {% endif %}Arguments</h1>
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">

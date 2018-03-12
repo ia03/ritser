@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load markdown %}
 
 {% load humanize %}
 {% load static %}
@@ -51,7 +51,7 @@
               </div>
 
 
-              <p class="mb-1">{{debate.description|truncatewords:50}}</p>
+              <p class="mb-1">{{debate.description|markdownf:"1"|truncatewords:50}}</p>
 
               <small><a href="{% url 'profile' uname=debate.owner.username %}">{{debate.owner.username}}</a> - <span title="{{debate.approved_on|date:"c"}}">{{debate.approved_on|date:"D d M Y f A"}}</span></small>
               <div class="arglinks">

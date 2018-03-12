@@ -2,5 +2,6 @@ django>=2.0
 psycopg2-binary
 boto3
 django-storages
-django-markdown-deux
-#python-markdown2
+django-debug-toolbar
+markdown
+bleach

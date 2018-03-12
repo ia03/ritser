@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load markdown_deux_tags %}
+{% load markdown %}
 
 
 {% load static %}
@@ -16,6 +16,6 @@
         <div class="col-md-6 text-md-right">Moderators: {% for mod in mods %}{% if not forloop.first %}, {% endif %}<a href="{% url 'profile' uname=mod.username %}">{{mod.username}}</a>{% endfor %}</div>
       </div>
       <hr />
-      {{topic.description|markdown}}
+      {{topic.description|markdownf}}
     </main>
 {% endblock %}

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load markdown_deux_tags %}
+{% load markdown %}
 
 {% load humanize %}
 {% load static %}
@@ -25,7 +25,7 @@
           <a href="{% url 'profile' uname=debate.owner.username %}">{{debate.owner.username}}</a> -
           Security Level: {{debate.slvl}}
           <br>
-          {{debate.description|markdown}}
+          {{debate.description|markdownf}}
         </div>
       </div>
       <a href="{% url 'debate' tname=topic.name did=debate.id %}">Default Arguments</a> -
@@ -51,11 +51,8 @@
               <div class="d-flex w-100 justify-content-between">
                 <a href="{% url 'argument' tname=debate.topic.name did=debate.id aid=argument.id %}" class="atit"><h5 class="mb-1">{{argument.title}}</h5></a>
               </div>
-
-
-                <p class="mb-1">{{argument.body|markdown}}</p>
-
-                <small><a href="{% url 'profile' uname=argument.owner.username %}">{{argument.owner.username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvedstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvedstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvedstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
+                <p class="mb-0 argdesc">{{argument.body|markdownf}}</p>
+                <small class="sinfo"><a href="{% url 'profile' uname=argument.owner.username %}">{{argument.owner.username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvedstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvedstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvedstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
 
 
 
@@ -79,11 +76,8 @@
               <div class="d-flex w-100 justify-content-between">
                 <a href="{% url 'argument' tname=debate.topic.name did=debate.id aid=argument.id %}" class="atit"><h5 class="mb-1">{{argument.title}}</h5></a>
               </div>
-
-
-                <p class="mb-1">{{argument.body|markdown}}</p>
-
-                <small><a href="{% url 'profile' uname=argument.owner.username %}">{{argument.owner.username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvedstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvedstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvedstatus == 2 %}<span class="badge badge-pill badge-danger">Danger</span>{% endif %}</small>
+                <p class="mb-0">{{argument.body|markdownf}}</p>
+                <small class="sinfo"><a href="{% url 'profile' uname=argument.owner.username %}">{{argument.owner.username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvedstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvedstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvedstatus == 2 %}<span class="badge badge-pill badge-danger">Danger</span>{% endif %}</small>
 
             </div>
             {% endfor %}

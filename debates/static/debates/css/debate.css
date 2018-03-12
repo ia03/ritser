@@ -54,3 +54,11 @@
 #voting {
   margin-top: 75%;
 }
+
+.list-group-item, .list-group-item:hover {
+  color: black;
+}
+
+.sinfo, .sinfo:hover {
+  color: #495057 !important;
+}

@@ -188,9 +188,9 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 		sf = 0
 		ef = min(10, asizef)
 	if (kwargs['apprs'] == -1):
-		argumentsf = querysetf.order_by('approvedstatus', '-owner__approvedargs')[sf:ef]  # filter by no. of approved arguments by user and approvedstatus
+		argumentsf = querysetf.order_by('approvedstatus', 'order', '-owner__approvedargs')[sf:ef]  # filter by no. of approved arguments by user and approvedstatus
 	else:
-		argumentsf = querysetf.order_by('-owner__approvedargs')[sf:ef] # filter by no. of approved arguments by user
+		argumentsf = querysetf.order_by('order', '-owner__approvedargs')[sf:ef] # filter by no. of approved arguments by user
 	prevbf = False
 	nextbf = False
 	if(sf+10 < asizef):
@@ -213,9 +213,9 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 		ea = min(10, asizea)
 
 	if (kwargs['apprs'] == -1):
-		argumentsa = queryseta.order_by('approvedstatus', '-owner__approvedargs')[sa:ea]  # filter by no. of approved arguments by user and approvedstatus
+		argumentsa = queryseta.order_by('approvedstatus', 'order', '-owner__approvedargs')[sa:ea]  # filter by no. of approved arguments by user and approvedstatus
 	else:
-		argumentsa = queryseta.order_by('-owner__approvedargs')[sa:ea] # filter by no. of approved arguments by user
+		argumentsa = queryseta.order_by('order', '-owner__approvedargs')[sa:ea] # filter by no. of approved arguments by user
 	prevba = False
 	nextba = False
 	if(sa+10 < asizea):

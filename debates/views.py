@@ -187,8 +187,10 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 	else: #if count is not an int that is a valid element id (or does not exist)
 		sf = 0
 		ef = min(10, asizef)
-
-	argumentsf = querysetf.order_by('approvedstatus', '-owner__approvedargs')[sf:ef] # filter by no. of approved arguments by user
+	if (kwargs['apprs'] == 0):
+		argumentsf = querysetf.order_by('approvedstatus', '-owner__approvedargs')[sf:ef]  # filter by no. of approved arguments by user and approvedstatus
+	else:
+		argumentsf = querysetf.order_by('-owner__approvedargs')[sf:ef] # filter by no. of approved arguments by user
 	prevbf = False
 	nextbf = False
 	if(sf+10 < asizef):
@@ -210,7 +212,10 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 		sa = 0
 		ea = min(10, asizea)
 
-	argumentsa = queryseta.order_by('approvedstatus', '-owner__approvedargs')[sa:ea] # filter by no. of approved arguments by user
+	if (kwargs['apprs'] == 0):
+		argumentsa = queryseta.order_by('approvedstatus', '-owner__approvedargs')[sa:ea]  # filter by no. of approved arguments by user and approvedstatus
+	else:
+		argumentsa = queryseta.order_by('-owner__approvedargs')[sa:ea] # filter by no. of approved arguments by user
 	prevba = False
 	nextba = False
 	if(sa+10 < asizea):

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
+from django.urls import reverse
 from accounts.models import User
 
 # Create your models here.
@@ -17,6 +18,8 @@ class Topic(models.Model):
 	created_on = models.DateTimeField(default=timezone.now)
 	created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='topics_created')
 	edited_on = models.DateTimeField(default=timezone.now)
+	def get_absolute_url(self):
+		return reverse('topic', args=[self.name])
 	def __str__(self):
 		return self.name
 
@@ -35,6 +38,9 @@ class Debate(models.Model):
 	created_on = models.DateTimeField(default=timezone.now)
 	edited_on = models.DateTimeField(default=timezone.now)
 	approved_on = models.DateTimeField(default=timezone.now, db_index=True)
+
+	def get_absolute_url(self):
+		return reverse('debate', args=[self.topic.name, self.id])
 	def __str__(self):
 		return self.question
 
@@ -51,6 +57,9 @@ class Argument(models.Model):
 	modnote = models.TextField(max_length=200000, blank=True)
 	created_on = models.DateTimeField(default=timezone.now)
 	edited_on = models.DateTimeField(default=timezone.now)
+
+	def get_absolute_url(self):
+		return reverse('argument', args=[self.topic.name, self.debate.id, self.id])
 	def __str__(self):
 		return self.title
 

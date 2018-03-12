@@ -15,7 +15,7 @@
       <a href="{% url 'topicinfo' tname=topic.name %}">Details Page</a>
       <div class="row">
         <div class="col-md-6">Owner:
-          <a href="{% url 'profile' uname=topic.owner.username %}">
+          <a href="{{topic.owner.get_absolute_url}}">
             {{topic.owner.username}}
           </a><br> Security Level: {{topic.slvl}}
           <br>
@@ -31,7 +31,7 @@
             <option value="random">Random</option>
           </select>
         </div>
-        <div class="col-md-6 text-md-right">Moderators: {% for mod in fmods %}{% if not forloop.first %}, {% endif %}<a href="{% url 'profile' uname=mod.username %}">{{mod.username}}</a>{% endfor %}{% if mods|length > 10 %}...{% endif %}</div>
+        <div class="col-md-6 text-md-right">Moderators: {% for mod in fmods %}{% if not forloop.first %}, {% endif %}<a href="{{mod.get_absolute_url}}">{{mod.username}}</a>{% endfor %}{% if mods|length > 10 %}...{% endif %}</div>
       </div>
       <hr />
        <br>
@@ -47,13 +47,13 @@
             </div>
             <div class="col-md-11">
               <div class="d-flex w-100 justify-content-between">
-                <a href="{% url 'debate' tname=topic.name did=debate.id %}" class="dtit"><h5 class="mb-1">{{debate.question}}</h5></a>
+                <a href="{{debate.get_absolute_url}}" class="dtit"><h5 class="mb-1">{{debate.question}}</h5></a>
               </div>
 
 
               <p class="mb-1">{{debate.description|markdownf:"1"|truncatewords:50}}</p>
 
-              <small><a href="{% url 'profile' uname=debate.owner.username %}">{{debate.owner.username}}</a> - <span title="{{debate.approved_on|date:"c"}}">{{debate.approved_on|date:"D d M Y f A"}}</span></small>
+              <small><a href="{{debate.owner.get_absolute_url}}">{{debate.owner.username}}</a> - <span title="{{debate.approved_on|date:"c"}}">{{debate.approved_on|date:"D d M Y f A"}}</span></small>
               <div class="arglinks">
                 <a href="{% url 'debateapproved' tname=topic.name did=debate.id %}" class="badge badge-primary">Approved</a>
                 <a href="{% url 'debateunapproved' tname=topic.name did=debate.id %}" class="badge badge-secondary">Unapproved</a>

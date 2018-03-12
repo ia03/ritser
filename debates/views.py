@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument
+from .utils import Pages
 
 # Create your views here.
 def index(request):
@@ -65,7 +66,7 @@ def topic(request, tname):
 
 	try:
 		debates = paginator.page(page)
-	except PageNotAnInteger:
+	except (EmptyPage, PageNotAnInteger):
 		debates = paginator.page(1)
 
 
@@ -184,7 +185,7 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 	paginatorf = Paginator(argumentslistf, 10)
 	try:
 		argumentsf = paginatorf.page(pagef)
-	except PageNotAnInteger:
+	except (EmptyPage, PageNotAnInteger):
 		argumentsf = paginatorf.page(1)
 
 
@@ -200,7 +201,7 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 	paginatora = Paginator(argumentslista, 10)
 	try:
 		argumentsa = paginatora.page(pagea)
-	except PageNotAnInteger:
+	except (EmptyPage, PageNotAnInteger):
 		argumentsa = paginatora.page(1)
 
 	if (request.user.is_authenticated):

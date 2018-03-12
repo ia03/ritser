@@ -24,7 +24,7 @@ class Topic(models.Model):
 class Debate(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='debates_owned')
 	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='debates')
-	slvl = models.IntegerField(default='1')
+	slvl = models.IntegerField(default='1') #if slvl = 0, approved, unapproved, denied arguments visible by def. if slvl = 1 or 2, approved and unapproved visible by def., else only approved args visible
 	approvedstatus = models.IntegerField(default='0')
 	karma = models.IntegerField(default='0')
 	users_upvoting = models.ManyToManyField(User, related_name='debates_upvoted', blank=True)

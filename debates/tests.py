@@ -22,16 +22,16 @@ class ViewTestCase (TestCase):
         found = resolve('/')
         self.assertEqual(found.func, index)
     def test_topicpage(self):
-        found = resolve('/t/afw')
+        found = resolve('/t/afw/')
         self.assertEqual(found.func, topic)
     def test_invalidtopic(self):
-        response = self.client.get('/t/akvurov_u439j')
+        response = self.client.get('/t/akvurov_u439j/')
         self.assertEqual(response.status_code, 404) #checks to see if an invalid topic url will return a 404 (NOT FOUND)
     def test_validtopic(self):
-        response = self.client.get('/t/test')
+        response = self.client.get('/t/test/')
         self.assertEqual(response.status_code, 200) #checks to see if a valid topic url will return a 200 (OK)
     def test_topicnamepassed(self):
-        response = self.client.get('/t/test')
+        response = self.client.get('/t/test/')
         self.assertEqual(response.context['topic'].name, 'test') #checks to see if a valid topic url will pass the topic name
 
 #todo: test debates page with wrong topic arg in url and see if it returns a 404

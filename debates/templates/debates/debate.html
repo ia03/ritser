@@ -62,8 +62,39 @@
 
 
 
-          {% if prevbf %}<a class="btn btn-outline-primary" href="{% url 'debate' tname=topic.name did=debate.id%}?countf={{countf|add:"-10"}}&counta={{counta}}">‹‹ Previous</a>{% endif %}
-          {% if nextbf %}<a class="btn btn-outline-primary" href="{% url 'debate' tname=topic.name did=debate.id%}?countf={{countf|add:"10"}}&counta={{counta}}">Next ››</a>{% endif %}
+          {% if argumentsf.has_other_pages %}
+          <nav aria-label="Page navigation">
+            <ul class="pagination">
+              {% if not argumentsf.has_previous %}
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+              </li>
+              {% else %}
+              <li class="page-item">
+                <a class="page-link" href="?pagef={{argumentsf.previous_page_number}}&pagea={{pagea}}" tabindex="-1">Previous</a>
+              </li>
+              {% endif %}
+              {% for p in argumentsf.paginator.page_range %}
+              {% if argumentsf.number == p %}
+              <li class="page-item active">
+                <a class="page-link" href="?pagef={{p}}&pagea={{pagea}}">{{p}} <span class="sr-only">(current)</span></a>
+              </li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="?pagef={{p}}&pagea={{pagea}}">{{p}}</a></li>
+              {% endif %}
+              {% endfor %}
+              {% if not argumentsf.has_next %}
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Next</a>
+              </li>
+              {% else %}
+              <li class="page-item">
+                <a class="page-link" href="?pagef={{argumentsf.next_page_number}}&pagea={{pagea}}">Next</a>
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+          {% endif %}
           {% else %}
           No arguments found.
           {% endif %}
@@ -85,8 +116,39 @@
 
 
 
-          {% if prevba %}<a class="btn btn-outline-primary" href="{% url 'debate' tname=topic.name did=debate.id%}?countf={{countf}}&counta={{counta|add:"-10"}}&tab=1">‹‹ Previous</a>{% endif %}
-          {% if nextba %}<a class="btn btn-outline-primary" href="{% url 'debate' tname=topic.name did=debate.id%}?countf={{countf}}&counta={{counta|add:"10"}}&tab=1">Next ››</a>{% endif %}
+          {% if argumentsa.has_other_pages %}
+          <nav aria-label="Page navigation">
+            <ul class="pagination">
+              {% if not argumentsa.has_previous %}
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+              </li>
+              {% else %}
+              <li class="page-item">
+                <a class="page-link" href="?pagef={{pagef}}&pagea={{argumentsa.previous_page_number}}&tab=1" tabindex="-1">Previous</a>
+              </li>
+              {% endif %}
+              {% for p in argumentsa.paginator.page_range %}
+              {% if argumentsa.number == p %}
+              <li class="page-item active">
+                <a class="page-link" href="?pagef={{pagef}}&pagea={{p}}&tab=1">{{p}} <span class="sr-only">(current)</span></a>
+              </li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="?pagef={{pagef}}&pagea={{p}}&tab=1">{{p}}</a></li>
+              {% endif %}
+              {% endfor %}
+              {% if not argumentsa.has_next %}
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Next</a>
+              </li>
+              {% else %}
+              <li class="page-item">
+                <a class="page-link" href="?pagef={{pagef}}&pagea={{argumentsa.next_page_number}}&tab=1">Next</a>
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+          {% endif %}
           {% else %}
           No arguments found.
           {% endif %}

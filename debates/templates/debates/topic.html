@@ -67,9 +67,39 @@
       {% else %}
       No debates found.
       {% endif %}
-
-      {% if prevb %}<a class="btn btn-outline-primary" href="{% url 'topic' tname=topic.name%}?count={{count|add:"-30"}}{% if sort %}&sort={{sorta}}{% endif %}">‹‹ Previous</a>{% endif %}
-      {% if nextb %}<a class="btn btn-outline-primary" href="{% url 'topic' tname=topic.name%}?count={{count|add:"30"}}{% if sort %}&sort={{sorta}}{% endif %}">Next ››</a>{% endif %}
+      {% if debates.has_other_pages %}
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          {% if not debates.has_previous %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">Previous</a>
+          </li>
+          {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{debates.previous_page_number}}{{sorta}}" tabindex="-1">Previous</a>
+          </li>
+          {% endif %}
+          {% for p in debates.paginator.page_range %}
+          {% if debates.number == p %}
+          <li class="page-item active">
+            <a class="page-link" href="?page={{p}}{{sorta}}">{{p}} <span class="sr-only">(current)</span></a>
+          </li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href="?page={{p}}{{sorta}}">{{p}}</a></li>
+          {% endif %}
+          {% endfor %}
+          {% if not debates.has_next %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">Next</a>
+          </li>
+          {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{debates.next_page_number}}{{sorta}}">Next</a>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
     </main>
 
 {% endblock %}

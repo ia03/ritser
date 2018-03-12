@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument
 
 # Create your views here.
@@ -29,46 +30,44 @@ def topic(request, tname):
 	fmods = mods[:10] #first 10 mods
 	sortc = request.COOKIES.get('dsort')
 	sorta = request.GET.get('sort', '')
-	isint = True
-	try:
-		count = int(request.GET.get('count', ''))
-	except:
-		isint = False
-	dsize = topic.debates.count()
-	if (isint and count > -1 and count < dsize): #check if count is an int that is a valid element id
-		s = count
-		e = min(count+30, dsize)
-	else: #if count is not an int that is a valid element id (or does not exist)
-		s = 0
-		e = min(30, dsize)
-
 
 	if (sorta == 'top'):
-		debates = topic.debates.order_by('-karma') #default
+		debates_list = topic.debates.order_by('-karma') #default
+		sorta = "&sort=top"
 	elif (sorta == 'lowest'):
-		debates = topic.debates.order_by('karma')
+		debates_list = topic.debates.order_by('karma')
+		sorta = "&sort=lowest"
 	elif (sorta == 'new'):
-		debates = topic.debates.order_by('-approved_on')
+		debates_list = topic.debates.order_by('-approved_on')
+		sorta = "&sort=new"
 	elif (sorta == 'random'):
-		debates = topic.debates.order_by('?')
+		debates_list = topic.debates.order_by('?')
+		sorta = "&sort=random"
 	elif (sortc == 'top'):
-		debates = topic.debates.order_by('-karma')
+		debates_list = topic.debates.order_by('-karma')
+		sorta = "&sort=top"
 	elif (sortc == 'lowest'):
-		debates = topic.debates.order_by('karma')
+		debates_list = topic.debates.order_by('karma')
+		sorta = "&sort=lowest"
 	elif (sortc == 'new'):
-		debates = topic.debates.order_by('-approved_on')
+		debates_list = topic.debates.order_by('-approved_on')
+		sorta = "&sort=new"
 	elif (sortc == 'random'):
-		debates = topic.debates.order_by('?')
+		debates_list = topic.debates.order_by('?')
+		sorta = "&sort=random"
 	else:
-		debates = topic.debates.order_by('-karma') #default
+		debates_list = topic.debates.order_by('-karma') #default
+		sorta = "&sort=top"
 
-	debates = debates[s:e]
-	prevb = False
-	nextb = False
-	if(s+30 < dsize):
-		nextb = True
-	if(s-30 > -1):
-		prevb = True
+	page = request.GET.get('page', 1)
+
+	paginator = Paginator(debates_list, 30)
+
+	try:
+		debates = paginator.page(page)
+	except PageNotAnInteger:
+		debates = paginator.page(1)
+
 
 	if (request.user.is_authenticated):
 		dupvoted = request.user.debates_upvoted.all()
@@ -77,6 +76,8 @@ def topic(request, tname):
 		dupvoted = []
 		ddownvoted = []
 
+
+
 	context = {
 		'fmods': fmods,
 		'minjq': True,
@@ -84,9 +85,6 @@ def topic(request, tname):
 		'topic': topic,
 		'ctopicn': topic.name.capitalize(),
 		'debates': debates,
-		'count': s,
-		'prevb': prevb,
-		'nextb': nextb,
 		'sorta': sorta,
 		'dupvoted': dupvoted,
 		'ddownvoted': ddownvoted,
@@ -175,54 +173,35 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 		cquery = Q(approvedstatus=2)
 	querysetf = debate.arguments.filter(Q(side=0) & cquery)
 	queryseta = debate.arguments.filter(Q(side=1) & cquery)
-	isintf = True
-	try:
-		countf = int(request.GET.get('countf', ''))
-	except:
-		isintf = False
-	asizef = querysetf.count()
-	if (isintf and countf > -1 and countf < asizef): #check if count is an int that is a valid element id
-		sf = countf
-		ef = min(countf+10, asizef)
-	else: #if count is not an int that is a valid element id (or does not exist)
-		sf = 0
-		ef = min(10, asizef)
-	if (kwargs['apprs'] == -1):
-		argumentsf = querysetf.order_by('approvedstatus', 'order', '-owner__approvedargs')[sf:ef]  # filter by no. of approved arguments by user and approvedstatus
-	else:
-		argumentsf = querysetf.order_by('order', '-owner__approvedargs')[sf:ef] # filter by no. of approved arguments by user
-	prevbf = False
-	nextbf = False
-	if(sf+10 < asizef):
-		nextbf = True
-	if(sf-10 > -1):
-		prevbf = True
-
-
-	isinta = True
-	try:
-		counta = int(request.GET.get('counta', ''))
-	except:
-		isinta = False
-	asizea = queryseta.count()
-	if (isinta and counta > -1 and counta < asizea): #check if count is an int that is a valid element id
-		sa = counta
-		ea = min(counta+10, asizea)
-	else: #if count is not an int that is a valid element id (or does not exist)
-		sa = 0
-		ea = min(10, asizea)
 
 	if (kwargs['apprs'] == -1):
-		argumentsa = queryseta.order_by('approvedstatus', 'order', '-owner__approvedargs')[sa:ea]  # filter by no. of approved arguments by user and approvedstatus
+		argumentslistf = querysetf.order_by('approvedstatus', 'order', '-owner__approvedargs')  # filter by no. of approved arguments by user and approvedstatus
 	else:
-		argumentsa = queryseta.order_by('order', '-owner__approvedargs')[sa:ea] # filter by no. of approved arguments by user
-	prevba = False
-	nextba = False
-	if(sa+10 < asizea):
-		nextba = True
-	if(sa-10 > -1):
-		prevba = True
+		argumentslistf = querysetf.order_by('order', '-owner__approvedargs') # filter by no. of approved arguments by user
 
+	pagef = request.GET.get('pagef', 1)
+
+	paginatorf = Paginator(argumentslistf, 10)
+	try:
+		argumentsf = paginatorf.page(pagef)
+	except PageNotAnInteger:
+		argumentsf = paginatorf.page(1)
+
+
+
+
+	if (kwargs['apprs'] == -1):
+		argumentslista = queryseta.order_by('approvedstatus', 'order', '-owner__approvedargs')  # filter by no. of approved arguments by user and approvedstatus
+	else:
+		argumentslista = queryseta.order_by('order', '-owner__approvedargs') # filter by no. of approved arguments by user
+
+	pagea = request.GET.get('pagea', 1)
+
+	paginatora = Paginator(argumentslista, 10)
+	try:
+		argumentsa = paginatora.page(pagea)
+	except PageNotAnInteger:
+		argumentsa = paginatora.page(1)
 
 	if (request.user.is_authenticated):
 		if (debate.users_upvoting.filter(id=request.user.id).count() == 1):
@@ -237,15 +216,11 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 	context = {
 		'debate': debate,
 		'minjq': True,
-		'countf': sf,
-		'counta': sa,
-		'prevbf': prevbf,
-		'nextbf': nextbf,
-		'prevba': prevba,
-		'nextba': nextba,
 		'topic': topic,
 		'argumentsf': argumentsf,
 		'argumentsa': argumentsa,
+		'pagef': pagef,
+		'pagea': pagea,
 		'apprs': kwargs['apprs'],
 		'vote': vote,
 	}

@@ -231,6 +231,8 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 			vote = -1
 		else:
 			vote = 0
+	else:
+		vote = 0
 
 	context = {
 		'debate': debate,

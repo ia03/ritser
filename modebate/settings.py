@@ -74,6 +74,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'modebate.wsgi.application'
 
+APPEND_SLASH = True
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases

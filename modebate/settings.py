@@ -41,8 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 	'django.contrib.humanize',
 	'storages',
-	'markdown_deux',
-	'django_bleach',
 	'debug_toolbar',
 ]
 

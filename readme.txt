@@ -8,3 +8,5 @@ install whatever is in requirements.txt
 set debug to false
 
 run collectstatic
+
+minify css and js files

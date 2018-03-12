@@ -21,6 +21,8 @@
           <br>
           Default Debate Security Level: {{topic.debslvl}}
           <br>
+          Created on {{topic.created_on|date}}
+          <br>
           Sorting method:
           <select onchange="changesort()" id="sorts">
             <option value="top">Top</option>
@@ -45,7 +47,7 @@
             </div>
             <div class="col-md-11">
               <div class="d-flex w-100 justify-content-between">
-                <a href="{% url "debate" tname=topic.name did=debate.id %}" class="dtit"><h5 class="mb-1">{{debate.question}}</h5></a>
+                <a href="{% url 'debate' tname=topic.name did=debate.id %}" class="dtit"><h5 class="mb-1">{{debate.question}}</h5></a>
               </div>
 
 
@@ -53,9 +55,9 @@
 
               <small><a href="{% url 'profile' uname=debate.owner.username %}">{{debate.owner.username}}</a> - <span title="{{debate.approved_on|date:"c"}}">{{debate.approved_on|date:"D d M Y f A"}}</span></small>
               <div class="arglinks">
-                <a href="#" class="badge badge-primary">Approved</a>
-                <a href="#" class="badge badge-secondary">Unapproved</a>
-                <a href="#" class="badge badge-danger">Denied</a>
+                <a href="{% url 'debateapproved' tname=topic.name did=debate.id %}" class="badge badge-primary">Approved</a>
+                <a href="{% url 'debateunapproved' tname=topic.name did=debate.id %}" class="badge badge-secondary">Unapproved</a>
+                <a href="{% url 'debatedenied' tname=topic.name did=debate.id %}" class="badge badge-danger">Denied</a>
               </div>
             </div>
           </div>
@@ -66,12 +68,12 @@
       No debates found.
       {% endif %}
 
-      {% if prevb %}<a class="btn btn-outline-primary" href="{% url 'topic' tname=topic.name%}?count={{count|add:"-30"}}{% if sort %}&sort={{sorta}}{% endif %}">‹‹ Previous</button>{% endif %}
+      {% if prevb %}<a class="btn btn-outline-primary" href="{% url 'topic' tname=topic.name%}?count={{count|add:"-30"}}{% if sort %}&sort={{sorta}}{% endif %}">‹‹ Previous</a>{% endif %}
       {% if nextb %}<a class="btn btn-outline-primary" href="{% url 'topic' tname=topic.name%}?count={{count|add:"30"}}{% if sort %}&sort={{sorta}}{% endif %}">Next ››</a>{% endif %}
     </main>
 
 {% endblock %}
 
 {% block endjs %}
-<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js" integrity="sha384-xfK7Pd4lZwvHpwqHVm6CLkaaJWD3pwmicCjngjDHNBjH5tYAr4ZsgFBEbtnjI1zD" crossorigin="anonymous"></script>
 <script type="text/javascript" src="{% static "debates/js/topic.js" %}"></script>{% endblock %}

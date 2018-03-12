@@ -12,7 +12,7 @@ class Topic(models.Model):
 	description = models.TextField(max_length=600000, default='The description has not been set yet.', blank=True)
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='topics_owned')
 	slvl = models.IntegerField(default='0')
-	debslvl = models.IntegerField(default='0')
+	debslvl = models.IntegerField(default='1')
 	moderators = models.ManyToManyField(User, related_name='moderator_of')
 	created_on = models.DateTimeField(default=timezone.now)
 	created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='topics_created')
@@ -24,7 +24,7 @@ class Topic(models.Model):
 class Debate(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='debates_owned')
 	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='debates')
-	slvl = models.IntegerField(default='0')
+	slvl = models.IntegerField(default='1')
 	approvedstatus = models.IntegerField(default='0')
 	karma = models.IntegerField(default='0')
 	users_upvoting = models.ManyToManyField(User, related_name='debates_upvoted', blank=True)
@@ -42,8 +42,8 @@ class Argument(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='arguments_owned')
 	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='arguments')
 	debate = models.ForeignKey(Debate, on_delete=models.CASCADE, related_name='arguments')
-	approvedstatus = models.IntegerField(default=0)
-	order = models.IntegerField(default='0')
+	approvedstatus = models.IntegerField(default=1) #0: approved 1: unapproved 2: denied 3: deleted
+	order = models.IntegerField(default='0') #owner.approvedargs?
 	side = models.IntegerField(default='0')
 	active = models.BooleanField(default=True)
 	title = models.CharField(max_length=300)

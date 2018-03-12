@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
-from .models import Topic, Debate
+from django.db.models import Q
+from .models import Topic, Debate, Argument
 
 # Create your views here.
 def index(request):
@@ -154,30 +155,68 @@ def topicinfo(request, tname):
 	return render(request, 'debates/topicinfo.html', context)
 
 
-def debate(request, tname, did): #use same template for different approval statuses, but change int that says what type it is
+def debate(request, tname, did, **kwargs): #use same template for different approval statuses, but change int that says what type it is
 	topic = get_object_or_404(Topic, name=tname)
 	debate = get_object_or_404(Debate, topic=topic, id=did)
 
-	isint = True
-	try:
-		count = int(request.GET.get('count', ''))
-	except:
-		isint = False
-	asize = debate.arguments.count()
-	if (isint and count > -1 and count < asize): #check if count is an int that is a valid element id
-		s = count
-		e = min(count+10, asize)
-	else: #if count is not an int that is a valid element id (or does not exist)
-		s = 0
-		e = min(10, asize)
 
-		arguments = debate.arguments.order_by('-owner__approvedargs')[s:e] # filter by no. of approved arguments by user
-		prevb = False
-		nextb = False
-		if(s+10 < asize):
-			nextb = True
-		if(s-10 > -1):
-			prevb = True
+	if (kwargs['apprs'] == -1):
+		if (debate.slvl == 0):
+			cquery = Q(approvedstatus=0) | Q(approvedstatus=1) | Q(approvedstatus=2)
+		elif (debate.slvl == 1 or debate.slvl == 2):
+			cquery = Q(approvedstatus=0) | Q(approvedstatus=1)
+		else:
+			cquery = Q(approvedstatus=0)
+	elif (kwargs['apprs'] == 0):
+		cquery = Q(approvedstatus=0)
+	elif (kwargs['apprs'] == 1):
+		cquery = Q(approvedstatus=1)
+	elif (kwargs['apprs'] == 2):
+		cquery = Q(approvedstatus=2)
+	querysetf = debate.arguments.filter(Q(side=0) & cquery)
+	queryseta = debate.arguments.filter(Q(side=1) & cquery)
+	isintf = True
+	try:
+		countf = int(request.GET.get('countf', ''))
+	except:
+		isintf = False
+	asizef = querysetf.count()
+	if (isintf and countf > -1 and countf < asizef): #check if count is an int that is a valid element id
+		sf = countf
+		ef = min(countf+10, asizef)
+	else: #if count is not an int that is a valid element id (or does not exist)
+		sf = 0
+		ef = min(10, asizef)
+
+	argumentsf = querysetf.order_by('approvedstatus', '-owner__approvedargs')[sf:ef] # filter by no. of approved arguments by user
+	prevbf = False
+	nextbf = False
+	if(sf+10 < asizef):
+		nextbf = True
+	if(sf-10 > -1):
+		prevbf = True
+
+
+	isinta = True
+	try:
+		counta = int(request.GET.get('counta', ''))
+	except:
+		isinta = False
+	asizea = queryseta.count()
+	if (isinta and counta > -1 and counta < asizea): #check if count is an int that is a valid element id
+		sa = counta
+		ea = min(counta+10, asizea)
+	else: #if count is not an int that is a valid element id (or does not exist)
+		sa = 0
+		ea = min(10, asizea)
+
+	argumentsa = queryseta.order_by('approvedstatus', '-owner__approvedargs')[sa:ea] # filter by no. of approved arguments by user
+	prevba = False
+	nextba = False
+	if(sa+10 < asizea):
+		nextba = True
+	if(sa-10 > -1):
+		prevba = True
 
 
 	if (request.user.is_authenticated):
@@ -191,9 +230,28 @@ def debate(request, tname, did): #use same template for different approval statu
 	context = {
 		'debate': debate,
 		'minjq': True,
-		'count': s,
+		'countf': sf,
+		'counta': sa,
+		'prevbf': prevbf,
+		'nextbf': nextbf,
+		'prevba': prevba,
+		'nextba': nextba,
 		'topic': topic,
-		'arguments': arguments,
+		'argumentsf': argumentsf,
+		'argumentsa': argumentsa,
+		'apprs': kwargs['apprs'],
 		'vote': vote,
 	}
 	return render(request, 'debates/debate.html', context)
+
+
+def argument(request, tname, did, aid):
+
+	topic = get_object_or_404(Topic, name=tname)
+	debate = get_object_or_404(Debate, id=did)
+	argument = get_object_or_404(Argument, id=aid)
+
+	context = {
+		'argument': argument
+	}
+	return render(request, 'debates/argument.html', context)

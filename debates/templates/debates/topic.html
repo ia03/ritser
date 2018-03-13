@@ -68,34 +68,46 @@
       No debates found.
       {% endif %}
       {% if debates.has_other_pages %}
+      {% load proper_paginate %}
+      {% load link_name %}
       <nav aria-label="Page navigation">
         <ul class="pagination">
+          {% if page_obj.number == 1 %}
+          <li class="page-item disabled"><span>⇤</span></li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href="{{request.get_full_path|link_name:1}}{{sorta}}">⇤</a></li>
+          {% endif %}
           {% if not debates.has_previous %}
           <li class="page-item disabled">
-            <a class="page-link" href="#" tabindex="-1">Previous</a>
+            <a class="page-link" href="#" tabindex="-1">&laquo;</a>
           </li>
           {% else %}
           <li class="page-item">
-            <a class="page-link" href="?page={{debates.previous_page_number}}{{sorta}}" tabindex="-1">Previous</a>
+            <a class="page-link" href="{{request.get_full_path|link_name:debates.previous_page_number}}{{sorta}}" tabindex="-1">&laquo;</a>
           </li>
           {% endif %}
-          {% for p in debates.paginator.page_range %}
+          {% for p in debates.paginator|proper_paginate:debates.number %}
           {% if debates.number == p %}
           <li class="page-item active">
-            <a class="page-link" href="?page={{p}}{{sorta}}">{{p}} <span class="sr-only">(current)</span></a>
+            <a class="page-link" href="{{request.get_full_path|link_name:p}}{{sorta}}">{{p}} <span class="sr-only">(current)</span></a>
           </li>
           {% else %}
-          <li class="page-item"><a class="page-link" href="?page={{p}}{{sorta}}">{{p}}</a></li>
+          <li class="page-item"><a class="page-link" href="{{request.get_full_path|link_name:p}}{{sorta}}">{{p}}</a></li>
           {% endif %}
           {% endfor %}
           {% if not debates.has_next %}
           <li class="page-item disabled">
-            <a class="page-link" href="#" tabindex="-1">Next</a>
+            <span class="page-link">&raquo;</span>
           </li>
           {% else %}
           <li class="page-item">
-            <a class="page-link" href="?page={{debates.next_page_number}}{{sorta}}">Next</a>
+            <a class="page-link" href="{{request.get_full_path|link_name:debates.next_page_number}}{{sorta}}">&raquo;</a>
           </li>
+          {% endif %}
+          {% if debates.number == debates.paginator.num_pages %}
+          <li class="page-item disabled"><a class="page-link" href="{{ request.get_full_path|link_name:debates.paginator.num_pages }}">⇥</a></li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href="{{ request.get_full_path|link_name:debates.paginator.num_pages }}">⇥</a></li>
           {% endif %}
         </ul>
       </nav>

@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument
-from .utils import Pages
 
 # Create your views here.
 def index(request):
@@ -34,31 +33,36 @@ def topic(request, tname):
 
 	if (sorta == 'top'):
 		debates_list = topic.debates.order_by('-karma') #default
-		sorta = "&sort=top"
+		sortb = "&sort=top"
 	elif (sorta == 'lowest'):
 		debates_list = topic.debates.order_by('karma')
-		sorta = "&sort=lowest"
+		sortb = "&sort=lowest"
 	elif (sorta == 'new'):
 		debates_list = topic.debates.order_by('-approved_on')
-		sorta = "&sort=new"
+		sortb = "&sort=new"
 	elif (sorta == 'random'):
 		debates_list = topic.debates.order_by('?')
-		sorta = "&sort=random"
+		sortb = "&sort=random"
 	elif (sortc == 'top'):
 		debates_list = topic.debates.order_by('-karma')
-		sorta = "&sort=top"
+		sortb = "&sort=top"
 	elif (sortc == 'lowest'):
 		debates_list = topic.debates.order_by('karma')
-		sorta = "&sort=lowest"
+		sortb = "&sort=lowest"
 	elif (sortc == 'new'):
 		debates_list = topic.debates.order_by('-approved_on')
-		sorta = "&sort=new"
+		sortb = "&sort=new"
 	elif (sortc == 'random'):
 		debates_list = topic.debates.order_by('?')
-		sorta = "&sort=random"
+		sortb = "&sort=random"
 	else:
 		debates_list = topic.debates.order_by('-karma') #default
-		sorta = "&sort=top"
+		sortb = "&sort=top"
+
+	if (sorta == ''):
+		sorta = sortb
+	else:
+		sorta = ''
 
 	page = request.GET.get('page', 1)
 
@@ -86,6 +90,7 @@ def topic(request, tname):
 		'topic': topic,
 		'ctopicn': topic.name.capitalize(),
 		'debates': debates,
+		'request': request,
 		'sorta': sorta,
 		'dupvoted': dupvoted,
 		'ddownvoted': ddownvoted,

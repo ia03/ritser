@@ -5,3 +5,5 @@ django-storages
 django-debug-toolbar
 markdown
 bleach
+django-reversion
+django-ipware

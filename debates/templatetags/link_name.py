@@ -8,7 +8,7 @@ register = template.Library()
 def link_name(path, page_number):
     output = re.search('(page=\d+)', path)
     if output is not None:
-        print(str(output.group(1)))
+        #print(str(output.group(1)))
         return path.replace(str(output.group(1)), f"page={page_number}")
     if re.search('(page=\d+)', path):
         path.replace()
@@ -21,7 +21,7 @@ def link_name(path, page_number):
 def link_namef(path, page_number):
     output = re.search('(pagef=\d+)', path)
     if output is not None:
-        print(str(output.group(1)))
+        #print(str(output.group(1)))
         return path.replace(str(output.group(1)), f"pagef={page_number}")
     if re.search('(pagef=\d+)', path):
         path.replace()
@@ -34,7 +34,7 @@ def link_namef(path, page_number):
 def link_namea(path, page_number):
     output = re.search('(pagea=\d+)', path)
     if output is not None:
-        print(str(output.group(1)))
+        #print(str(output.group(1)))
         return path.replace(str(output.group(1)), f"pagea={page_number}")
     if re.search('(pagea=\d+)', path):
         path.replace()

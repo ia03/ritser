@@ -23,7 +23,7 @@
           Topic: <a href="{{debate.topic.get_absolute_url}}">{{topic.name}}</a> -
           Owner:
           <a href="{{debate.owner.get_absolute_url}}">{{debate.owner.username}}</a> -
-          Security Level: {{debate.slvl}}
+          Security Level: {{debate.slvl}} - Approved: {% if debate.approvedstatus == 1 %}Yes{% else %}No{% endif %}
           <br>
           {{debate.description|markdownf}}
         </div>

@@ -1,8 +1,12 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Topic, Debate, Argument
+from .models import Topic, Debate, Argument, RevisionData
+from .forms import DebateForm
+from ipware import get_client_ip
+import reversion
 
 # Create your views here.
 def index(request):
@@ -243,3 +247,21 @@ def argument(request, tname, did, aid):
 		'argument': argument
 	}
 	return render(request, 'debates/argument.html', context)
+
+
+def submitdebate(request):
+	if request.method == 'POST':
+		form = DebateForm(request.POST, user=request.user)
+		if form.is_valid():
+			with reversion.create_revision():
+				obj = form.save()
+				reversion.set_user(request.user)
+				client_ip, is_routable = get_client_ip(request)
+				reversion.add_meta(RevisionData, ip=client_ip)
+			return HttpResponseRedirect(reverse('debate', args=[form.cleaned_data['topic_name'], obj.id]))
+	else:
+		form = DebateForm(user=request.user)
+	context = {
+		'form': form,
+	}
+	return render(request, 'debates/submit_debate.html', context)

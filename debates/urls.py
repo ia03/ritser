@@ -14,5 +14,6 @@ urlpatterns = [
 	path('t/<slug:tname>/<int:did>/unapproved', views.debate, {'apprs': 1}, name='debateunapproved'),
 	path('t/<slug:tname>/<int:did>/denied', views.debate, {'apprs': 2}, name='debatedenied'),
 	path('t/<slug:tname>/<int:did>/argument/<int:aid>', views.argument, name='argument'),
+	path('submit_debate', views.submitdebate, name='submitdebate'),
 	path('ajax/votedebate', views.votedebate, name='votedebate'),
 ]

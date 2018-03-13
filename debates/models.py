@@ -3,16 +3,19 @@ from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 from django.urls import reverse
 from accounts.models import User
+import reversion
+from reversion.models import Revision
 
 # Create your models here.
 
+@reversion.register()
 class Topic(models.Model):
 	name = models.CharField(max_length=30, unique=True, db_index=True)
 	title = models.CharField(max_length=30, blank=True) #to be displayed in the HTML title of the topic; should also be protected from xss attacks
 	private = models.BooleanField(default=False)
 	description = models.TextField(max_length=600000, default='The description has not been set yet.', blank=True)
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='topics_owned')
-	slvl = models.IntegerField(default='0')
+	slvl = models.IntegerField(default='0') #0: All users can submit debates. 1: Users with at least 10 approved arguments can submit debates. 2: Only moderators can submit debates.
 	debslvl = models.IntegerField(default='1')
 	moderators = models.ManyToManyField(User, related_name='moderator_of')
 	created_on = models.DateTimeField(default=timezone.now)
@@ -23,7 +26,7 @@ class Topic(models.Model):
 	def __str__(self):
 		return self.name
 
-
+@reversion.register()
 class Debate(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='debates_owned')
 	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='debates')
@@ -33,7 +36,7 @@ class Debate(models.Model):
 	users_upvoting = models.ManyToManyField(User, related_name='debates_upvoted', blank=True)
 	users_downvoting = models.ManyToManyField(User, related_name='debates_downvoted', blank=True)
 	active = models.BooleanField(default=True)
-	question = models.CharField(max_length=300, unique=True)
+	question = models.CharField(max_length=300)
 	description = models.TextField(max_length=200000, blank=True)
 	created_on = models.DateTimeField(default=timezone.now)
 	edited_on = models.DateTimeField(default=timezone.now)
@@ -44,6 +47,7 @@ class Debate(models.Model):
 	def __str__(self):
 		return self.question
 
+@reversion.register()
 class Argument(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='arguments_owned')
 	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='arguments')
@@ -65,37 +69,6 @@ class Argument(models.Model):
 
 #Revisions:
 
-class ArgumentRevision(models.Model):
-	argument = models.ForeignKey(Argument, on_delete=models.CASCADE, related_name='revisions')
-	title = models.CharField(max_length=300)
-	body = models.TextField(max_length=200000)
-	approvedstatus = models.IntegerField(default=0)
-	order = models.IntegerField(default='0')
-	datetime = models.DateTimeField(default=timezone.now)
-	ip = models.CharField(max_length=45, blank=True)
-	def __str__(self):
-		return self.datetime
-
-
-class DebateRevision(models.Model):
-	debate = models.ForeignKey(Debate, on_delete=models.CASCADE, related_name='revisions')
-	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='debaterevisions')
-	slvl = models.IntegerField(default='0')
-	question = models.CharField(max_length=300)
-	description = models.TextField(max_length=200000, blank=True)
-	datetime = models.DateTimeField(default=timezone.now)
-	ip = models.CharField(max_length=45, blank=True)
-	def __str__(self):
-		return self.datetime
-
-
-class TopicRevision(models.Model):
-	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='revisions')
-	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='topicrevisions_owned')
-	moderators = models.ManyToManyField(User)
-	description = models.TextField(max_length=600000, default='The description has not been set yet.', blank=True)
-	private = models.BooleanField(default=False)
-	datetime = models.DateTimeField(default=timezone.now)
-	ip = models.CharField(max_length=45, blank=True)
-	def __str__(self):
-		return self.datetime
+class RevisionData(models.Model):
+	revision = models.ForeignKey(reversion.models.Revision, on_delete=models.CASCADE)
+	ip = models.GenericIPAddressField()

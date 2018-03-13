@@ -53,7 +53,7 @@
 
               <p class="mb-1">{{debate.description|markdownf:"1"|truncatewords:50}}</p>
 
-              <small><a href="{{debate.owner.get_absolute_url}}">{{debate.owner.username}}</a> - <span title="{{debate.approved_on|date:"c"}}">{{debate.approved_on|date:"D d M Y f A"}}</span></small>
+              <small><a href="{{debate.owner.get_absolute_url}}">{{debate.owner.username}}</a> - <span title="{{debate.approved_on|date:"c"}}">{{debate.approved_on|date:"D d M Y f A"}}</span>{% if debate.approvedstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% endif %}</small>
               <div class="arglinks">
                 <a href="{% url 'debateapproved' tname=topic.name did=debate.id %}" class="badge badge-primary">Approved</a>
                 <a href="{% url 'debateunapproved' tname=topic.name did=debate.id %}" class="badge badge-secondary">Unapproved</a>

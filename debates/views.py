@@ -251,7 +251,7 @@ def argument(request, tname, did, aid):
 
 def submitdebate(request):
 	if request.method == 'POST':
-		form = DebateForm(request.POST, user=request.user)
+		form = DebateForm(request.POST, user=request.user, edit=0)
 		if form.is_valid():
 			with reversion.create_revision():
 				obj = form.save()
@@ -260,7 +260,7 @@ def submitdebate(request):
 				reversion.add_meta(RevisionData, ip=client_ip)
 			return HttpResponseRedirect(reverse('debate', args=[form.cleaned_data['topic_name'], obj.id]))
 	else:
-		form = DebateForm(user=request.user)
+		form = DebateForm(user=request.user, edit=0)
 	context = {
 		'form': form,
 	}

@@ -11,18 +11,18 @@ from .forms import DebateForm
 
 class ViewTestCase (TestCase):
     def setUp(self):
-        tmod = User.objects.create_user(username="mod", email="test@test.com", password="test123")
-        tmod.save()
-        tuser = User.objects.create_user(username="user", email="test@test.com", password="test123")
-        tuser.save()
-        tuser2 = User.objects.create_user(username="user2", email="test2@test.com", password="test123")
-        tuser2.save()
-        tgmod = User.objects.create_user(username="gmod", email="gmod@test.com", password="test123", modstatus=1)
-        test_topic = Topic.objects.create(name="test", private=False, owner=tmod, created_by=tmod)
-        test_topic.moderators.set([tmod])
-        test_topic.save()
-        test_debate = Debate.objects.create(owner=tuser, topic=test_topic, question="Test debate")
-        test_debate.save()
+        self.tmod = User.objects.create_user(username="mod", email="test@test.com", password="test123")
+        self.tmod.save()
+        self.tuser = User.objects.create_user(username="user", email="test@test.com", password="test123")
+        self.tuser.save()
+        self.tuser2 = User.objects.create_user(username="user2", email="test2@test.com", password="test123")
+        self.tuser2.save()
+        self.tgmod = User.objects.create_user(username="gmod", email="gmod@test.com", password="test123", modstatus=1)
+        self.test_topic = Topic.objects.create(name="test", private=False, owner=tmod, created_by=tmod)
+        self.test_topic.moderators.set([tmod])
+        self.test_topic.save()
+        self.test_debate = Debate.objects.create(owner=tuser, topic=test_topic, question="Test debate")
+        self.test_debate.save()
 
     def test_indexpage(self):
         found = resolve('/')
@@ -38,11 +38,11 @@ class ViewTestCase (TestCase):
         self.assertEqual(response.context['topic'].name, 'test') #checks to see if a valid topic url will pass the topic name
     def test_debateform(self):
         form_data = {
-            'topic_name': test_topic.name,
+            'topic_name': self.test_topic.name,
             'question': 'testquestion1',
             'description': 'testdescription1',
         }
-        form = DebateForm(data=form_data, user=tuser, edit=0)
+        form = DebateForm(data=form_data, user=self.tuser, edit=0)
         self.assertTrue(form.is_valid())
         
 

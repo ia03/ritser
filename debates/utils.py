@@ -1,4 +1,12 @@
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+def getpage(pagen, qlist, noi):
+    paginator = Paginator(qlist, noi)
+    try:
+        items = paginator.page(pagen)
+    except (EmptyPage, PageNotAnInteger):
+        items = paginator.page(1)
+    return items
 
 class Pages:
 

@@ -4,6 +4,14 @@ from accounts.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
+def disablefield(instance, *args):
+    for arg in args:
+        instance.fields[arg].required = False
+        instance.fields[arg].widget = forms.HiddenInput()
+def donotrequire(instance, *args):
+    for arg in args:
+        instance.fields[arg].required = False
+
 class DebateForm(forms.ModelForm):
     topic_name = forms.CharField(max_length=30)
     owner_name = forms.CharField(max_length=30)
@@ -14,31 +22,16 @@ class DebateForm(forms.ModelForm):
         else:
             self.edit = 0
         super(DebateForm, self).__init__(*args, **kwargs)
-        self.fields['owner'].required = False
-        self.fields['topic'].required = False
-        self.fields['question'].max_length = Debate._meta.get_field('question').max_length
-        self.fields['created_on'].required = False
-        self.fields['edited_on'].required = False
-        self.fields['approved_on'].required = False
+        donotrequire(self, 'owner', 'topic', 'created_on', 'edited_on', 'approved_on')
         self.fields['approvalstatus'].label = 'Approval Status'
         self.fields['slvl'].label = 'Security Level'
         self.fields['question'].error_messages = {'required': 'You must type in a question.'}
         self.fields['topic_name'].error_messages = {'required': 'You must specify the name of the topic the debate belongs in.'}
         self.fields['owner_name'].error_messages = {'required': 'You must specify the name of the user who will own the debate.'}
         if self.edit == 0:
-            self.fields['slvl'].required = False
-            self.fields['slvl'].widget = forms.HiddenInput()
-            self.fields['owner_name'].required = False
-            self.fields['owner_name'].widget = forms.HiddenInput()
-            self.fields['approvalstatus'].required = False
-            self.fields['approvalstatus'].widget = forms.HiddenInput()
+            disablefield(self, 'slvl', 'owner_name', 'approvalstatus')
         elif self.edit == 1:
-            self.fields['slvl'].required = False
-            self.fields['slvl'].widget = forms.HiddenInput()
-            self.fields['topic_name'].required = False
-            self.fields['topic_name'].widget = forms.HiddenInput()
-            self.fields['approvalstatus'].required = False
-            self.fields['approvalstatus'].widget = forms.HiddenInput()
+            disablefield(self, 'slvl', 'topic_name', 'approvalstatus')
             self.fields['owner_name'].initial = self.instance.owner.username
         else:
             self.fields['slvl'].error_messages = {'required': 'You must specify a security level for the debate.'}
@@ -117,9 +110,9 @@ class DebateForm(forms.ModelForm):
             cleaned_data['owner'] = owner
             if self.edit == 0:
                 cleaned_data['slvl'] = topic.debslvl
-            if ((topic.slvl == 1 or topic.slvl == 2) and (owner.approvedargs < 10 and not (self.user.moderator_of.filter(id=topic.id) or self.user.modstatus > 0))):
+            if ((topic.slvl == 1 or topic.slvl == 2) and (owner.approvedargs < 10 and not self.user.ismod(topic))):
                 raise forms.ValidationError('You must have at least 10 approved arguments to post here.')
-            elif (topic.slvl == 3) and not (self.user.moderator_of.filter(id=topic.id) or self.user.modstatus > 0):
+            elif (topic.slvl == 3) and not self.user.ismod(topic):
                 raise forms.ValidationError('You must be a moderator in order to post to this topic.')
             if (self.edit == 2 and self.instance.approvalstatus == 1 and cleaned_data.get('approvalstatus') != 1):
                 cleaned_data['approved_on'] = timezone.now()

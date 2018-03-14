@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
 from .forms import DebateForm
+from .utils import getpage
 from ipware import get_client_ip
 import reversion
 
@@ -32,13 +33,10 @@ def topic(request, tname):
 
 	topic = get_object_or_404(Topic, name=tname)
 	mods = topic.moderators.all()
+	user = request.user
 	fmods = mods[:10] #first 10 mods
 	sortc = request.COOKIES.get('dsort')
 	sorta = request.GET.get('sort', '')
-	if ((topic.slvl == 1 or topic.slvl == 2) and (owner.approvedargs < 10 and not (self.user.moderator_of.filter(id=topic.id) or self.user.modstatus > 0))) or ((topic.slvl == 3) and not (self.user.moderator_of.filter(id=topic.id) or self.user.modstatus > 0)):
-		ats = False
-	else:
-		ats = True
 	query = topic.debates.filter(Q(approvalstatus=0) | Q(approvalstatus=1)) if (topic.slvl == 0) or (topic.slvl == 1) else topic.debates.filter(approvalstatus=0)
 
 	if (sorta == 'top'):
@@ -76,21 +74,19 @@ def topic(request, tname):
 
 	page = request.GET.get('page', 1)
 
-	paginator = Paginator(debates_list, 30)
+	debates = getpage(page, debates_list, 30)
 
-	try:
-		debates = paginator.page(page)
-	except (EmptyPage, PageNotAnInteger):
-		debates = paginator.page(1)
-
-
-	if (request.user.is_authenticated):
-		dupvoted = request.user.debates_upvoted.all()
-		ddownvoted = request.user.debates_downvoted.all()
+	if (user.is_authenticated):
+		if ((topic.slvl == 1 or topic.slvl == 2) and (user.approvedargs < 10 and not user.ismod(topic))) or ((topic.slvl == 3) and not user.ismod(topic)):
+			ats = False
+		else:
+			ats = True
+		dupvoted = user.debates_upvoted.all()
+		ddownvoted = user.debates_downvoted.all()
 	else:
 		dupvoted = []
 		ddownvoted = []
-
+		ats = False
 
 
 	context = {
@@ -114,10 +110,10 @@ def votedebate(request):
 	if (not request.user.is_authenticated):
 		return HttpResponse('error - not authenticated')
 	debate = get_object_or_404(Debate, id=debate_id)
-
-	if (debate.users_upvoting.filter(id=request.user.id).count() == 1):
+	user = request.user
+	if (debate.users_upvoting.filter(id=user.id).count() == 1):
 		ovote = 1
-	elif (debate.users_downvoting.filter(id=request.user.id).count() == 1):
+	elif (debate.users_downvoting.filter(id=user.id).count() == 1):
 		ovote = -1
 	else:
 		ovote = 0
@@ -127,28 +123,28 @@ def votedebate(request):
 			return HttpResponse('error - already upvoted')
 		if (ovote == 0):
 			debate.karma += 1
-			debate.users_upvoting.add(request.user)
+			debate.users_upvoting.add(user)
 		if (ovote == -1):
 			debate.karma += 2
-			debate.users_upvoting.add(request.user)
-			debate.users_downvoting.remove(request.user)
+			debate.users_upvoting.add(user)
+			debate.users_downvoting.remove(user)
 	elif (vote == 0):
 		if (ovote == 1):
 			debate.karma -= 1
-			debate.users_upvoting.remove(request.user)
+			debate.users_upvoting.remove(user)
 		if (ovote == 0):
 			return HttpResponse(debate.karma)
 		if (ovote == -1):
 			debate.karma += 1
-			debate.users_downvoting.remove(request.user)
+			debate.users_downvoting.remove(user)
 	elif (vote == -1):
 		if (ovote == 1):
 			debate.karma -= 2
-			debate.users_downvoting.add(request.user)
-			debate.users_upvoting.remove(request.user)
+			debate.users_downvoting.add(user)
+			debate.users_upvoting.remove(user)
 		if (ovote == 0):
 			debate.karma -= 1
-			debate.users_downvoting.add(request.user)
+			debate.users_downvoting.add(user)
 		if (ovote == -1):
 			return HttpResponse('error - already downvoted')
 
@@ -173,7 +169,7 @@ def topicinfo(request, tname):
 def debate(request, tname, did, **kwargs): #use same template for different approval statuses, but change int that says what type it is
 	topic = get_object_or_404(Topic, name=tname)
 	debate = get_object_or_404(Debate, topic=topic, id=did)
-
+	user = request.user
 
 	if (kwargs['apprs'] == -1):
 		if (debate.slvl == 0):
@@ -198,14 +194,7 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 
 	pagef = request.GET.get('pagef', 1)
 
-	paginatorf = Paginator(argumentslistf, 10)
-	try:
-		argumentsf = paginatorf.page(pagef)
-	except (EmptyPage, PageNotAnInteger):
-		argumentsf = paginatorf.page(1)
-
-
-
+	argumentsf = getpage(pagef, argumentslistf, 10)
 
 	if (kwargs['apprs'] == -1):
 		argumentslista = queryseta.order_by('approvalstatus', 'order', '-owner__approvedargs')  # filter by no. of approved arguments by user and approvalstatus
@@ -214,16 +203,12 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 
 	pagea = request.GET.get('pagea', 1)
 
-	paginatora = Paginator(argumentslista, 10)
-	try:
-		argumentsa = paginatora.page(pagea)
-	except (EmptyPage, PageNotAnInteger):
-		argumentsa = paginatora.page(1)
+	argumentsa = getpage(pagea, argumentslista, 10)
 
-	if (request.user.is_authenticated):
-		if (debate.users_upvoting.filter(id=request.user.id).count() == 1):
+	if (user.is_authenticated):
+		if (debate.users_upvoting.filter(id=user.id).count() == 1):
 			vote = 1
-		elif (debate.users_downvoting.filter(id=request.user.id).count() == 1):
+		elif (debate.users_downvoting.filter(id=user.id).count() == 1):
 			vote = -1
 		else:
 			vote = 0
@@ -232,6 +217,7 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 
 	context = {
 		'debate': debate,
+		'user': user,
 		'minjq': True,
 		'topic': topic,
 		'argumentsf': argumentsf,
@@ -257,15 +243,16 @@ def argument(request, tname, did, aid):
 
 @login_required
 def submitdebate(request):
+	user = request.user
 	if request.method == 'POST':
-		form = DebateForm(request.POST, user=request.user, edit=0)
+		form = DebateForm(request.POST, user=user, edit=0)
 		if form.is_valid():
 			with reversion.create_revision():
 				obj = form.save(commit=False)
 				obj.karma = 1
 				obj.save()
-				obj.users_upvoting.add(request.user)
-				reversion.set_user(request.user)
+				obj.users_upvoting.add(user)
+				reversion.set_user(user)
 				client_ip, is_routable = get_client_ip(request)
 				reversion.add_meta(RevisionData, ip=client_ip)
 			return HttpResponseRedirect(reverse('debate', args=[form.cleaned_data['topic_name'], obj.id]))
@@ -279,7 +266,7 @@ def submitdebate(request):
 		'description': description,
 		}
 
-		form = DebateForm(initial=data, user=request.user, edit=0)
+		form = DebateForm(initial=data, user=user, edit=0)
 	context = {
 		'form': form,
 	}

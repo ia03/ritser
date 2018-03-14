@@ -37,13 +37,20 @@ class ViewTestCase (TestCase):
         response = self.client.get('/t/test/')
         self.assertEqual(response.context['topic'].name, 'test') #checks to see if a valid topic url will pass the topic name
     def test_debateform(self):
+        self.test_topic.slvl = 1
+        self.test_topic.save()
         form_data = {
             'topic_name': self.test_topic.name,
             'question': 'testquestion1',
             'description': 'testdescription1',
         }
+        iform = DebateForm(data=form_data, user=self.tuser, edit=0)
+        self.assertFalse(iform.is_valid()) #assert that user does not have the required number of approved arguments to post
+        self.tuser.approvedargs = 10
+        self.tuser.save()
         form = DebateForm(data=form_data, user=self.tuser, edit=0)
         self.assertTrue(form.is_valid())
+        
         
 
 #todo: test debates page with wrong topic arg in url and see if it returns a 404

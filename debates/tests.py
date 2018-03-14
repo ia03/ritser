@@ -50,7 +50,20 @@ class ViewTestCase (TestCase):
         self.tuser.save()
         form = DebateForm(data=form_data, user=self.tuser, edit=0)
         self.assertTrue(form.is_valid())
+        debate = form.save()
+        form_data = {
+            'owner_name': self.tuser2.username,
+            'question': 'testquestion1',
+            'description': 'testdescription1',
+        }
+        eform = DebateForm(instance=debate, data=form_data, user=self.tuser2, edit=1) #assert that user does not have perm. to edit it
+        self.assertFalse(eform.is_valid())
+        eform2 = DebateForm(instance=debate, data=form_data, user=self.tuser, edit=1) #assert that user does have perm. to edit it
+        self.assertTrue(eform2.is_valid())
+        debate = eform2.save()
+        eform3 = DebateForm(instance=debate, data=form_data, user=self.tmod, edit=2) #asserting that mod has perm to edit it
+        self.assertTrue(eform3.is_valid())
+        eform3 = DebateForm(instance=debate, data=form_data, user=self.tgmod, edit=2) #asserting that gmod has perm to edit it
+        self.assertTrue(eform3.is_valid())
         
-        
-
 #todo: test debates page with wrong topic arg in url and see if it returns a 404

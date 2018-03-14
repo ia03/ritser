@@ -10,6 +10,7 @@ urlpatterns = [
 	path('t/<slug:tname>/', views.topic, name='topic'),
 	path('t/<slug:tname>/info', views.topicinfo, name='topicinfo'),
 	path('t/<slug:tname>/<int:did>/', views.debate, {'apprs': -1}, name='debate'),
+	path('t/<slug:tname>/<int:did>/edit', views.editdebate, name='editdebate'),
 	path('t/<slug:tname>/<int:did>/approved', views.debate, {'apprs': 0}, name='debateapproved'),
 	path('t/<slug:tname>/<int:did>/unapproved', views.debate, {'apprs': 1}, name='debateunapproved'),
 	path('t/<slug:tname>/<int:did>/denied', views.debate, {'apprs': 2}, name='debatedenied'),

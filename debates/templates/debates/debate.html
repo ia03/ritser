@@ -23,7 +23,7 @@
           Topic: <a href="{{debate.topic.get_absolute_url}}">{{topic.name}}</a> -
           Owner:
           <a href="{{debate.owner.get_absolute_url}}">{{debate.owner.username}}</a> -
-          Security Level: {{debate.slvl}} - Approved: {% if debate.approvedstatus == 0 %}Yes{% else %}No{% endif %}
+          Security Level: {{debate.slvl}}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %}
           <br>
           {{debate.description|markdownf}}
         </div>
@@ -52,7 +52,7 @@
                 <a href="{{argument.get_absolute_url}}" class="atit"><h5 class="mb-1">{{argument.title}}</h5></a>
               </div>
                 <p class="mb-0 argdesc">{{argument.body|markdownf}}</p>
-                <small class="sinfo"><a href="{{argument.owner.get_absolute_url}}">{{argument.owner.username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvedstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvedstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvedstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
+                <small class="sinfo"><a href="{{argument.owner.get_absolute_url}}">{{argument.owner.username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
 
 
 
@@ -120,7 +120,7 @@
                 <a href="{{argument.get_absolute_url}}" class="atit"><h5 class="mb-1">{{argument.title}}</h5></a>
               </div>
                 <p class="mb-0">{{argument.body|markdownf}}</p>
-                <small class="sinfo"><a href="{{argument.owner.get_absolute_url}}">{{argument.owner.username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvedstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvedstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvedstatus == 2 %}<span class="badge badge-pill badge-danger">Danger</span>{% endif %}</small>
+                <small class="sinfo"><a href="{{argument.owner.get_absolute_url}}">{{argument.owner.username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Danger</span>{% endif %}</small>
 
             </div>
             {% endfor %}

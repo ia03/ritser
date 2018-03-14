@@ -10,7 +10,7 @@
     <main role="main" class="container">
       <h1 class="mt-5">{{ argument.title }}</h1>
       Owner: <a href="{{argument.owner.get_absolute_url}}">{{argument.owner.username}}</a>
-      Status: {% if argument.approvedstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvedstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvedstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
+      Status: {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
       Topic: <a href="{{argument.topic.get_absolute_url}}">{{argument.topic.name}}</a>
       Debate: <a href="{{argument.debate.get_absolute_url}}">{{argument.debate.question}}</a>
       {% if argument.modnote %}<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">View mod notes</button>

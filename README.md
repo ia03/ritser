@@ -4,10 +4,6 @@
 
 Useful links:
 
-https://djangobook.com/deploying-django/
-
-https://github.com/trentm/django-markdown-deux
-
 https://docs.djangoproject.com/en/2.0/howto/deployment/wsgi/modwsgi/
 
 http://wesleyzhao.com/tutorial-setting-up-apachessl-to-serve-https
@@ -53,3 +49,6 @@ https://simpleisbetterthancomplex.com/tutorial/2017/08/20/how-to-use-celery-with
 
 Important: register business
 https://www.ontario.ca/page/register-business-name-limited-partnership
+
+Get the notion that you have to prove your opponent wrong out of your head. When you're debating, you're not "wrong" or "right" and neither is your opponent. You're
+just both people sharing information to find the answer more easily.

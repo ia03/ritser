@@ -7,3 +7,4 @@ markdown
 bleach
 django-reversion
 django-ipware
+django-widgets-improved

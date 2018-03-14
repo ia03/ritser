@@ -9,8 +9,8 @@
 {% block body %}
 
 <main role="main" class="container">
-  <h1>Submit Debate</h1>
-  <form action="{% url 'submitdebate' %}" method="post">
+  <h1>Edit Debate "{{debate.question}}"</h1>
+  <form action="{% url 'editdebate' tname=debate.topic.name did=debate.id %}" method="post">
     {% csrf_token %}
     {% for field in form %}
     {% for error in field.errors %}

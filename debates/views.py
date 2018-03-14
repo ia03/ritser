@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
 from .forms import DebateForm
@@ -34,33 +35,38 @@ def topic(request, tname):
 	fmods = mods[:10] #first 10 mods
 	sortc = request.COOKIES.get('dsort')
 	sorta = request.GET.get('sort', '')
+	if ((topic.slvl == 1 or topic.slvl == 2) and (owner.approvedargs < 10 and not (self.user.moderator_of.filter(id=topic.id) or self.user.modstatus > 0))) or ((topic.slvl == 3) and not (self.user.moderator_of.filter(id=topic.id) or self.user.modstatus > 0)):
+		ats = False
+	else:
+		ats = True
+	query = topic.debates.filter(Q(approvalstatus=0) | Q(approvalstatus=1)) if (topic.slvl == 0) or (topic.slvl == 1) else topic.debates.filter(approvalstatus=0)
 
 	if (sorta == 'top'):
-		debates_list = topic.debates.order_by('-karma') #default
+		debates_list = query.order_by('-karma') #default
 		sortb = "&sort=top"
 	elif (sorta == 'lowest'):
-		debates_list = topic.debates.order_by('karma')
+		debates_list = query.order_by('karma')
 		sortb = "&sort=lowest"
 	elif (sorta == 'new'):
-		debates_list = topic.debates.order_by('-approved_on')
+		debates_list = query.order_by('-approved_on')
 		sortb = "&sort=new"
 	elif (sorta == 'random'):
-		debates_list = topic.debates.order_by('?')
+		debates_list = query.order_by('?')
 		sortb = "&sort=random"
 	elif (sortc == 'top'):
-		debates_list = topic.debates.order_by('-karma')
+		debates_list = query.order_by('-karma')
 		sortb = "&sort=top"
 	elif (sortc == 'lowest'):
-		debates_list = topic.debates.order_by('karma')
+		debates_list = query.order_by('karma')
 		sortb = "&sort=lowest"
 	elif (sortc == 'new'):
-		debates_list = topic.debates.order_by('-approved_on')
+		debates_list = query.order_by('-approved_on')
 		sortb = "&sort=new"
 	elif (sortc == 'random'):
-		debates_list = topic.debates.order_by('?')
+		debates_list = query.order_by('?')
 		sortb = "&sort=random"
 	else:
-		debates_list = topic.debates.order_by('-karma') #default
+		debates_list = query.order_by('-karma') #default
 		sortb = "&sort=top"
 
 	if (sorta == ''):
@@ -90,6 +96,7 @@ def topic(request, tname):
 	context = {
 		'fmods': fmods,
 		'minjq': True,
+		'ats': ats,
 		'mods': mods,
 		'topic': topic,
 		'ctopicn': topic.name.capitalize(),
@@ -170,22 +177,22 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 
 	if (kwargs['apprs'] == -1):
 		if (debate.slvl == 0):
-			cquery = Q(approvedstatus=0) | Q(approvedstatus=1) | Q(approvedstatus=2)
+			cquery = Q(approvalstatus=0) | Q(approvalstatus=1) | Q(approvalstatus=2)
 		elif (debate.slvl == 1 or debate.slvl == 2):
-			cquery = Q(approvedstatus=0) | Q(approvedstatus=1)
+			cquery = Q(approvalstatus=0) | Q(approvalstatus=1)
 		else:
-			cquery = Q(approvedstatus=0)
+			cquery = Q(approvalstatus=0)
 	elif (kwargs['apprs'] == 0):
-		cquery = Q(approvedstatus=0)
+		cquery = Q(approvalstatus=0)
 	elif (kwargs['apprs'] == 1):
-		cquery = Q(approvedstatus=1)
+		cquery = Q(approvalstatus=1)
 	elif (kwargs['apprs'] == 2):
-		cquery = Q(approvedstatus=2)
+		cquery = Q(approvalstatus=2)
 	querysetf = debate.arguments.filter(Q(side=0) & cquery)
 	queryseta = debate.arguments.filter(Q(side=1) & cquery)
 
 	if (kwargs['apprs'] == -1):
-		argumentslistf = querysetf.order_by('approvedstatus', 'order', '-owner__approvedargs')  # filter by no. of approved arguments by user and approvedstatus
+		argumentslistf = querysetf.order_by('approvalstatus', 'order', '-owner__approvedargs')  # filter by no. of approved arguments by user and approvalstatus
 	else:
 		argumentslistf = querysetf.order_by('order', '-owner__approvedargs') # filter by no. of approved arguments by user
 
@@ -201,7 +208,7 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 
 
 	if (kwargs['apprs'] == -1):
-		argumentslista = queryseta.order_by('approvedstatus', 'order', '-owner__approvedargs')  # filter by no. of approved arguments by user and approvedstatus
+		argumentslista = queryseta.order_by('approvalstatus', 'order', '-owner__approvedargs')  # filter by no. of approved arguments by user and approvalstatus
 	else:
 		argumentslista = queryseta.order_by('order', '-owner__approvedargs') # filter by no. of approved arguments by user
 
@@ -248,20 +255,54 @@ def argument(request, tname, did, aid):
 	}
 	return render(request, 'debates/argument.html', context)
 
-
+@login_required
 def submitdebate(request):
 	if request.method == 'POST':
 		form = DebateForm(request.POST, user=request.user, edit=0)
 		if form.is_valid():
 			with reversion.create_revision():
-				obj = form.save()
+				obj = form.save(commit=False)
+				obj.karma = 1
+				obj.save()
+				obj.users_upvoting.add(request.user)
 				reversion.set_user(request.user)
 				client_ip, is_routable = get_client_ip(request)
 				reversion.add_meta(RevisionData, ip=client_ip)
 			return HttpResponseRedirect(reverse('debate', args=[form.cleaned_data['topic_name'], obj.id]))
 	else:
-		form = DebateForm(user=request.user, edit=0)
+		tname = request.GET.get('topic', '')
+		question = request.GET.get('question', '')
+		description = request.GET.get('description', '')
+		data = {
+		'topic_name': tname,
+		'question': question,
+		'description': description,
+		}
+
+		form = DebateForm(initial=data, user=request.user, edit=0)
 	context = {
 		'form': form,
 	}
 	return render(request, 'debates/submit_debate.html', context)
+
+@login_required
+def editdebate(request, tname, did):
+	debate = get_object_or_404(Debate, id=did)
+
+	if request.method == 'POST':
+		form = DebateForm(request.POST, instance=debate, user=request.user, edit=1)
+		if form.is_valid():
+			with reversion.create_revision():
+				debate = form.save(commit=False)
+				debate.save()
+				reversion.set_user(request.user)
+				client_ip, is_routable = get_client_ip(request)
+				reversion.add_meta(RevisionData, ip=client_ip)
+			return HttpResponseRedirect(reverse('debate', args=[debate.topic.name, debate.id]))
+	else:
+		form = DebateForm(instance=debate, user=request.user, edit=1)
+	context = {
+		'form': form,
+		'debate': debate,
+	}
+	return render(request, 'debates/edit_debate.html', context)

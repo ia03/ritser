@@ -54,3 +54,12 @@
 .karmad {
   text-align: center;
 }
+
+#submitdbtn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+#modcol {
+  position: relative;
+}

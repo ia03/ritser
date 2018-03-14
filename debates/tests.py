@@ -18,10 +18,10 @@ class ViewTestCase (TestCase):
         self.tuser2 = User.objects.create_user(username="user2", email="test2@test.com", password="test123")
         self.tuser2.save()
         self.tgmod = User.objects.create_user(username="gmod", email="gmod@test.com", password="test123", modstatus=1)
-        self.test_topic = Topic.objects.create(name="test", private=False, owner=tmod, created_by=tmod)
-        self.test_topic.moderators.set([tmod])
+        self.test_topic = Topic.objects.create(name="test", private=False, owner=self.tmod, created_by=self.tmod)
+        self.test_topic.moderators.set([self.tmod])
         self.test_topic.save()
-        self.test_debate = Debate.objects.create(owner=tuser, topic=test_topic, question="Test debate")
+        self.test_debate = Debate.objects.create(owner=self.tuser, topic=self.test_topic, question="Test debate")
         self.test_debate.save()
 
     def test_indexpage(self):

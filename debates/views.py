@@ -275,9 +275,13 @@ def submitdebate(request):
 @login_required
 def editdebate(request, tname, did):
 	debate = get_object_or_404(Debate, id=did)
+	user = request.user
 
 	if request.method == 'POST':
-		form = DebateForm(request.POST, instance=debate, user=request.user, edit=1)
+		if user.ismod(debate.topic):
+			form = DebateForm(request.POST, instance=debate, user=user, edit=2)
+		else:
+			form = DebateForm(request.POST, instance=debate, user=user, edit=1)
 		if form.is_valid():
 			with reversion.create_revision():
 				debate = form.save(commit=False)
@@ -287,7 +291,10 @@ def editdebate(request, tname, did):
 				reversion.add_meta(RevisionData, ip=client_ip)
 			return HttpResponseRedirect(reverse('debate', args=[debate.topic.name, debate.id]))
 	else:
-		form = DebateForm(instance=debate, user=request.user, edit=1)
+		if user.ismod(debate.topic):
+			form = DebateForm(instance=debate, user=user, edit=2)
+		else:
+			form = DebateForm(instance=debate, user=user, edit=1)
 	context = {
 		'form': form,
 		'debate': debate,

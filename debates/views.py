@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
-from .forms import DebateForm
+from .forms import DebateForm, ArgumentForm
 from .utils import getpage
 from ipware import get_client_ip
 import reversion
@@ -277,23 +277,23 @@ def submitdebate(request):
 @login_required
 def editdebate(request, tname, did):
 	debate = get_object_or_404(Debate, id=did)
+	topic = get_object_or_404(Topic, name=tname)
 	user = request.user
 
 	if request.method == 'POST':
-		if user.ismod(debate.topic):
+		if user.ismod(topic):
 			form = DebateForm(request.POST, instance=debate, user=user, edit=2)
 		else:
 			form = DebateForm(request.POST, instance=debate, user=user, edit=1)
 		if form.is_valid():
 			with reversion.create_revision():
-				debate = form.save(commit=False)
-				debate.save()
+				debate = form.save()
 				reversion.set_user(request.user)
 				client_ip, is_routable = get_client_ip(request)
 				reversion.add_meta(RevisionData, ip=client_ip)
-			return HttpResponseRedirect(reverse('debate', args=[debate.topic.name, debate.id]))
+			return HttpResponseRedirect(reverse('debate', args=[tname, did]))
 	else:
-		if user.ismod(debate.topic):
+		if user.ismod(topic):
 			form = DebateForm(instance=debate, user=user, edit=2)
 		else:
 			form = DebateForm(instance=debate, user=user, edit=1)
@@ -302,3 +302,60 @@ def editdebate(request, tname, did):
 		'debate': debate,
 	}
 	return render(request, 'debates/edit_debate.html', context)
+
+@login_required()
+def submitargument(request):
+	user = request.user
+	if request.method == 'POST':
+		form = ArgumentForm(request.POST, user=user, edit=0)
+		if form.is_valid():
+			with reversion.create_revision():
+				obj = form.save()
+				reversion.set_user(user)
+				client_ip, is_routable = get_client_ip(request)
+				reversion.add_meta(RevisionData, ip=client_ip)
+			return HttpResponseRedirect(reverse('argument', args=[obj.topic.name, obj.debate.id, obj.id]))
+	else:
+		did = request.GET.get('debate', '')
+		title = request.GET.get('title', '')
+		body = request.GET.get('body', '')
+		data = {
+		'debate_id': did,
+		'title': title,
+		'body': body,
+		}
+
+		form = ArgumentForm(initial=data, user=user, edit=0)
+	context = {
+		'form': form,
+	}
+	return render(request, 'debates/submit_argument.html', context)
+	
+@login_required
+def editargument(request, tname, did, aid):
+	argument = get_object_or_404(Argument, id=aid)
+	topic = get_object_or_404(Topic, name=tname)
+	user = request.user
+
+	if request.method == 'POST':
+		if user.ismod(topic):
+			form = ArgumentForm(request.POST, instance=argument, user=user, edit=2)
+		else:
+			form = ArgumentForm(request.POST, instance=argument, user=user, edit=1)
+		if form.is_valid():
+			with reversion.create_revision():
+				argument = form.save()
+				reversion.set_user(request.user)
+				client_ip, is_routable = get_client_ip(request)
+				reversion.add_meta(RevisionData, ip=client_ip)
+			return HttpResponseRedirect(reverse('argument', args=[tname, did, aid]))
+	else:
+		if user.ismod(topic):
+			form = ArgumentForm(instance=argument, user=user, edit=2)
+		else:
+			form = ArgumentForm(instance=argument, user=user, edit=1)
+	context = {
+		'form': form,
+		'argument': argument,
+	}
+	return render(request, 'debates/edit_argument.html', context)

@@ -35,6 +35,7 @@ class Debate(models.Model):
 	karma = models.IntegerField(default=0, db_index=True)
 	users_upvoting = models.ManyToManyField(User, related_name='debates_upvoted', blank=True)
 	users_downvoting = models.ManyToManyField(User, related_name='debates_downvoted', blank=True)
+	modnote = models.TextField(max_length=200000, blank=True)
 	active = models.BooleanField(default=True)
 	question = models.CharField(max_length=300)
 	description = models.TextField(max_length=200000, blank=True)

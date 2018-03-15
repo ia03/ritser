@@ -24,6 +24,17 @@
           Owner:
           <a href="{{debate.owner.get_absolute_url}}">{{debate.owner.username}}</a> -
           Security Level: {{debate.slvl}}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %} - <a href="{% url 'editdebate' tname=debate.topic.name did=debate.id %}">Edit/View source</a>
+          {% if debate.modnote %}<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg">View mod notes</button>
+          <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <h1>Moderator Notes</h1>
+                {{debate.modnote|markdownf}}
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+          {% endif %}
           <br>
           {{debate.description|markdownf}}
         </div>

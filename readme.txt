@@ -10,3 +10,5 @@ set debug to false
 run collectstatic
 
 minify css and js files
+
+run python3 manage.py createinitialrevisions

@@ -23,6 +23,8 @@ SECURE_KEY
 AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY
 dbpass
+GR_DEBATEFORM
+GR_ARGUMENTFORM
 
 https://css-tricks.com/snippets/css/css-triangle/
 

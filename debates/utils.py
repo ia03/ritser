@@ -1,5 +1,5 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+import json, urllib
 def getpage(pagen, qlist, noi):
     paginator = Paginator(qlist, noi)
     try:
@@ -7,6 +7,18 @@ def getpage(pagen, qlist, noi):
     except (EmptyPage, PageNotAnInteger):
         items = paginator.page(1)
     return items
+    
+def recaptcha(request, secret):
+    recaptcha_response = request.POST.get('g-recaptcha-response')
+    url = 'https://www.google.com/recaptcha/api/siteverify'
+    values = {
+        'secret': secret,
+        'response': recaptcha_response
+    }
+    data = urllib.parse.urlencode(values).encode()
+    req =  urllib.request.Request(url, data=data)
+    response = urllib.request.urlopen(req)
+    return json.loads(response.read().decode())
 
 class Pages:
 

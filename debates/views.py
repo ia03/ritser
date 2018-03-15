@@ -3,10 +3,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
+from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
 from .forms import DebateForm, ArgumentForm
-from .utils import getpage
+from .utils import getpage, recaptcha
 from ipware import get_client_ip
 import reversion
 
@@ -249,15 +251,19 @@ def submitdebate(request):
 	if request.method == 'POST':
 		form = DebateForm(request.POST, user=user, edit=0)
 		if form.is_valid():
-			with reversion.create_revision():
-				obj = form.save(commit=False)
-				obj.karma = 1
-				obj.save()
-				obj.users_upvoting.add(user)
-				reversion.set_user(user)
-				client_ip, is_routable = get_client_ip(request)
-				reversion.add_meta(RevisionData, ip=client_ip)
-			return HttpResponseRedirect(reverse('debate', args=[form.cleaned_data['topic_name'], obj.id]))
+			result = recaptcha(request, settings.GR_DEBATEFORM)
+			if result['success']:
+				with reversion.create_revision():
+					obj = form.save(commit=False)
+					obj.karma = 1
+					obj.save()
+					obj.users_upvoting.add(user)
+					reversion.set_user(user)
+					client_ip, is_routable = get_client_ip(request)
+					reversion.add_meta(RevisionData, ip=client_ip)
+				return HttpResponseRedirect(reverse('debate', args=[form.cleaned_data['topic_name'], obj.id]))
+			else:
+				messages.error(request, 'Invalid reCAPTCHA. Please try again.')
 	else:
 		tname = request.GET.get('topic', '')
 		question = request.GET.get('question', '')
@@ -286,12 +292,16 @@ def editdebate(request, tname, did):
 		else:
 			form = DebateForm(request.POST, instance=debate, user=user, edit=1)
 		if form.is_valid():
-			with reversion.create_revision():
-				debate = form.save()
-				reversion.set_user(request.user)
-				client_ip, is_routable = get_client_ip(request)
-				reversion.add_meta(RevisionData, ip=client_ip)
-			return HttpResponseRedirect(reverse('debate', args=[tname, did]))
+			result = recaptcha(request, settings.GR_DEBATEFORM)
+			if result['success']:
+				with reversion.create_revision():
+					debate = form.save()
+					reversion.set_user(request.user)
+					client_ip, is_routable = get_client_ip(request)
+					reversion.add_meta(RevisionData, ip=client_ip)
+				return HttpResponseRedirect(reverse('debate', args=[tname, did]))
+			else:
+				messages.error(request, 'Invalid reCAPTCHA. Please try again.')
 	else:
 		if user.ismod(topic):
 			form = DebateForm(instance=debate, user=user, edit=2)
@@ -309,12 +319,16 @@ def submitargument(request):
 	if request.method == 'POST':
 		form = ArgumentForm(request.POST, user=user, edit=0)
 		if form.is_valid():
-			with reversion.create_revision():
-				obj = form.save()
-				reversion.set_user(user)
-				client_ip, is_routable = get_client_ip(request)
-				reversion.add_meta(RevisionData, ip=client_ip)
-			return HttpResponseRedirect(reverse('argument', args=[obj.topic.name, obj.debate.id, obj.id]))
+			result = recaptcha(request, settings.GR_ARGUMENTFORM)
+			if result['success']:
+				with reversion.create_revision():
+					obj = form.save()
+					reversion.set_user(user)
+					client_ip, is_routable = get_client_ip(request)
+					reversion.add_meta(RevisionData, ip=client_ip)
+				return HttpResponseRedirect(reverse('argument', args=[obj.topic.name, obj.debate.id, obj.id]))
+			else:
+				messages.error(request, 'Invalid reCAPTCHA. Please try again.')
 	else:
 		did = request.GET.get('debate', '')
 		title = request.GET.get('title', '')
@@ -343,12 +357,16 @@ def editargument(request, tname, did, aid):
 		else:
 			form = ArgumentForm(request.POST, instance=argument, user=user, edit=1)
 		if form.is_valid():
-			with reversion.create_revision():
-				argument = form.save()
-				reversion.set_user(request.user)
-				client_ip, is_routable = get_client_ip(request)
-				reversion.add_meta(RevisionData, ip=client_ip)
-			return HttpResponseRedirect(reverse('argument', args=[tname, did, aid]))
+			result = recaptcha(request, settings.GR_ARGUMENTFORM)
+			if result['success']:
+				with reversion.create_revision():
+					argument = form.save()
+					reversion.set_user(request.user)
+					client_ip, is_routable = get_client_ip(request)
+					reversion.add_meta(RevisionData, ip=client_ip)
+				return HttpResponseRedirect(reverse('argument', args=[tname, did, aid]))
+			else:
+				messages.error(request, 'Invalid reCAPTCHA. Please try again.')
 	else:
 		if user.ismod(topic):
 			form = ArgumentForm(instance=argument, user=user, edit=2)

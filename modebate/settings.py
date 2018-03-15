@@ -28,6 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.4', 'modebatetesting.ddns.net']
 INTERNAL_IPS = ['127.0.0.1', 'localhost', '38.110.111.153']
 
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -163,3 +165,9 @@ if not DEBUG:
 #    os.path.join(BASE_DIR, 'debates/static'),
 #]
 #STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+
+
+#Google recaptcha secret keys
+
+GR_DEBATEFORM = os.environ['GR_DEBATEFORM']
+GR_ARGUMENTFORM = os.environ['GR_ARGUMENTFORM']

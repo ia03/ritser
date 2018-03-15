@@ -54,7 +54,7 @@ class Argument(models.Model):
 	debate = models.ForeignKey(Debate, on_delete=models.CASCADE, related_name='arguments')
 	approvalstatus = models.IntegerField(default=1, db_index=True) #0: approved 1: unapproved 2: denied 3: deleted
 	order = models.IntegerField(default=0, db_index=True) #owner.approvedargs?
-	side = models.IntegerField(default=0)
+	side = models.IntegerField(default=0) #0: for 1: against
 	active = models.BooleanField(default=True)
 	title = models.CharField(max_length=300)
 	body = models.TextField(max_length=200000)

@@ -36,7 +36,8 @@ class DebateForm(forms.ModelForm):
         else:
             self.fields['slvl'].error_messages = {'required': 'You must specify a security level for the debate.'}
             self.fields['approvalstatus'].error_messages = {'required': 'You must specify the approval status for the debate.'}
-            self.fields['topic_name'].initial = self.instance.topic.name
+            self.fields['topic_name'].initial = self.instance.topic_id
+            self.fields['owner_name'].initial = self.instance.owner.username
 
     def clean_topic_name(self):
         data = self.cleaned_data['topic_name']
@@ -116,10 +117,11 @@ class DebateForm(forms.ModelForm):
                 raise forms.ValidationError('You must be a moderator in order to post to this topic.')
             if (self.edit == 2 and self.instance.approvalstatus == 1 and cleaned_data.get('approvalstatus') != 1):
                 cleaned_data['approved_on'] = timezone.now()
-            elif self.edit == 0:
-                cleaned_data['approved_on'] = None
             elif self.edit == 1:
                 cleaned_data['approved_on'] = self.instance.approved_on
+            elif self.edit == 0:
+                cleaned_data['approved_on'] = None
+
         return cleaned_data
 
     class Meta:

@@ -25,8 +25,8 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.4', 'ec2-18-222-38-146.us-east-2.compute.amazonaws.com']
-INTERNAL_IPS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.4', 'ec2-18-219-136-40.us-east-2.compute.amazonaws.com']
+INTERNAL_IPS = ['127.0.0.1', 'localhost', '38.110.111.153']
 
 # Application definition
 

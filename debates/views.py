@@ -237,7 +237,9 @@ def argument(request, tname, did, aid):
 	argument = get_object_or_404(Argument, id=aid)
 
 	context = {
-		'argument': argument
+		'argument': argument,
+		'topic': topic,
+		'debate': debate,
 	}
 	return render(request, 'debates/argument.html', context)
 

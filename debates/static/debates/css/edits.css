@@ -1,0 +1,12 @@
+ins *, del *  {
+  background: inherit;
+}
+
+ins {
+    text-decoration: none;
+    background: #e6ffe6;
+}
+del {
+    text-decoration: none;
+    background: #ffe6e6;
+}

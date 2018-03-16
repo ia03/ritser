@@ -73,3 +73,5 @@ class Argument(models.Model):
 class RevisionData(models.Model):
 	revision = models.ForeignKey(reversion.models.Revision, on_delete=models.CASCADE)
 	ip = models.GenericIPAddressField()
+	titchg = models.CharField(max_length=600, blank=True)
+	bodchg = models.TextField(max_length=400000, blank=True)

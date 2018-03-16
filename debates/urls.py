@@ -11,6 +11,7 @@ urlpatterns = [
 	path('t/<slug:tname>/info', views.topicinfo, name='topicinfo'),
 	path('t/<slug:tname>/<int:did>/', views.debate, {'apprs': -1}, name='debate'),
 	path('t/<slug:tname>/<int:did>/edit', views.editdebate, name='editdebate'),
+	path('t/<slug:tname>/<int:did>/edits', views.debateedits, name='debateedits'),
 	path('t/<slug:tname>/<int:did>/approved', views.debate, {'apprs': 0}, name='debateapproved'),
 	path('t/<slug:tname>/<int:did>/unapproved', views.debate, {'apprs': 1}, name='debateunapproved'),
 	path('t/<slug:tname>/<int:did>/denied', views.debate, {'apprs': 2}, name='debatedenied'),
@@ -20,3 +21,4 @@ urlpatterns = [
 	path('submit_debate', views.submitdebate, name='submitdebate'),
 	path('ajax/votedebate', views.votedebate, name='votedebate'),
 ]
+# todo: link to argument submitting page

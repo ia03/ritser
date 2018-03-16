@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load markdown revision static %}
+{% block title %}{{debate.question}} - Edits{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static "debates/css/edits.css" %}">{% endblock %}
+{% block body %}
+<main role="main" class="container">
+  <h1 class="mt-5">{{debate.question}} - Edits</h1>
+  Topic: <a href="{{topic.get_absolute_url}}">{{topic.name}}</a> -
+  Owner:
+  <a href="{{debate.owner.get_absolute_url}}">{{debate.owner.username}}</a> -
+  Security Level: {{debate.slvl}}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %} - <a href="{% url 'editdebate' tname=debate.topic.name did=debate.id %}">Edit/View source</a>
+  {% if debate.modnote %}
+  {% load modnotes %}
+  {% modnotes debate.modnote|markdownf %}
+  {% endif %}
+  <hr />
+  <div id="accordion">
+    {% for version in versions %}
+    <div class="card">
+      <div class="card-header" id="headingOne">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="false" aria-controls="collapse{{forloop.counter}}">
+            <span title="{{version.revision.date_created|date:"c"}}">{{version.revision.date_created|date:"D d M Y f A"}}</span> by {{version.revision.user.username}}
+          </button>
+        </h5>
+      </div>
+  
+      <div id="collapse{{forloop.counter}}" class="collapse" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion">
+        <div class="card-body">
+          User: <a href="{{version.revision.user.get_absolute_url}}">{{version.revision.user.username}}</a>
+          <br>
+          {% ifchanged %}
+          Owner: <a href="{{version|owner|url}}">{{version|owner|username}}</a> <br>{% endifchanged %}
+          {% ifchanged %}Security level: {{version|field:"slvl"}}
+          <br>{% endifchanged%}
+          {% ifchanged %}Approval Status: {% if version|field:"approvalstatus" == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif version|field:"approvalstatus" == 1 %} <span class="badge badge-secondary">Unapproved</span>{% elif version|field:"approvalstatus" == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %}
+          <br>{% endifchanged %}
+          {% if isadmin %}
+          IP: {{version|ip}}
+          <br>{% endif %}
+          {% ifchanged %}Topic: <a href="{{version|topic|url}}">{{version|field:"topic_id"}}</a>
+          <br>{% endifchanged %}
+          Question: {% if forloop.last %}{{version|field:"question"}}{% else %}{{version|titchg}}{% endif %}
+          <br>
+          Description: {% if forloop.last %}{{version|field:"description"}}{% else %}{{version|bodchg}}{% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    
+  </div>
+  {% if versions.has_other_pages %}
+  {% load paginator %}
+  {% paginator versions request %}
+  {% endif %}
+</main>
+
+{% endblock %}

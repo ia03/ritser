@@ -8,9 +8,13 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
 from .forms import DebateForm, ArgumentForm
-from .utils import getpage, recaptcha
+from .utils import getpage, recaptcha, newdiff
 from ipware import get_client_ip
-import reversion
+from .templatetags.markdown import markdownf
+import reversion, bleach
+from reversion.models import Version
+
+dmp = newdiff()
 
 # Create your views here.
 def index(request):
@@ -219,6 +223,7 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 
 	context = {
 		'debate': debate,
+		'request': request,
 		'user': user,
 		'minjq': True,
 		'topic': topic,
@@ -283,6 +288,8 @@ def submitdebate(request):
 @login_required
 def editdebate(request, tname, did):
 	debate = get_object_or_404(Debate, id=did)
+	oquestion = debate.question
+	odescription = debate.description
 	topic = get_object_or_404(Topic, name=tname)
 	user = request.user
 
@@ -295,10 +302,16 @@ def editdebate(request, tname, did):
 			result = recaptcha(request, settings.GR_DEBATEFORM)
 			if result['success']:
 				with reversion.create_revision():
+					diffs = dmp.diff_main(bleach.clean(oquestion), bleach.clean(form.cleaned_data['question']))
+					dmp.diff_cleanupSemantic(diffs)
+					titchg = dmp.diff_prettyHtml(diffs)
+					diffs2 = dmp.diff_main(markdownf(odescription), markdownf(form.cleaned_data['description']))
+					dmp.diff_cleanupSemantic(diffs2)
+					bodchg = dmp.diff_prettyHtml(diffs2)
 					debate = form.save()
 					reversion.set_user(request.user)
 					client_ip, is_routable = get_client_ip(request)
-					reversion.add_meta(RevisionData, ip=client_ip)
+					reversion.add_meta(RevisionData, ip=client_ip, titchg=titchg, bodchg=bodchg)
 				return HttpResponseRedirect(reverse('debate', args=[tname, did]))
 			else:
 				messages.error(request, 'Invalid reCAPTCHA. Please try again.')
@@ -348,6 +361,8 @@ def submitargument(request):
 @login_required
 def editargument(request, tname, did, aid):
 	argument = get_object_or_404(Argument, id=aid)
+	otitle = argument.title
+	obody = argument.body
 	topic = get_object_or_404(Topic, name=tname)
 	user = request.user
 
@@ -360,10 +375,16 @@ def editargument(request, tname, did, aid):
 			result = recaptcha(request, settings.GR_ARGUMENTFORM)
 			if result['success']:
 				with reversion.create_revision():
+					diffs = dmp.diff_main(bleach.clean(otitle), bleach.clean(form.cleaned_data['title']))
+					dmp.diff_cleanupSemantic(diffs)
+					titchg = dmp.diff_prettyHtml(diffs)
+					diffs2 = dmp.diff_main(markdownf(obody), markdownf(form.cleaned_data['body']))
+					dmp.diff_cleanupSemantic(diffs2)
+					bodchg = dmp.diff_prettyHtml(diffs2)
 					argument = form.save()
 					reversion.set_user(request.user)
 					client_ip, is_routable = get_client_ip(request)
-					reversion.add_meta(RevisionData, ip=client_ip)
+					reversion.add_meta(RevisionData, ip=client_ip, titchg=titchg, bodchg=bodchg)
 				return HttpResponseRedirect(reverse('argument', args=[tname, did, aid]))
 			else:
 				messages.error(request, 'Invalid reCAPTCHA. Please try again.')
@@ -377,3 +398,30 @@ def editargument(request, tname, did, aid):
 		'argument': argument,
 	}
 	return render(request, 'debates/edit_argument.html', context)
+	
+def debateedits(request, tname, did): #use same template for different approval statuses, but change int that says what type it is
+	topic = get_object_or_404(Topic, name=tname)
+	debate = get_object_or_404(Debate, topic=topic, id=did)
+	user = request.user
+	versionslist = Version.objects.get_for_object(debate)
+	page = request.GET.get('page', 1)
+
+	versions = getpage(page, versionslist, 40)
+	if user.is_authenticated:
+		ismod = user.ismod(topic)
+		isadmin = user.isadmin()
+	else:
+		ismod = False
+		isadmin = False
+	print (isadmin)
+
+	context = {
+		'debate': debate,
+		'user': user,
+		'topic': topic,
+		'request': request,
+		'versions': versions,
+		'ismod': ismod,
+		'isadmin': isadmin,
+	}
+	return render(request, 'debates/debateedits.html', context)

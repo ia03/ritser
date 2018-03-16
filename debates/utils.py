@@ -1,4 +1,6 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.utils.encoding import force_text
+from diff_match_patch import diff_match_patch
 import json, urllib
 def getpage(pagen, qlist, noi):
     paginator = Paginator(qlist, noi)
@@ -64,3 +66,62 @@ class Pages:
             pages_to_show.insert(pages_to_show.index(i), -1)
 
         return pages_to_show
+        
+dmp = diff_match_patch()
+
+def generate_diffs(old_version, new_version, field_name, cleanup):
+    """Generates a diff array for the named field between the two versions."""
+    # Extract the text from the versions.
+    old_text = old_version.field_dict[field_name] or ""
+    new_text = new_version.field_dict[field_name] or ""
+    # Generate the patch.
+    diffs = dmp.diff_main(force_text(old_text), force_text(new_text))
+    if cleanup == "semantic":
+        dmp.diff_cleanupSemantic(diffs)
+    elif cleanup == "efficiency":
+        dmp.diff_cleanupEfficiency(diffs)
+    elif cleanup is None:
+        pass
+    else:
+        raise ValueError("cleanup parameter should be one of 'semantic', 'efficiency' or None.")
+    return diffs
+
+def generate_patch(old_version, new_version, field_name, cleanup=None):
+    """
+    Generates a text patch of the named field between the two versions.
+    
+    The cleanup parameter can be None, "semantic" or "efficiency" to clean up the diff
+    for greater human readibility.
+    """
+    diffs = generate_diffs(old_version, new_version, field_name, cleanup)
+    patch = dmp.patch_make(diffs)
+    return dmp.patch_toText(patch)
+
+def generate_patch_html(old_version, new_version, field_name, cleanup=None):
+    """
+    Generates a pretty html version of the differences between the named 
+    field in two versions.
+    
+    The cleanup parameter can be None, "semantic" or "efficiency" to clean up the diff
+    for greater human readibility.
+    """
+    diffs = generate_diffs(old_version, new_version, field_name, cleanup)
+    return dmp.diff_prettyHtml(diffs)
+class newdiff(diff_match_patch):
+    def diff_prettyHtml(self, diffs):
+        """Convert a diff array into a pretty HTML report.
+        Args:
+          diffs: Array of diff tuples.
+        Returns:
+          HTML representation.
+        """
+        html = []
+        for (op, text) in diffs:
+          if op == self.DIFF_INSERT:
+            html.append("<ins>%s</ins>" % text)
+          elif op == self.DIFF_DELETE:
+            html.append("<del>%s</del>" % text)
+          elif op == self.DIFF_EQUAL:
+            html.append("<span>%s</span>" % text)
+        print ("".join(html))
+        return "".join(html)

@@ -12,5 +12,7 @@ class User(AbstractUser):
 		return (self.modstatus > 0) or (self.moderator_of.filter(name=topic.name))
 	def isgmod(self):
 		return (self.modstatus > 0)
+	def isadmin(self):
+		return (self.modstatus > 1)
 	def __str__(self):
 		return self.username

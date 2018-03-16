@@ -93,6 +93,7 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.redirects.RedirectsPanel',
 ]
 
+
 WSGI_APPLICATION = 'modebate.wsgi.application'
 
 APPEND_SLASH = True

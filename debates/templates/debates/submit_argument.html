@@ -2,14 +2,13 @@
 
 {% load widget_tweaks %}
 
-
-{% block title %}Edit Debate "{{debate.question}}" - MoDebate{% endblock %}
+{% block title %}Submit Argument - MoDebate{% endblock %}
 
 {% block body %}
 
 <main role="main" class="container">
-  <h1>Edit Debate "{{debate.question}}"</h1>
-  <form action="{% url 'editdebate' tname=debate.topic.name did=debate.id %}" method="post">
+  <h1>Submit Argument</h1>
+  <form action="{% url 'submitargument' %}" method="post">
     {% csrf_token %}
     {% for field in form %}
     {% for error in field.errors %}
@@ -36,7 +35,7 @@
         </div>
     {% endfor %}
     <script src='https://www.google.com/recaptcha/api.js'></script>
-    <div class="g-recaptcha" data-sitekey="6LcV9EwUAAAAAIt0jamp3Z30425qTsD_paJlpfFo"></div>
+    <div class="g-recaptcha" data-sitekey="6Lcd9EwUAAAAAAExN5gc7KSQ2da-BWNJSAKtH2r4"></div>
     <input type="submit" class="btn btn-primary" value="Submit" />
   </form>
 </main>

@@ -21,3 +21,4 @@ def proper_paginate(paginator, current_page, neighbors=10):
         page_list = [f for f in range(start_index, end_index+1)]
         return page_list[:(2*neighbors + 1)]
     return paginator.page_range
+

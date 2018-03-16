@@ -181,7 +181,8 @@ class ArgumentForm(forms.ModelForm):
         if self.edit == 0:
             disablefield(self, 'owner_name', 'order', 'approvalstatus', 'modnote')
         elif self.edit == 1:
-            disablefield(self, 'debate_id', 'order', 'approvalstatus', 'modnote')
+            disablefield(self, 'debate_id', 'approvalstatus', 'modnote')
+            self.fields['order'].widget.attrs['readonly'] = True
             self.fields['owner_name'].initial = self.instance.owner.username
         else:
             self.fields['approvalstatus'].error_messages = {'required': 'You must specify the approval status for the argument.'}

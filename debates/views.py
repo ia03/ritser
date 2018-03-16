@@ -408,10 +408,8 @@ def debateedits(request, tname, did): #use same template for different approval 
 
 	versions = getpage(page, versionslist, 40)
 	if user.is_authenticated:
-		ismod = user.ismod(topic)
 		isadmin = user.isadmin()
 	else:
-		ismod = False
 		isadmin = False
 	print (isadmin)
 
@@ -421,7 +419,6 @@ def debateedits(request, tname, did): #use same template for different approval 
 		'topic': topic,
 		'request': request,
 		'versions': versions,
-		'ismod': ismod,
 		'isadmin': isadmin,
 	}
 	return render(request, 'debates/debateedits.html', context)

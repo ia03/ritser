@@ -68,7 +68,7 @@ class DebateForm(forms.ModelForm):
             self.edit = 0
         super(DebateForm, self).__init__(*args, **kwargs)
         donotrequire(self, 'owner', 'topic', 'created_on', 'edited_on', 'approved_on')
-        self.fields['approvalstatus'].label = 'Approval Status'
+        self.fields['approvalstatus'].label = 'Approval Status (0: Approved, 1: Unapproved, 2: Denied)'
         self.fields['slvl'].label = 'Security Level'
         self.fields['modnote'].label = 'Moderator Note'
         self.fields['question'].error_messages = {'required': 'You must type in a question.'}
@@ -172,7 +172,8 @@ class ArgumentForm(forms.ModelForm):
         self.fields['approvalstatus'].label = 'Approval Status'
         self.fields['modnote'].label = 'Moderator Note (can be blank)'
         self.fields['side'].label = 'Side (0=For, 1=Against)'
-        self.fields['debate_id'].label = 'Debate ID'
+        self.fields['approvalstatus'].label = 'Approval Status (0: Approved, 1: Unapproved, 2: Denied)'
+        self.fields['debate_id'].label = 'Debate ID (comes after the topic name in the URL)'
         self.fields['title'].error_messages = {'required': 'You must type in a title.'}
         self.fields['body'].error_messages = {'required': 'You must type in a body.'}
         self.fields['debate_id'].error_messages = {'required': 'You must specify the ID of the debate this argument will belong to.'}

@@ -29,6 +29,7 @@
           {{debate.description|markdownf}}
         </div>
       </div>
+      <a href="{% url 'submitargument' %}?debate={{debate.id}}" class="btn btn-primary btn-sm">Submit Argument</a>
       <a href="{{ debate.get_absolute_url }}">Default Arguments</a> -
       <a href="{% url 'debateapproved' tname=topic.name did=debate.id %}">Approved Arguments</a> -
       <a href="{% url 'debateunapproved' tname=topic.name did=debate.id %}">Unapproved Arguments</a> -

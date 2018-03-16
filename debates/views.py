@@ -401,7 +401,7 @@ def editargument(request, tname, did, aid):
 	
 def debateedits(request, tname, did): #use same template for different approval statuses, but change int that says what type it is
 	topic = get_object_or_404(Topic, name=tname)
-	debate = get_object_or_404(Debate, topic=topic, id=did)
+	debate = get_object_or_404(Debate, id=did, topic=topic)
 	user = request.user
 	versionslist = Version.objects.get_for_object(debate)
 	page = request.GET.get('page', 1)
@@ -422,3 +422,30 @@ def debateedits(request, tname, did): #use same template for different approval 
 		'isadmin': isadmin,
 	}
 	return render(request, 'debates/debateedits.html', context)
+	
+def argumentedits(request, tname, did, aid):
+	topic = get_object_or_404(Topic, name=tname)
+	debate = get_object_or_404(Debate, id=did, topic=topic)
+	argument = get_object_or_404(Argument, id=aid, debate=debate, topic=topic)
+	
+	user = request.user
+	versionslist = Version.objects.get_for_object(argument)
+	page = request.GET.get('page', 1)
+
+	versions = getpage(page, versionslist, 40)
+	if user.is_authenticated:
+		isadmin = user.isadmin()
+	else:
+		isadmin = False
+	print (isadmin)
+
+	context = {
+		'debate': debate,
+		'user': user,
+		'argument': argument,
+		'topic': topic,
+		'request': request,
+		'versions': versions,
+		'isadmin': isadmin,
+	}
+	return render(request, 'debates/argumentedits.html', context)

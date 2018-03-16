@@ -8,3 +8,4 @@ bleach
 django-reversion
 django-ipware
 django-widgets-improved
+diff-match-patch

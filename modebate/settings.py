@@ -139,7 +139,7 @@ AUTH_USER_MODEL = 'accounts.User'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/Toronto' #'UTC'
+TIME_ZONE = 'UTC' #America/Toronto
 
 USE_I18N = True
 

@@ -18,12 +18,13 @@ from django.conf import settings
 from django.urls import include, path, re_path
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.views.generic.base import RedirectView
+import accounts.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('img/favicon.ico')), name="favicon"), #favicon for older browsers
-
     re_path(r'^u/', include('accounts.urls')),
+    path('signup', accounts.views.signup, name='signup'),
 	re_path(r'^', include('debates.urls')),
 ]
 

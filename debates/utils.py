@@ -11,15 +11,13 @@ def getpage(pagen, qlist, noi):
     return items
     
 def recaptcha(request, secret):
-    recaptcha_response = request.POST.get('g-recaptcha-response')
-    url = 'https://www.google.com/recaptcha/api/siteverify'
     values = {
         'secret': secret,
-        'response': recaptcha_response
+        'response': request.POST.get('g-recaptcha-response')
     }
     data = urllib.parse.urlencode(values).encode()
-    req =  urllib.request.Request(url, data=data)
-    response = urllib.request.urlopen(req)
+    ureq =  urllib.request.Request('https://www.google.com/recaptcha/api/siteverify', data=data)
+    response = urllib.request.urlopen(ureq)
     return json.loads(response.read().decode())
 
 class Pages:

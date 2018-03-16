@@ -174,6 +174,7 @@ class ArgumentForm(forms.ModelForm):
         self.fields['side'].label = 'Side (0=For, 1=Against)'
         self.fields['approvalstatus'].label = 'Approval Status (0: Approved, 1: Unapproved, 2: Denied)'
         self.fields['debate_id'].label = 'Debate ID (comes after the topic name in the URL)'
+        self.fields['order'].label = 'Order (the greater this is, the higher this argument will be)'
         self.fields['title'].error_messages = {'required': 'You must type in a title.'}
         self.fields['body'].error_messages = {'required': 'You must type in a body.'}
         self.fields['debate_id'].error_messages = {'required': 'You must specify the ID of the debate this argument will belong to.'}
@@ -223,7 +224,11 @@ class ArgumentForm(forms.ModelForm):
             return self.cleaned_data.get('order')
     def clean_modnote(self):
         return cleanmodnote(self)
-    
+    def clean_side(self):
+        data = self.cleaned_data.get('side')
+        if data not in [0, 1]:
+            raise forms.ValidationError('Invalid side setting %(side), must be 0 or 1.', code='invalidside', params={'side': data})
+        return data
     def clean(self):
         cleaned_data = super(ArgumentForm, self).clean()
         did = cleaned_data.get('debate_id')

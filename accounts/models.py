@@ -6,6 +6,8 @@ from django.urls import reverse
 class User(AbstractUser):
 	approvedargs = models.IntegerField(default=0)
 	modstatus = models.IntegerField(default=0) #0: regular user #1: global moderator #2: admin #3: owner
+	bandate = models.DateTimeField(blank=True, null=True)
+	bannote = models.CharField(max_length=10000, blank=True)
 	def get_absolute_url(self):
 		return reverse('profile', args=[self.username])
 	def ismod(self, topic):

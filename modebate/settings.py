@@ -172,3 +172,11 @@ if not DEBUG:
 
 GR_DEBATEFORM = os.environ['GR_DEBATEFORM']
 GR_ARGUMENTFORM = os.environ['GR_ARGUMENTFORM']
+
+#Email settings
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = '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'

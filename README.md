@@ -25,6 +25,7 @@ AWS_SECRET_ACCESS_KEY
 dbpass
 GR_DEBATEFORM
 GR_ARGUMENTFORM
+emailpass
 
 https://css-tricks.com/snippets/css/css-triangle/
 

@@ -23,11 +23,6 @@
     {{ error|striptags }}
     </div>
     {% endfor %}
-    {% for message in messages %}
-    <div class="alert alert-danger" role="alert">
-    {{ message }}
-    </div>
-    {% endfor %}
     {# Include the visible fields #}
     {% for field in form.visible_fields %}
         <div class="form-group">
@@ -35,8 +30,6 @@
             {% render_field field class="form-control" %}
         </div>
     {% endfor %}
-    <script src='https://www.google.com/recaptcha/api.js'></script>
-    <div class="g-recaptcha" data-sitekey="6Lcd9EwUAAAAAAExN5gc7KSQ2da-BWNJSAKtH2r4"></div>
     <input type="submit" class="btn btn-primary" value="Submit" />
   </form>
 </main>

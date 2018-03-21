@@ -1,6 +1,13 @@
 from django import forms
 from .models import User
-
+from captcha.fields import ReCaptchaField
+from django.conf import settings
+class SignupForm(forms.Form):
+    captcha = ReCaptchaField(private_key=settings.GR_SIGNUPFORM, public_key='6LfKRk0UAAAAAAVkc0FNDHtLNyzwYwBiEUpVeDCe', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
+    def signup(self, request, user):
+        """ Required, or else it throws deprecation warnings """
+        pass
+'''
 class UserForm(forms.ModelForm):
     
     class Meta:
@@ -44,3 +51,4 @@ class UserCreationForm(forms.ModelForm):
             user.save()
 
         return user
+'''

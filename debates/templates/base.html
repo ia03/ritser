@@ -40,6 +40,17 @@
         </form>
       </div>
     </nav>
+    {% block snavbar %}{% endblock %}
+    {% if messages %}
+     {% for message in messages %}
+    <div{% if message.tags %} class="alert alert-{% if message.tags == "error" %}danger{% else %}{{ message.tags }}{% endif %}"{% endif %}>
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+       </button>
+    </div>
+   {% endfor %}
+{% endif %}
     {% block body %}{% endblock %}
     <footer class="footer">
       <div class="container">

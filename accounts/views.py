@@ -12,11 +12,3 @@ def profile(request, uname):
 		'user': user,
 	}
 	return render(request, 'accounts/profile.html', context)
-
-def signup(request):
-	
-	
-	context = {
-		
-	}
-	return render(request, 'accounts/signup.html', context)

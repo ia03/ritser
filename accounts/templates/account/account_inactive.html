@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load markdown %}
+
+{% block title %}Account Inactive{% endblock %}
+
+{% block body %}
+<main role="main" class="container">
+    {% if user.active == 1 %}
+    <h1>Account Deleted</h1>
+    
+    <p>This account has been deleted.</p>
+    {% elif user.active == 2 %}
+    <h1>Account Suspended</h1>
+    
+    <p>This account has been suspended until {{user.bandate|date:"D d M Y f A"}}.</p>
+    {% if user.bannote %}
+    Moderator note:
+    <br>
+    {{user.bannote|markdownf }}
+    {% endif %}
+    {% elif user.active == 3 %}
+    <h1>Account Terminated</h1>
+    
+    <p>This account has been terminated by MoDebate staff.</p>
+    {% if user.bannote %}
+    Moderator note:
+    <br>
+    {{user.bannote|markdownf }}
+    {% endif %}
+    {% endif %}
+</main>
+{% endblock %}

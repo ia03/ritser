@@ -6,8 +6,8 @@ from accounts.models import User
 from django.contrib.auth import get_user_model
 from .views import index, topic, debate
 from .forms import DebateForm
-from pprint import pprint
 from django.http import QueryDict
+import os
 import reversion
 
 # Create your tests here.
@@ -59,6 +59,7 @@ class ViewTestCase (TestCase):
 
 class DebateFormTestCase (TestCase):
     def setUp(self):
+        os.environ['RECAPTCHA_TESTING'] = 'True'
         self.tmod = User.objects.create_user(username="mod", email="test@test.com", password="test123")
         self.tmod.save()
         self.tuser = User.objects.create_user(username="user", email="test@test.com", password="test123")
@@ -76,6 +77,7 @@ class DebateFormTestCase (TestCase):
             'topic_name': self.test_topic.name,
             'question': 'testquestion1',
             'description': 'testdescription1',
+            'g-recaptcha-response': 'PASSED',
         }
         self.test_topic.slvl = 1
         self.test_topic.save()
@@ -88,6 +90,7 @@ class DebateFormTestCase (TestCase):
             'topic_name': self.test_topic.name,
             'question': 'testquestion1',
             'description': 'testdescription1',
+            'g-recaptcha-response': 'PASSED',
         }
         self.test_topic.slvl = 1
         self.test_topic.save()
@@ -100,6 +103,7 @@ class DebateFormTestCase (TestCase):
             'owner_name': self.tuser2.username,
             'question': 'testquestion1',
             'description': 'testdescription1',
+            'g-recaptcha-response': 'PASSED',
         }
         debate = Debate.objects.create(question='test invalid debate edit', owner=self.tuser, topic=self.test_topic)
         form = DebateForm(form_data, instance=debate, user=self.tuser, edit=1)
@@ -109,6 +113,7 @@ class DebateFormTestCase (TestCase):
             'owner_name': self.tuser.username,
             'question': 'testquestion1',
             'description': 'testdescription1',
+            'g-recaptcha-response': 'PASSED',
         }
         debate = Debate.objects.create(question='test debate edit', owner=self.tuser2, topic=self.test_topic)
         form = DebateForm(form_data, instance=debate, user=self.tuser, edit=1)
@@ -118,7 +123,10 @@ class DebateFormTestCase (TestCase):
             'owner_name': self.tuser.username,
             'question': 'testquestion1',
             'description': 'testdescription1',
+            'g-recaptcha-response': 'PASSED',
         }
         debate = Debate.objects.create(question='test debate edit', owner=self.tuser2, topic=self.test_topic)
         form = DebateForm(form_data, instance=debate, user=self.tuser, edit=2)
         self.assertFalse(form.is_valid())
+    def tearDown(self):
+        os.environ['RECAPTCHA_TESTING'] = 'False'

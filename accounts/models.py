@@ -6,6 +6,7 @@ from django.urls import reverse
 class User(AbstractUser):
 	approvedargs = models.IntegerField(default=0)
 	modstatus = models.IntegerField(default=0) #0: regular user #1: global moderator #2: admin #3: owner
+	active = models.IntegerField(default=0) #0: not banned 1: account deleted 2: temporarily banned 3: permanently banned
 	bandate = models.DateTimeField(blank=True, null=True)
 	bannote = models.CharField(max_length=10000, blank=True)
 	def get_absolute_url(self):

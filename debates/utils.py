@@ -1,7 +1,6 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.encoding import force_text
 from diff_match_patch import diff_match_patch
-import json, urllib
 def getpage(pagen, qlist, noi):
     paginator = Paginator(qlist, noi)
     try:
@@ -10,15 +9,6 @@ def getpage(pagen, qlist, noi):
         items = paginator.page(1)
     return items
     
-def recaptcha(request, secret):
-    values = {
-        'secret': secret,
-        'response': request.POST.get('g-recaptcha-response')
-    }
-    data = urllib.parse.urlencode(values).encode()
-    ureq =  urllib.request.Request('https://www.google.com/recaptcha/api/siteverify', data=data)
-    response = urllib.request.urlopen(ureq)
-    return json.loads(response.read().decode())
 
 class Pages:
 

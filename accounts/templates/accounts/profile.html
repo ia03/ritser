@@ -1,11 +1,20 @@
-{% extends "base.html" %}
+{% extends "account/base.html" %}
 
-{% load static %}
+{% load widget_tweaks %}
 
-{% block title %}u/{{user.username}}'s profile{% endblock %}
+{% block title %}Your Profile - MoDebate{% endblock %}
 
 {% block body %}
+    <main role="main" class="container">
+    <h1>Your Profile</h1>
 
-put stuff here
-
+    <form method="POST" action="{% url 'profile' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="{{ form.bio.id_for_label }}">{{ form.bio.label_tag }}</label>
+          {% render_field form.bio class="form-control" %}
+        </div>
+        <input class="btn btn-primary" type="submit" name="action" value="Edit Profile"/>
+    </form>
+    </main>
 {% endblock %}

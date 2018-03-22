@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load static markdown %}
+
+{% block title %}{{puser.username}}'s profile - MoDebate{% endblock %}
+
+{% block body %}
+
+<main role="main" class="container">
+    <h1>{{puser.username}}'s profile</h1>
+    Bio:
+    <br>
+    {{puser.bio|markdownf}}
+</main>
+
+{% endblock %}

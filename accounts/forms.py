@@ -7,14 +7,14 @@ class SignupForm(forms.Form):
     def signup(self, request, user):
         """ Required, or else it throws deprecation warnings """
         pass
-'''
-class UserForm(forms.ModelForm):
+
+class ProfileForm(forms.ModelForm):
     
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['bio']
         
-        
+'''
 class UserCreationForm(forms.ModelForm):
     """
     A form that creates a user, with no privileges, from the given username and

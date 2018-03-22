@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load markdown humanize static %}
 
-{% block title %}{% if topic.title != "" %}{{ topic.title }}{% else %}t/{{ topic.name }}{% endif %}{% endblock %}
+{% block title %}{% if topic.title != "" %}{{ topic.title }}{% else %}t/{{ topic.name }}{% endif %} - MoDebate{% endblock %}
 
 {% block head %}<link rel="stylesheet" href="{% static "debates/css/topic.css" %}">{% endblock %}
 

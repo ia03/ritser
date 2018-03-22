@@ -38,6 +38,15 @@
           <input class="form-control mr-sm-2" type="search" placeholder="Search for a topic" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
+        {% if user.is_authenticated %}
+        {% url 'profile' as profile %}
+        <ul class="navbar-nav">
+         <li class="nav-item{% if request.get_full_path == profile %} active{% endif %}">
+        <a class="nav-link" href="{{profile}}">{{user.get_username}}{% if request.get_full_path == profile %} <span class="sr-only">(current)</span>{% endif %}</a>
+         </li>
+         </ul>
+        {% else %}
+        {% endif %}
       </div>
     </nav>
     {% block snavbar %}{% endblock %}

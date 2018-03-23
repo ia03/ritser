@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load markdown revision static %}
-{% block title %}{{argument.title}} - Edits {% endblock %}
+{% block title %}{{argument.title}} - Edits - MoDebate{% endblock %}
 {% block head %}<link rel="stylesheet" href="{% static "debates/css/edits.css" %}">{% endblock %}
 {% block body %}
 <main role="main" class="container">
     <h1 class="mt-5">{{argument.title}} - Edits</h1>
-    Owner: <a href="{{argument.owner.get_absolute_url}}">{{argument.owner.username}}</a>
+    Owner: <a href="{{argument.owner.get_absolute_url}}">{{argument.owner.get_username}}</a>
     Status: {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
     Topic: <a href="{{topic.get_absolute_url}}">{{topic.name}}</a>
     Debate: <a href="{{debate.get_absolute_url}}">{{debate.question}}</a> - <a href="{% url 'editargument' tname=topic.name did=debate.id aid=argument.id %}">Edit/View source</a> - <a href="{{argument.get_absolute_url}}">Link</a>
@@ -20,14 +20,14 @@
       <div class="card-header" id="headingOne">
         <h5 class="mb-0">
           <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="false" aria-controls="collapse{{forloop.counter}}">
-            <span title="{{version.revision.date_created|date:"c"}}">{{version.revision.date_created|date:"D d M Y f A"}}</span> by {{version.revision.user.username}}
+            <span title="{{version.revision.date_created|date:"c"}}">{{version.revision.date_created|date:"D d M Y f A"}}</span> by {{version.revision.user.get_username}}
           </button>
         </h5>
       </div>
   
       <div id="collapse{{forloop.counter}}" class="collapse" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion">
         <div class="card-body">
-          User: <a href="{{version.revision.user.get_absolute_url}}">{{version.revision.user.username}}</a>
+          User: <a href="{{version.revision.user.get_absolute_url}}">{{version.revision.user.get_username}}</a>
           <br>
           {% ifchanged %}
           Owner: <a href="{{version|owner|url}}">{{version|owner|username}}</a> <br>{% endifchanged %}

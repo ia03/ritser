@@ -1,3 +1,5 @@
+/* global $ */
+
 window.onload = function () {
   var x = window.location.search.lastIndexOf("tab=");
   var b = window.location.search.indexOf("&", x);

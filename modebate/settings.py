@@ -37,6 +37,7 @@ INSTALLED_APPS = [
 	'accounts.apps.AccountsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -46,6 +47,11 @@ INSTALLED_APPS = [
 	'debug_toolbar',
 	'reversion',
 	'widget_tweaks',
+	'captcha',
+	'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.reddit',
 ]
 
 MIDDLEWARE = [
@@ -133,6 +139,12 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'accounts.User'
 
+# Authentication backends
+# https://docs.djangoproject.com/en/2.0/ref/settings/#std:setting-AUTHENTICATION_BACKENDS
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',]
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -141,7 +153,7 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC' #America/Toronto
 
-USE_I18N = True
+USE_I18N = False
 
 USE_L10N = True
 
@@ -168,10 +180,15 @@ if not DEBUG:
 #STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 
 
-#Google recaptcha secret keys
-
+#Google recaptcha settings
+#Secret keys:
 GR_DEBATEFORM = os.environ['GR_DEBATEFORM']
 GR_ARGUMENTFORM = os.environ['GR_ARGUMENTFORM']
+GR_SIGNUPFORM = os.environ['GR_SIGNUPFORM']
+
+NOCAPTCHA = True
+RECAPTCHA_USE_SSL = True     # Defaults to False
+
 
 #Email settings
 
@@ -180,3 +197,21 @@ EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = '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'
+
+# All-auth settings
+SITE_ID = 2
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+if DEBUG:
+    ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
+else:
+    ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 1800
+ACCOUNT_SIGNUP_FORM_CLASS = 'accounts.forms.SignupForm'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'reddit': {
+        'AUTH_PARAMS': {'duration': 'permanent'},
+        'SCOPE': ['identity', 'submit'],
+        'USER_AGENT': 'django:NIy3rZqS9dKVnQ:1.0 (by /u/fafafefefofo0)',
+    }
+}

@@ -27,7 +27,7 @@
       <div class="collapse navbar-collapse" id="navbartoggler">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
           <li class="nav-item{% if nbar == 'home' %} active{% endif %}">
-            <a class="nav-link" href="#">Home {% if nbar == 'home' %}<span class="sr-only">(current)</span>{% endif %}</a>
+            <a class="nav-link" href="{% if user.is_authenticated %}{% url 'feed' %}{% else %}{% url 'index' %}{% endif %}">Home {% if nbar == 'home' %}<span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           <li class="nav-item{% if nbar == 'about' %} active{% endif %}">
             <a class="nav-link" href="{% url 'about' %}">About {% if nbar == 'about' %}<span class="sr-only">(current)</span>{% endif %}</a>
@@ -38,8 +38,37 @@
           <input class="form-control mr-sm-2" type="search" placeholder="Search for a topic" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
+        <ul class="navbar-nav">
+        {% if user.is_authenticated %}
+        {% url 'profile' as profile %}
+         <li class="nav-item{% if request.get_full_path == profile %} active{% endif %}">
+        <a class="nav-link" href="{{profile}}">{{user.get_username}}{% if request.get_full_path == profile %} <span class="sr-only">(current)</span>{% endif %}</a>
+         </li>
+         </ul>
+        {% else %}
+        {% url 'account_login' as login %}
+        <li class="nav-item{% if request.get_full_path == login %} active{% endif %}">
+        <a class="nav-link" href="{{login}}">Login{% if request.get_full_path == login %} <span class="sr-only">(current)</span>{% endif %}</a>
+         </li>
+         {% url 'account_signup' as signup %}
+         <li class="nav-item{% if request.get_full_path == signup %} active{% endif %}">
+        <a class="nav-link" href="{{signup}}">Signup{% if request.get_full_path == signup %} <span class="sr-only">(current)</span>{% endif %}</a>
+         </li>
+        {% endif %}
+        </ul>
       </div>
     </nav>
+    {% block snavbar %}{% endblock %}
+    {% if messages %}
+     {% for message in messages %}
+    <div{% if message.tags %} class="alert alert-{% if message.tags == "error" %}danger{% else %}{{ message.tags }}{% endif %}"{% endif %}>
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+       </button>
+    </div>
+   {% endfor %}
+{% endif %}
     {% block body %}{% endblock %}
     <footer class="footer">
       <div class="container">

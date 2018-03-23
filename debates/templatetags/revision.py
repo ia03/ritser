@@ -32,7 +32,7 @@ def url(obj):
     return obj.get_absolute_url()
 @register.filter(name='username')
 def username(obj):
-    return obj.username
+    return obj.get_username()
 @register.filter(name='question')
 def question(obj):
     return obj.question

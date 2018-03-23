@@ -3,6 +3,8 @@ from .models import Topic, Debate, Argument
 from accounts.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
+from captcha.fields import ReCaptchaField
+from django.conf import settings
 
 def disablefield(instance, *args):
     for arg in args:
@@ -60,6 +62,7 @@ def setapprovedon(instance):
 class DebateForm(forms.ModelForm):
     topic_name = forms.CharField(max_length=30)
     owner_name = forms.CharField(max_length=30)
+    captcha = ReCaptchaField(private_key=settings.GR_DEBATEFORM, public_key='6LcV9EwUAAAAAIt0jamp3Z30425qTsD_paJlpfFo', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
         if 'edit' in kwargs:
@@ -161,6 +164,7 @@ class DebateForm(forms.ModelForm):
 class ArgumentForm(forms.ModelForm):
     owner_name = forms.CharField(max_length=30)
     debate_id = forms.IntegerField()
+    captcha = ReCaptchaField(private_key=settings.GR_ARGUMENTFORM, public_key='6Lcd9EwUAAAAAAExN5gc7KSQ2da', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
         if 'edit' in kwargs:

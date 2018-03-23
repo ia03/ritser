@@ -4,9 +4,10 @@ from . import views
 
 urlpatterns = [
 	path('', views.index, name='index'),
-	path('privacy', views.privacy, name='privacy'),
-	path('terms', views.terms, name='terms'),
-	path('about', views.about, name='about'),
+	path('privacy/', views.privacy, name='privacy'),
+	path('terms/', views.terms, name='terms'),
+	path('about/', views.about, name='about'),
+	path('feed/', views.feed, name='feed'),
 	path('t/<slug:tname>/', views.topic, name='topic'),
 	path('t/<slug:tname>/info', views.topicinfo, name='topicinfo'),
 	path('t/<slug:tname>/<int:did>/', views.debate, {'apprs': -1}, name='debate'),
@@ -18,8 +19,8 @@ urlpatterns = [
 	path('t/<slug:tname>/<int:did>/argument/<int:aid>', views.argument, name='argument'),
 	path('t/<slug:tname>/<int:did>/argument/<int:aid>/edit', views.editargument, name='editargument'),
 	path('t/<slug:tname>/<int:did>/argument/<int:aid>/edits', views.argumentedits, name='argumentedits'),
-	path('submit_argument', views.submitargument, name='submitargument'),
-	path('submit_debate', views.submitdebate, name='submitdebate'),
+	path('submit_argument/', views.submitargument, name='submitargument'),
+	path('submit_debate/', views.submitdebate, name='submitdebate'),
 	path('ajax/votedebate', views.votedebate, name='votedebate'),
 ]
 # todo: link to argument submitting page

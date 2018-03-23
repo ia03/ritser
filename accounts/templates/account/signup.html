@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% block title %}Signup - MoDebate{% endblock %}
+
+{% block body %}
+<main role="main" class="container">
+    <h1>Sign Up</h1>
+    
+    <p>Already have an account? Sign in <a href="{{ login_url }}">here</a>.</p>
+    
+    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+      {% csrf_token %}
+      
+        <div class="form-group">
+            <label for="{{ form.username.id_for_label }}">{{ form.username.label_tag }}</label>
+            {% render_field form.username class="form-control" %}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">{{ form.email.label_tag }}</label>
+            {% render_field form.email class="form-control" %}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.password1.id_for_label }}">{{ form.password1.label_tag }}</label>
+            {% render_field form.password1 class="form-control" %}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.password2.id_for_label }}">{{ form.password2.label_tag }}</label>
+            {% render_field form.password2 class="form-control" %}
+        </div>
+        {{form.captcha}}
+    
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+      <button class="btn btn-primary" type="submit">Sign Up &raquo;</button>
+    </form>
+</main>
+{% endblock %}

@@ -25,6 +25,7 @@ AWS_SECRET_ACCESS_KEY
 dbpass
 GR_DEBATEFORM
 GR_ARGUMENTFORM
+GR_SIGNUPFORM
 emailpass
 
 https://css-tricks.com/snippets/css/css-triangle/
@@ -43,6 +44,7 @@ maybe use this for sorting algorithms
 
 http://cython.org/
 
+test account email (check if adding an email works) and account inactive templates
 
 for $5 monthly no ads and unlimited upvotes?
 

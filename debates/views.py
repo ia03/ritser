@@ -4,11 +4,10 @@ from django.urls import reverse
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
 from .forms import DebateForm, ArgumentForm
-from .utils import getpage, recaptcha, newdiff
+from .utils import getpage, newdiff, debateslist
 from ipware import get_client_ip
 from .templatetags.markdown import markdownf
 import reversion, bleach
@@ -43,7 +42,7 @@ def topic(request, tname):
 	fmods = mods[:10] #first 10 mods
 	sortc = request.COOKIES.get('dsort')
 	sorta = request.GET.get('sort', '')
-	query = topic.debates.filter(Q(approvalstatus=0) | Q(approvalstatus=1)) if (topic.slvl == 0) or (topic.slvl == 1) else topic.debates.filter(approvalstatus=0)
+	query = debateslist(topic)
 
 	if (sorta == 'top'):
 		debates_list = query.order_by('-karma') #default
@@ -52,7 +51,10 @@ def topic(request, tname):
 		debates_list = query.order_by('karma')
 		sortb = "&sort=lowest"
 	elif (sorta == 'new'):
-		debates_list = query.order_by('-approved_on')
+		if topic.slvl > 1:
+			debates_list = query.order_by('-approved_on')
+		else:
+			debates_list = query.order_by('-created_on')
 		sortb = "&sort=new"
 	elif (sorta == 'random'):
 		debates_list = query.order_by('?')
@@ -64,7 +66,10 @@ def topic(request, tname):
 		debates_list = query.order_by('karma')
 		sortb = "&sort=lowest"
 	elif (sortc == 'new'):
-		debates_list = query.order_by('-approved_on')
+		if topic.slvl > 1:
+			debates_list = query.order_by('-approved_on')
+		else:
+			debates_list = query.order_by('-created_on')
 		sortb = "&sort=new"
 	elif (sortc == 'random'):
 		debates_list = query.order_by('?')
@@ -224,7 +229,6 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 	context = {
 		'debate': debate,
 		'request': request,
-		'user': user,
 		'minjq': True,
 		'topic': topic,
 		'argumentsf': argumentsf,
@@ -256,19 +260,15 @@ def submitdebate(request):
 	if request.method == 'POST':
 		form = DebateForm(request.POST, user=user, edit=0)
 		if form.is_valid():
-			result = recaptcha(request, settings.GR_DEBATEFORM)
-			if result['success']:
-				with reversion.create_revision():
-					obj = form.save(commit=False)
-					obj.karma = 1
-					obj.save()
-					obj.users_upvoting.add(user)
-					reversion.set_user(user)
-					client_ip, is_routable = get_client_ip(request)
-					reversion.add_meta(RevisionData, ip=client_ip)
-				return HttpResponseRedirect(reverse('debate', args=[form.cleaned_data['topic_name'], obj.id]))
-			else:
-				messages.error(request, 'Invalid reCAPTCHA. Please try again.')
+			with reversion.create_revision():
+				obj = form.save(commit=False)
+				obj.karma = 1
+				obj.save()
+				obj.users_upvoting.add(user)
+				reversion.set_user(user)
+				client_ip, is_routable = get_client_ip(request)
+				reversion.add_meta(RevisionData, ip=client_ip)
+			return HttpResponseRedirect(reverse('debate', args=[form.cleaned_data['topic_name'], obj.id]))
 	else:
 		tname = request.GET.get('topic', '')
 		question = request.GET.get('question', '')
@@ -299,22 +299,18 @@ def editdebate(request, tname, did):
 		else:
 			form = DebateForm(request.POST, instance=debate, user=user, edit=1)
 		if form.is_valid():
-			result = recaptcha(request, settings.GR_DEBATEFORM)
-			if result['success']:
-				with reversion.create_revision():
-					diffs = dmp.diff_main(bleach.clean(oquestion), bleach.clean(form.cleaned_data['question']))
-					dmp.diff_cleanupSemantic(diffs)
-					titchg = dmp.diff_prettyHtml(diffs)
-					diffs2 = dmp.diff_main(markdownf(odescription), markdownf(form.cleaned_data['description']))
-					dmp.diff_cleanupSemantic(diffs2)
-					bodchg = dmp.diff_prettyHtml(diffs2)
-					debate = form.save()
-					reversion.set_user(request.user)
-					client_ip, is_routable = get_client_ip(request)
-					reversion.add_meta(RevisionData, ip=client_ip, titchg=titchg, bodchg=bodchg)
-				return HttpResponseRedirect(reverse('debate', args=[tname, did]))
-			else:
-				messages.error(request, 'Invalid reCAPTCHA. Please try again.')
+			with reversion.create_revision():
+				diffs = dmp.diff_main(bleach.clean(oquestion), bleach.clean(form.cleaned_data['question']))
+				dmp.diff_cleanupSemantic(diffs)
+				titchg = dmp.diff_prettyHtml(diffs)
+				diffs2 = dmp.diff_main(markdownf(odescription), markdownf(form.cleaned_data['description']))
+				dmp.diff_cleanupSemantic(diffs2)
+				bodchg = dmp.diff_prettyHtml(diffs2)
+				debate = form.save()
+				reversion.set_user(request.user)
+				client_ip, is_routable = get_client_ip(request)
+				reversion.add_meta(RevisionData, ip=client_ip, titchg=titchg, bodchg=bodchg)
+			return HttpResponseRedirect(reverse('debate', args=[tname, did]))
 	else:
 		if user.ismod(topic):
 			form = DebateForm(instance=debate, user=user, edit=2)
@@ -332,16 +328,14 @@ def submitargument(request):
 	if request.method == 'POST':
 		form = ArgumentForm(request.POST, user=user, edit=0)
 		if form.is_valid():
-			result = recaptcha(request, settings.GR_ARGUMENTFORM)
-			if result['success']:
-				with reversion.create_revision():
-					obj = form.save()
-					reversion.set_user(user)
-					client_ip, is_routable = get_client_ip(request)
-					reversion.add_meta(RevisionData, ip=client_ip)
-				return HttpResponseRedirect(reverse('argument', args=[obj.topic.name, obj.debate.id, obj.id]))
-			else:
-				messages.error(request, 'Invalid reCAPTCHA. Please try again.')
+			
+			with reversion.create_revision():
+				obj = form.save()
+				reversion.set_user(user)
+				client_ip, is_routable = get_client_ip(request)
+				reversion.add_meta(RevisionData, ip=client_ip)
+			return HttpResponseRedirect(reverse('argument', args=[obj.topic.name, obj.debate.id, obj.id]))
+			
 	else:
 		did = request.GET.get('debate', '')
 		title = request.GET.get('title', '')
@@ -372,22 +366,21 @@ def editargument(request, tname, did, aid):
 		else:
 			form = ArgumentForm(request.POST, instance=argument, user=user, edit=1)
 		if form.is_valid():
-			result = recaptcha(request, settings.GR_ARGUMENTFORM)
-			if result['success']:
-				with reversion.create_revision():
-					diffs = dmp.diff_main(bleach.clean(otitle), bleach.clean(form.cleaned_data['title']))
-					dmp.diff_cleanupSemantic(diffs)
-					titchg = dmp.diff_prettyHtml(diffs)
-					diffs2 = dmp.diff_main(markdownf(obody), markdownf(form.cleaned_data['body']))
-					dmp.diff_cleanupSemantic(diffs2)
-					bodchg = dmp.diff_prettyHtml(diffs2)
-					argument = form.save()
-					reversion.set_user(request.user)
-					client_ip, is_routable = get_client_ip(request)
-					reversion.add_meta(RevisionData, ip=client_ip, titchg=titchg, bodchg=bodchg)
-				return HttpResponseRedirect(reverse('argument', args=[tname, did, aid]))
-			else:
-				messages.error(request, 'Invalid reCAPTCHA. Please try again.')
+			
+		
+			with reversion.create_revision():
+				diffs = dmp.diff_main(bleach.clean(otitle), bleach.clean(form.cleaned_data['title']))
+				dmp.diff_cleanupSemantic(diffs)
+				titchg = dmp.diff_prettyHtml(diffs)
+				diffs2 = dmp.diff_main(markdownf(obody), markdownf(form.cleaned_data['body']))
+				dmp.diff_cleanupSemantic(diffs2)
+				bodchg = dmp.diff_prettyHtml(diffs2)
+				argument = form.save()
+				reversion.set_user(request.user)
+				client_ip, is_routable = get_client_ip(request)
+				reversion.add_meta(RevisionData, ip=client_ip, titchg=titchg, bodchg=bodchg)
+			return HttpResponseRedirect(reverse('argument', args=[tname, did, aid]))
+		
 	else:
 		if user.ismod(topic):
 			form = ArgumentForm(instance=argument, user=user, edit=2)
@@ -415,7 +408,6 @@ def debateedits(request, tname, did): #use same template for different approval 
 
 	context = {
 		'debate': debate,
-		'user': user,
 		'topic': topic,
 		'request': request,
 		'versions': versions,
@@ -441,7 +433,6 @@ def argumentedits(request, tname, did, aid):
 
 	context = {
 		'debate': debate,
-		'user': user,
 		'argument': argument,
 		'topic': topic,
 		'request': request,
@@ -449,3 +440,25 @@ def argumentedits(request, tname, did, aid):
 		'isadmin': isadmin,
 	}
 	return render(request, 'debates/argumentedits.html', context)
+
+@login_required()
+def feed(request):
+	user = request.user
+	query = Debate.objects.none()
+	topics = user.stopics.all()
+	for topic in topics:
+		query = query.union(debateslist(topic))
+	debates_list = query.order_by('-created_on')
+	
+	page = request.GET.get('page', 1)
+
+	debates = getpage(page, debates_list, 30)
+	
+	context = {
+		'request': request,
+		'topics': topics,
+		'debates': debates,
+		'nbar': 'home',
+		'minjq': True,
+	}
+	return render(request, 'debates/feed.html', context)

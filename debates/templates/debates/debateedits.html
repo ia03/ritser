@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% load markdown revision static %}
-{% block title %}{{debate.question}} - Edits{% endblock %}
+{% block title %}{{debate.question}} - Edits - MoDebate{% endblock %}
 {% block head %}<link rel="stylesheet" href="{% static "debates/css/edits.css" %}">{% endblock %}
 {% block body %}
 <main role="main" class="container">
   <h1 class="mt-5">{{debate.question}} - Edits</h1>
   Topic: <a href="{{topic.get_absolute_url}}">{{topic.name}}</a> -
   Owner:
-  <a href="{{debate.owner.get_absolute_url}}">{{debate.owner.username}}</a> -
+  <a href="{{debate.owner.get_absolute_url}}">{{debate.owner.get_username}}</a> -
   Security Level: {{debate.slvl}}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %} - <a href="{% url 'editdebate' tname=debate.topic.name did=debate.id %}">Edit/View source</a> - <a href="{{debate.get_absolute_url}}">Link</a>
   {% if debate.modnote %}
   {% load modnotes %}
@@ -20,14 +20,14 @@
       <div class="card-header" id="headingOne">
         <h5 class="mb-0">
           <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="false" aria-controls="collapse{{forloop.counter}}">
-            <span title="{{version.revision.date_created|date:"c"}}">{{version.revision.date_created|date:"D d M Y f A"}}</span> by {{version.revision.user.username}}
+            <span title="{{version.revision.date_created|date:"c"}}">{{version.revision.date_created|date:"D d M Y f A"}}</span> by {{version.revision.user.get_username}}
           </button>
         </h5>
       </div>
   
       <div id="collapse{{forloop.counter}}" class="collapse" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion">
         <div class="card-body">
-          User: <a href="{{version.revision.user.get_absolute_url}}">{{version.revision.user.username}}</a>
+          User: <a href="{{version.revision.user.get_absolute_url}}">{{version.revision.user.get_username}}</a>
           <br>
           {% ifchanged %}
           Owner: <a href="{{version|owner|url}}">{{version|owner|username}}</a> <br>{% endifchanged %}

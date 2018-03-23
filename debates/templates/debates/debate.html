@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load markdown humanize static %}
 
-{% block title %}{{debate.question}} - {{topic.name}}{% endblock %}
+{% block title %}{{debate.question}} - {{topic.name}} - MoDebate{% endblock %}
 
 {% block head %}<link rel="stylesheet" href="{% static "debates/css/debate.css" %}">{% endblock %}
 
@@ -19,7 +19,7 @@
           <h1 class="mt-5">{{debate.question}}</h1>
           Topic: <a href="{{topic.get_absolute_url}}">{{topic.name}}</a> -
           Owner:
-          <a href="{{debate.owner.get_absolute_url}}">{{debate.owner.username}}</a> -
+          <a href="{{debate.owner.get_absolute_url}}">{{debate.owner.get_username}}</a> -
           Security Level: {{debate.slvl}}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %} - <a href="{% url 'editdebate' tname=topic.name did=debate.id %}">Edit/View source</a> - <a href="{% url 'debateedits' tname=topic.name did=debate.id %}">Edits</a> - {% if topic.slvl > 1 %}<span title="{{debate.approved_on|date:"c"}}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{debate.created_on|date:"c"}}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}
           {% if debate.modnote %}
           {% load modnotes %}
@@ -54,7 +54,7 @@
                 <a href="{{argument.get_absolute_url}}" class="atit"><h5 class="mb-1">{{argument.title}}</h5></a>
               </div>
                 <p class="mb-0 argdesc">{{argument.body|markdownf}}</p>
-                <small class="sinfo"><a href="{{argument.owner.get_absolute_url}}">{{argument.owner.username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
+                <small class="sinfo"><a href="{{argument.owner.get_absolute_url}}">{{argument.owner.get_username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
 
 
 
@@ -122,7 +122,7 @@
                 <a href="{{argument.get_absolute_url}}" class="atit"><h5 class="mb-1">{{argument.title}}</h5></a>
               </div>
                 <p class="mb-0">{{argument.body|markdownf}}</p>
-                <small class="sinfo"><a href="{{argument.owner.get_absolute_url}}">{{argument.owner.username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Danger</span>{% endif %}</small>
+                <small class="sinfo"><a href="{{argument.owner.get_absolute_url}}">{{argument.owner.get_username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Danger</span>{% endif %}</small>
 
             </div>
             {% endfor %}
@@ -187,4 +187,4 @@
 
 {% block endjs %}
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js" integrity="sha384-xfK7Pd4lZwvHpwqHVm6CLkaaJWD3pwmicCjngjDHNBjH5tYAr4ZsgFBEbtnjI1zD" crossorigin="anonymous"></script>
-<script type="text/javascript" src="{% static "debates/js/debate.js" %}"></script>{% endblock %}
+<script src="{% static "debates/js/debate.js" %}"></script>{% endblock %}

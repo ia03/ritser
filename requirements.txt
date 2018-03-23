@@ -10,3 +10,4 @@ django-ipware
 django-widgets-improved
 diff-match-patch
 django-allauth
+django-recaptcha

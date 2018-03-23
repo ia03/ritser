@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load markdown humanize static %}
+
+{% block title %}Feed - MoDebate{% endblock %}
+
+{% block head %}<link rel="stylesheet" href="{% static "debates/css/topic.css" %}">{% endblock %}
+
+{% block body %}
+    <main role="main" class="container">
+      <h1 class="mt-5">Feed</h1>
+      {% if topics %}Topics: {% for topic in topics %}{% if not forloop.first %}, {% endif %}<a href="{{topic.get_absolute_url}}">{{topic.name}}</a>{% endfor %}{% if topics|length > 20 %}...{% endif %}
+      <br>
+      Remove or add topics in your <a href="{% url 'profile' %}">profile page.</a>
+      <hr />
+       <br>
+      {% if debates %}
+      <div class="list-group" data-vote-url="{% url 'votedebate' %}">
+      {% for debate in debates %}
+        <div class="list-group-item list-group-item-action flex-column align-items-start container" data-debate-id="{{debate.id}}">
+          <div class="row">
+            <div class="col-md-1 karmad">
+              {% if user.is_authenticated %}<div class="arrow-up{% if debate in dupvoted %}-selected{% endif %} votebtn"></div>{% endif %}
+              <span class="karmacount" title="karma (votes)">{{debate.karma|intcomma}}</span>
+              {% if user.is_authenticated %}<div class="arrow-down{% if debate in ddownvoted %}-selected{% endif %} votebtn"></div>{% endif %}
+            </div>
+            <div class="col-md-11">
+              <div class="d-flex w-100 justify-content-between">
+                <a href="{{debate.get_absolute_url}}" class="dtit"><h5 class="mb-1">{{debate.question}}</h5></a>
+              </div>
+
+
+              <p class="mb-1">{{debate.description|markdownf:"1"|truncatewords:50}}</p>
+
+              <small><a href="{{debate.owner.get_absolute_url}}">{{debate.owner.get_username}}</a> in <a href="{{debate.topic.get_absolute_url}}">{{debate.topic.name}}</a> - <span title="{{debate.created_on|date:"c"}}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% endif %}</small>
+              <div class="arglinks">
+                <a href="{% url 'debateapproved' tname=debate.topic_id did=debate.id %}" class="badge badge-primary">Approved</a>
+                <a href="{% url 'debateunapproved' tname=debate.topic_id did=debate.id %}" class="badge badge-secondary">Unapproved</a>
+                <a href="{% url 'debatedenied' tname=debate.topic_id did=debate.id %}" class="badge badge-danger">Denied</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+      </div>
+      {% else %}
+      No debates found.
+      {% endif %}
+      {% if debates.has_other_pages %}
+      {% load paginator %}
+      {% load link_name %}
+      {% paginator debates request %}
+      {% endif %}
+      {% else %}No subscribed topics found. Add a few topics in your <a href="{% url 'profile' %}">profile page</a> to get started.{% endif %}
+    </main>
+
+{% endblock %}
+
+{% block endjs %}
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js" integrity="sha384-xfK7Pd4lZwvHpwqHVm6CLkaaJWD3pwmicCjngjDHNBjH5tYAr4ZsgFBEbtnjI1zD" crossorigin="anonymous"></script>
+<script src="{% static "debates/js/debatevote.js" %}"></script>{% endblock %}

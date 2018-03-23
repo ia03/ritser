@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load markdown humanize static %}
 
-{% block title %}{% if topic.title != "" %}{{ topic.title }}{% else %}t/{{ topic.name }}{% endif %}{% endblock %}
+{% block title %}{% if topic.title != "" %}{{ topic.title }}{% else %}t/{{ topic.name }}{% endif %} - MoDebate{% endblock %}
 
 {% block head %}<link rel="stylesheet" href="{% static "debates/css/topic.css" %}">{% endblock %}
 
@@ -13,7 +13,7 @@
       <div class="row">
         <div class="col-md-6">Owner:
           <a href="{{topic.owner.get_absolute_url}}">
-            {{topic.owner.username}}
+            {{topic.owner.get_username}}
           </a><br> Security Level: {{topic.slvl}}
           <br>
           Default Debate Security Level: {{topic.debslvl}}
@@ -29,7 +29,7 @@
           </select>
         </div>
         <div class="col-md-6 text-md-right" id="modcol">
-          Moderators: {% for mod in fmods %}{% if not forloop.first %}, {% endif %}<a href="{{mod.get_absolute_url}}">{{mod.username}}</a>{% endfor %}{% if mods|length > 10 %}...{% endif %}
+          Moderators: {% for mod in fmods %}{% if not forloop.first %}, {% endif %}<a href="{{mod.get_absolute_url}}">{{mod.get_username}}</a>{% endfor %}{% if mods|length > 10 %}...{% endif %}
           <a class="btn btn-primary{% if not ats %} disabled{% endif %}" id="submitdbtn" href="{% if ats %}{% url 'submitdebate' %}?topic={{topic.name}}{% else %}#{% endif %}">Submit Debate</a>
         </div>
       </div>
@@ -41,9 +41,9 @@
         <div class="list-group-item list-group-item-action flex-column align-items-start container" data-debate-id="{{debate.id}}">
           <div class="row">
             <div class="col-md-1 karmad">
-              {% if request.user.is_authenticated %}<div class="arrow-up{% if debate in dupvoted %}-selected{% endif %} votebtn"></div>{% endif %}
+              {% if user.is_authenticated %}<div class="arrow-up{% if debate in dupvoted %}-selected{% endif %} votebtn"></div>{% endif %}
               <span class="karmacount" title="karma (votes)">{{debate.karma|intcomma}}</span>
-              {% if request.user.is_authenticated %}<div class="arrow-down{% if debate in ddownvoted %}-selected{% endif %} votebtn"></div>{% endif %}
+              {% if user.is_authenticated %}<div class="arrow-down{% if debate in ddownvoted %}-selected{% endif %} votebtn"></div>{% endif %}
             </div>
             <div class="col-md-11">
               <div class="d-flex w-100 justify-content-between">
@@ -53,7 +53,7 @@
 
               <p class="mb-1">{{debate.description|markdownf:"1"|truncatewords:50}}</p>
 
-              <small><a href="{{debate.owner.get_absolute_url}}">{{debate.owner.username}}</a> - {% if topic.slvl > 1 %}<span title="{{debate.approved_on|date:"c"}}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{debate.created_on|date:"c"}}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% endif %}</small>
+              <small><a href="{{debate.owner.get_absolute_url}}">{{debate.owner.get_username}}</a> - {% if topic.slvl < 1 %}<span title="{{debate.approved_on|date:"c"}}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{debate.created_on|date:"c"}}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% endif %}</small>
               <div class="arglinks">
                 <a href="{% url 'debateapproved' tname=topic.name did=debate.id %}" class="badge badge-primary">Approved</a>
                 <a href="{% url 'debateunapproved' tname=topic.name did=debate.id %}" class="badge badge-secondary">Unapproved</a>
@@ -78,4 +78,5 @@
 
 {% block endjs %}
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js" integrity="sha384-xfK7Pd4lZwvHpwqHVm6CLkaaJWD3pwmicCjngjDHNBjH5tYAr4ZsgFBEbtnjI1zD" crossorigin="anonymous"></script>
-<script type="text/javascript" src="{% static "debates/js/topic.js" %}"></script>{% endblock %}
+<script src="{% static "debates/js/topic.js" %}"></script>
+<script src="{% static "debates/js/debatevote.js" %}"></script>{% endblock %}

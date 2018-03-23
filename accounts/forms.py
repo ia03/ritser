@@ -1,5 +1,6 @@
 from django import forms
 from .models import User
+from debates.models import Topic
 from captcha.fields import ReCaptchaField
 from django.conf import settings
 class SignupForm(forms.Form):
@@ -9,10 +10,29 @@ class SignupForm(forms.Form):
         pass
 
 class ProfileForm(forms.ModelForm):
-    
+    stopicsf = forms.CharField(required=False)
+    def __init__(self, *args, **kwargs):
+        super(ProfileForm, self).__init__(*args, **kwargs)
+        self.fields['stopicsf'].label = 'Subscribed Topics (a space-separated list of their names)'
+        stopicns = []
+        for topic in self.instance.stopics.all():
+            stopicns.append(topic.name)
+        self.fields['stopicsf'].initial = ' '.join(stopicns)
+    def clean_stopicsf(self):
+        data = self.cleaned_data.get('stopicsf')
+        self.stopicnl = data.split()
+        if len(set(self.stopicnl)) != len(self.stopicnl):
+            forms.ValidationError('List of subscribed topics may not contain duplicates.', code='stopicsduplicate', params={'stopicsl': self.stopicnl})
+        self.stopicsl = []
+        for topicname in self.stopicnl:
+            try:
+                self.stopicsl.append(Topic.objects.get(name=topicname))
+            except Topic.DoesNotExist:
+                forms.ValidationError('Subscribed topic name not found.', code='stopicnotfound', params={'topicname': topicname})
+        return data
     class Meta:
         model = User
-        fields = ['bio']
+        fields = ['bio', 'stopicsf']
         
 '''
 class UserCreationForm(forms.ModelForm):

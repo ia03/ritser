@@ -27,7 +27,7 @@
       <div class="collapse navbar-collapse" id="navbartoggler">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
           <li class="nav-item{% if nbar == 'home' %} active{% endif %}">
-            <a class="nav-link" href="#">Home {% if nbar == 'home' %}<span class="sr-only">(current)</span>{% endif %}</a>
+            <a class="nav-link" href="{% if user.is_authenticated %}{% url 'feed' %}{% else %}{% url 'index' %}{% endif %}">Home {% if nbar == 'home' %}<span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           <li class="nav-item{% if nbar == 'about' %} active{% endif %}">
             <a class="nav-link" href="{% url 'about' %}">About {% if nbar == 'about' %}<span class="sr-only">(current)</span>{% endif %}</a>

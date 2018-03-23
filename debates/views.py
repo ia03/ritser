@@ -458,5 +458,7 @@ def feed(request):
 		'request': request,
 		'topics': topics,
 		'debates': debates,
+		'nbar': 'home',
+		'minjq': True,
 	}
 	return render(request, 'debates/feed.html', context)

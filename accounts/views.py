@@ -22,7 +22,9 @@ def profile(request):
 	if request.method == 'POST':
 		form = ProfileForm(request.POST, instance=request.user)
 		if form.is_valid():
-			request.user = form.save()
+			request.user = form.save(commit=False)
+			request.user.stopics.set(form.stopicsl)
+			request.user.save()
 			return HttpResponseRedirect(reverse('profile'))
 	elif request.method == 'GET':
 		form = ProfileForm(instance=request.user)

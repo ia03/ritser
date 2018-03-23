@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load markdown humanize static %}
 
-{% block title %}{% if topic.title != "" %}{{ topic.title }}{% else %}t/{{ topic.name }}{% endif %} - MoDebate{% endblock %}
+{% block title %}Feed - MoDebate{% endblock %}
 
 {% block head %}<link rel="stylesheet" href="{% static "debates/css/topic.css" %}">{% endblock %}
 
@@ -9,8 +9,8 @@
     <main role="main" class="container">
       <h1 class="mt-5">Feed</h1>
       {% if topics %}Topics: {% for topic in topics %}{% if not forloop.first %}, {% endif %}<a href="{{topic.get_absolute_url}}">{{topic.name}}</a>{% endfor %}{% if topics|length > 20 %}...{% endif %}
-      
-    
+      <br>
+      Remove or add topics in your <a href="{% url 'profile' %}">profile page.</a>
       <hr />
        <br>
       {% if debates %}
@@ -31,11 +31,11 @@
 
               <p class="mb-1">{{debate.description|markdownf:"1"|truncatewords:50}}</p>
 
-              <small><a href="{{debate.owner.get_absolute_url}}">{{debate.owner.get_username}}</a> - <span title="{{debate.created_on|date:"c"}}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% endif %}</small>
+              <small><a href="{{debate.owner.get_absolute_url}}">{{debate.owner.get_username}}</a> in <a href="{{debate.topic.get_absolute_url}}">{{debate.topic.name}}</a> - <span title="{{debate.created_on|date:"c"}}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% endif %}</small>
               <div class="arglinks">
-                <a href="{% url 'debateapproved' tname=topic.name did=debate.id %}" class="badge badge-primary">Approved</a>
-                <a href="{% url 'debateunapproved' tname=topic.name did=debate.id %}" class="badge badge-secondary">Unapproved</a>
-                <a href="{% url 'debatedenied' tname=topic.name did=debate.id %}" class="badge badge-danger">Denied</a>
+                <a href="{% url 'debateapproved' tname=debate.topic_id did=debate.id %}" class="badge badge-primary">Approved</a>
+                <a href="{% url 'debateunapproved' tname=debate.topic_id did=debate.id %}" class="badge badge-secondary">Unapproved</a>
+                <a href="{% url 'debatedenied' tname=debate.topic_id did=debate.id %}" class="badge badge-danger">Denied</a>
               </div>
             </div>
           </div>
@@ -57,4 +57,4 @@
 
 {% block endjs %}
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js" integrity="sha384-xfK7Pd4lZwvHpwqHVm6CLkaaJWD3pwmicCjngjDHNBjH5tYAr4ZsgFBEbtnjI1zD" crossorigin="anonymous"></script>
-<script src="{% static "debates/js/topic.js" %}"></script>{% endblock %}
+<script src="{% static "debates/js/debatevote.js" %}"></script>{% endblock %}

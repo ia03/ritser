@@ -39,7 +39,7 @@ class Debate(models.Model):
 	active = models.BooleanField(default=True)
 	question = models.CharField(max_length=300)
 	description = models.TextField(max_length=200000, blank=True)
-	created_on = models.DateTimeField(default=timezone.now)
+	created_on = models.DateTimeField(default=timezone.now, db_index=True)
 	edited_on = models.DateTimeField(default=timezone.now)
 	approved_on = models.DateTimeField(default=timezone.now, db_index=True, blank=True, null=True)
 

@@ -10,6 +10,7 @@ class User(AbstractUser):
 	bandate = models.DateTimeField(blank=True, null=True)
 	bannote = models.CharField(max_length=10000, blank=True)
 	bio = models.TextField(max_length=200000, blank=True)
+	stopics = models.ManyToManyField('debates.Topic', related_name='susers', blank=True)
 	def get_absolute_url(self):
 		return reverse('user', args=[self.username])
 	def ismod(self, topic):

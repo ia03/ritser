@@ -1,6 +1,13 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.encoding import force_text
 from diff_match_patch import diff_match_patch
+from django.db.models import Q
+
+def debateslist(topic):
+    if (topic.slvl == 0) or (topic.slvl == 1):
+        return topic.debates.filter(Q(approvalstatus=0) | Q(approvalstatus=1))
+    else:
+        return topic.debates.filter(approvalstatus=0)
 def getpage(pagen, qlist, noi):
     paginator = Paginator(qlist, noi)
     try:

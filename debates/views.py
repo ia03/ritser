@@ -7,7 +7,7 @@ from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
 from .forms import DebateForm, ArgumentForm
-from .utils import getpage, newdiff
+from .utils import getpage, newdiff, debateslist
 from ipware import get_client_ip
 from .templatetags.markdown import markdownf
 import reversion, bleach
@@ -42,7 +42,7 @@ def topic(request, tname):
 	fmods = mods[:10] #first 10 mods
 	sortc = request.COOKIES.get('dsort')
 	sorta = request.GET.get('sort', '')
-	query = topic.debates.filter(Q(approvalstatus=0) | Q(approvalstatus=1)) if (topic.slvl == 0) or (topic.slvl == 1) else topic.debates.filter(approvalstatus=0)
+	query = debateslist(topic)
 
 	if (sorta == 'top'):
 		debates_list = query.order_by('-karma') #default
@@ -51,7 +51,10 @@ def topic(request, tname):
 		debates_list = query.order_by('karma')
 		sortb = "&sort=lowest"
 	elif (sorta == 'new'):
-		debates_list = query.order_by('-approved_on')
+		if topic.slvl > 1:
+			debates_list = query.order_by('-approved_on')
+		else:
+			debates_list = query.order_by('-created_on')
 		sortb = "&sort=new"
 	elif (sorta == 'random'):
 		debates_list = query.order_by('?')
@@ -63,7 +66,10 @@ def topic(request, tname):
 		debates_list = query.order_by('karma')
 		sortb = "&sort=lowest"
 	elif (sortc == 'new'):
-		debates_list = query.order_by('-approved_on')
+		if topic.slvl > 1:
+			debates_list = query.order_by('-approved_on')
+		else:
+			debates_list = query.order_by('-created_on')
 		sortb = "&sort=new"
 	elif (sortc == 'random'):
 		debates_list = query.order_by('?')
@@ -402,7 +408,6 @@ def debateedits(request, tname, did): #use same template for different approval 
 
 	context = {
 		'debate': debate,
-		'user': user,
 		'topic': topic,
 		'request': request,
 		'versions': versions,
@@ -428,7 +433,6 @@ def argumentedits(request, tname, did, aid):
 
 	context = {
 		'debate': debate,
-		'user': user,
 		'argument': argument,
 		'topic': topic,
 		'request': request,
@@ -436,3 +440,23 @@ def argumentedits(request, tname, did, aid):
 		'isadmin': isadmin,
 	}
 	return render(request, 'debates/argumentedits.html', context)
+
+@login_required()
+def feed(request):
+	user = request.user
+	query = Debate.objects.none()
+	topics = user.stopics.all()
+	for topic in topics:
+		query = query.union(debateslist(topic))
+	debates_list = query.order_by('-created_on')
+	
+	page = request.GET.get('page', 1)
+
+	debates = getpage(page, debates_list, 30)
+	
+	context = {
+		'request': request,
+		'topics': topics,
+		'debates': debates,
+	}
+	return render(request, 'debates/feed.html', context)

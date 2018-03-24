@@ -5,6 +5,7 @@
 
 {% block body %}
 <main role="main" class="container">
+    {% if useria %}
     {% if useria.active == 1 %}
     <h1>Account Deleted</h1>
     
@@ -27,6 +28,11 @@
     <br>
     {{useria.bannote|markdownf }}
     {% endif %}
+    {% endif %}
+    {% else %}
+    <h1>Invalid Session</h1>
+    
+    <p>Please try logging in again.</p>
     {% endif %}
 </main>
 {% endblock %}

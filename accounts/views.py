@@ -35,7 +35,12 @@ def profile(request):
 	return render(request, 'accounts/profile.html', context)
 	
 def inactive(request):
+	useriaid = request.session.pop('useriaid', -1)
 	context = {
-		'useria': User.objects.get(id=request.session.pop('useriaid'))
+		
 	}
+	if useriaid == -1:
+		context['useria'] = None
+	else:
+		context['useria'] = User.objects.get(id=useriaid)
 	return render(request, 'account/account_inactive.html', context)

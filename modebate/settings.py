@@ -208,6 +208,7 @@ else:
     ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 1800
 ACCOUNT_SIGNUP_FORM_CLASS = 'accounts.forms.SignupForm'
+ACCOUNT_ADAPTER = 'accounts.adapters.DefaultAccountAdapter'
 
 SOCIALACCOUNT_PROVIDERS = {
     'reddit': {

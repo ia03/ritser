@@ -33,3 +33,9 @@ def profile(request):
 		'form': form,
 	}
 	return render(request, 'accounts/profile.html', context)
+	
+def inactive(request):
+	context = {
+		'useria': User.objects.get(id=request.session.pop('useriaid'))
+	}
+	return render(request, 'account/account_inactive.html', context)

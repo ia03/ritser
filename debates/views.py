@@ -503,3 +503,4 @@ def search(request):
 		'ddownvoted': ddownvoted,
 	}
 	return render(request, 'debates/search.html', context)
+

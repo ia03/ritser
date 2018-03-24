@@ -25,6 +25,7 @@ urlpatterns = [
     path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('img/favicon.ico')), name="favicon"), #favicon for older browsers
     re_path(r'^u/', include('accounts.urls')),
     path('accounts/profile/', accounts.views.profile, name='profile'),
+    path('accounts/inactive/', accounts.views.inactive, name='account_inactive'), #overrides django-allauth
     re_path(r'^accounts/', include('allauth.urls')),
     # path('signup', accounts.views.signup, name='signup'),
 	re_path(r'^', include('debates.urls')),

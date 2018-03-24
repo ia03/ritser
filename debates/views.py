@@ -12,6 +12,7 @@ from ipware import get_client_ip
 from .templatetags.markdown import markdownf
 import reversion, bleach
 from reversion.models import Version
+from haystack.query import SearchQuerySet
 
 dmp = newdiff()
 
@@ -462,3 +463,20 @@ def feed(request):
 		'minjq': True,
 	}
 	return render(request, 'debates/feed.html', context)
+	
+def search(request):
+	query = request.GET.get('q', '')
+	debates_list = SearchQuerySet().filter(content=query)
+	#debates_list = SearchQuerySet().all()
+	page = request.GET.get('page', 1)
+
+	debatesq = getpage(page, debates_list, 30)
+	debates = [d.object for d in debatesq]
+	context = {
+		'request': request,
+		'debatesq': debatesq,
+		'debates': debates,
+		'query': query,
+		'minjq': True,
+	}
+	return render(request, 'debates/search.html', context)

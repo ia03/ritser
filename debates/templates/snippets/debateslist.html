@@ -1,0 +1,33 @@
+{% load humanize markdown %}
+{% if debates %}
+<div class="list-group" data-vote-url="{% url 'votedebate' %}">
+{% for debate in debates %}
+<div class="list-group-item list-group-item-action flex-column align-items-start container" data-debate-id="{{debate.id}}">
+  <div class="row">
+    <div class="col-md-1 karmad">
+      {% if user.is_authenticated %}<div class="arrow-up{% if debate in dupvoted %}-selected{% endif %} votebtn"></div>{% endif %}
+      <span class="karmacount" title="karma (votes)">{{debate.karma|intcomma}}</span>
+      {% if user.is_authenticated %}<div class="arrow-down{% if debate in ddownvoted %}-selected{% endif %} votebtn"></div>{% endif %}
+    </div>
+    <div class="col-md-11">
+      <div class="d-flex w-100 justify-content-between">
+        <a href="{{debate.get_absolute_url}}" class="dtit"><h5 class="mb-1">{{debate.question}}</h5></a>
+      </div>
+
+
+      <p class="mb-1">{{debate.description|markdownf:"1"|truncatewords:50}}</p>
+
+      <small><a href="{{debate.owner.get_absolute_url}}">{{debate.owner.get_username}}</a> in <a href="{{debate.topic.get_absolute_url}}">{{debate.topic.name}}</a> - <span title="{{debate.created_on|date:"c"}}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% endif %}</small>
+      <div class="arglinks">
+        <a href="{% url 'debateapproved' tname=debate.topic_id did=debate.id %}" class="badge badge-primary">Approved</a>
+        <a href="{% url 'debateunapproved' tname=debate.topic_id did=debate.id %}" class="badge badge-secondary">Unapproved</a>
+        <a href="{% url 'debatedenied' tname=debate.topic_id did=debate.id %}" class="badge badge-danger">Denied</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+</div>
+{% else %}
+No debates found.
+{% endif %}

@@ -1,25 +1,27 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Feed - MoDebate{% endblock %}
+{% block title %}Search - MoDebate{% endblock %}
 
 {% block head %}<link rel="stylesheet" href="{% static "debates/css/topic.css" %}">{% endblock %}
 
 {% block body %}
     <main role="main" class="container">
-      <h1 class="mt-5">Feed</h1>
-      {% if topics %}Topics: {% for topic in topics %}{% if not forloop.first %}, {% endif %}<a href="{{topic.get_absolute_url}}">{{topic.name}}</a>{% endfor %}{% if topics|length > 20 %}...{% endif %}
+      <h1 class="mt-5">Search</h1>
       <br>
-      Remove or add topics in your <a href="{% url 'profile' %}">profile page.</a>
+      <form class="form-inline my-2 my-lg-0 col-md-8" method="get" action="{% url 'search' %}">
+          <input class="form-control mr-sm-2" type="search" name="q" value="{{query}}" placeholder="Search for a topic" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
       <hr />
        <br>
+     
       {% include 'snippets/debateslist.html' %}
       {% if debates.has_other_pages %}
       {% load paginator %}
       {% load link_name %}
       {% paginator debates request %}
       {% endif %}
-      {% else %}No subscribed topics found. Add a few topics in your <a href="{% url 'profile' %}">profile page</a> to get started.{% endif %}
     </main>
 
 {% endblock %}

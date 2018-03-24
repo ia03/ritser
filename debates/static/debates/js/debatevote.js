@@ -35,6 +35,6 @@ $(document).ready(function() {
         if(!isNaN(Number(response))){
           karmacount.html(response);
         }
-      }, 'text');
+      });
     });
 });

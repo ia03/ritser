@@ -52,7 +52,7 @@ $(document).ready(function() {
           karmacount.html(response);
           console.log(response);
         }
-      }, 'text');
+      });
     });
     $('#for-tab').click(function () {
       var reExp = /tab=\d+/;

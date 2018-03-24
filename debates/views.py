@@ -466,8 +466,13 @@ def feed(request):
 	
 def search(request):
 	query = request.GET.get('q', '')
-	debates_list = SearchQuerySet().filter(content=query)
-	#debates_list = SearchQuerySet().all()
+	tname = request.GET.get('t', '')
+	if tname != '':
+		topic = get_object_or_404(Topic, name=tname)
+		debates_list = SearchQuerySet().filter(content=query, topic=topic)
+	else:
+		debates_list = SearchQuerySet().filter(content=query)
+
 	page = request.GET.get('page', 1)
 
 	debatesq = getpage(page, debates_list, 30)

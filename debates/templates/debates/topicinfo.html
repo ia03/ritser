@@ -11,8 +11,8 @@
       <p class="lead">{{topic.title}}</p>
       <a href="{% url 'topic' tname=topic.name %}">Main Page</a>
       <div class="row">
-        <div class="col-md-6">Owner: <a href="{% url 'profile' uname=topic.owner.get_username %}">{{topic.owner.get_username}}</a><br>Security Level: {{topic.slvl}}<br>Default Debate Security Level: {{topic.debslvl}}<br>Created on {{topic.created_on|date}}</div>
-        <div class="col-md-6 text-md-right">Moderators: {% for mod in mods %}{% if not forloop.first %}, {% endif %}<a href="{% url 'profile' uname=mod.get_username %}">{{mod.get_username}}</a>{% endfor %}</div>
+        <div class="col-md-6">Owner: <a href="{{ owner.get_absolute_url }}">{{topic.owner.get_username}}</a><br>Security Level: {{topic.slvl}}<br>Default Debate Security Level: {{topic.debslvl}}<br>Created on {{topic.created_on|date}}</div>
+        <div class="col-md-6 text-md-right">Moderators: {% for mod in mods %}{% if not forloop.first %}, {% endif %}<a href="{{mod.get_absolute_url}}">{{mod.get_username}}</a>{% endfor %}</div>
       </div>
       <hr />
       {{topic.description|markdownf}}

@@ -28,24 +28,6 @@ GR_ARGUMENTFORM
 GR_SIGNUPFORM
 emailpass
 
-https://css-tricks.com/snippets/css/css-triangle/
-
-add mod notes https://django-reversion.readthedocs.io/en/stable/api.html#api
-
-https://github.com/etianen/django-reversion
-
-use django reversion or the following tool to keep track of edits
-
-htmldiff https://www.w3.org/wiki/HtmlDiff
-
-https://docs.python.org/2/library/difflib.html
-
-maybe use this for sorting algorithms
-
-http://cython.org/
-
-test account email (check if adding an email works) and account inactive templates
-
 for $5 monthly no ads and unlimited upvotes?
 
 
@@ -57,7 +39,5 @@ https://www.ontario.ca/page/register-business-name-limited-partnership
 
 Get the notion that you have to prove your opponent wrong out of your head. When you're debating, you're not "wrong" or "right" and neither is your opponent. You're
 just both people sharing information to find the answer more easily.
-
-add an important statement to the top of the about page like "The only 2 factors that affect people's beliefs are.."
 
 We strongly value freedom of speech. We will not censor certain groups of people to manipulate their political beliefs.

@@ -12,6 +12,7 @@ from ipware import get_client_ip
 from .templatetags.markdown import markdownf
 import reversion, bleach
 from reversion.models import Version
+from haystack.query import SearchQuerySet
 
 dmp = newdiff()
 
@@ -454,11 +455,51 @@ def feed(request):
 
 	debates = getpage(page, debates_list, 30)
 	
+
+	dupvoted = user.debates_upvoted.all()
+	ddownvoted = user.debates_downvoted.all()
+	
+	
 	context = {
 		'request': request,
 		'topics': topics,
 		'debates': debates,
 		'nbar': 'home',
 		'minjq': True,
+		'dupvoted': dupvoted,
+		'ddownvoted': ddownvoted,
 	}
 	return render(request, 'debates/feed.html', context)
+	
+def search(request):
+	user = request.user
+	query = request.GET.get('q', '')
+	tname = request.GET.get('t', '')
+	if tname != '':
+		topic = get_object_or_404(Topic, name=tname)
+		debates_list = SearchQuerySet().filter(content=query, topic=topic)
+	else:
+		debates_list = SearchQuerySet().filter(content=query)
+
+	page = request.GET.get('page', 1)
+
+	debatesq = getpage(page, debates_list, 30)
+	debates = [d.object for d in debatesq]
+	
+	if (user.is_authenticated):
+		dupvoted = user.debates_upvoted.all()
+		ddownvoted = user.debates_downvoted.all()
+	else:
+		dupvoted = []
+		ddownvoted = []
+	context = {
+		'request': request,
+		'debatesq': debatesq,
+		'debates': debates,
+		'query': query,
+		'tname': tname,
+		'minjq': True,
+		'dupvoted': dupvoted,
+		'ddownvoted': ddownvoted,
+	}
+	return render(request, 'debates/search.html', context)

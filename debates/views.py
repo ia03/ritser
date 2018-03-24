@@ -455,16 +455,24 @@ def feed(request):
 
 	debates = getpage(page, debates_list, 30)
 	
+
+	dupvoted = user.debates_upvoted.all()
+	ddownvoted = user.debates_downvoted.all()
+	
+	
 	context = {
 		'request': request,
 		'topics': topics,
 		'debates': debates,
 		'nbar': 'home',
 		'minjq': True,
+		'dupvoted': dupvoted,
+		'ddownvoted': ddownvoted,
 	}
 	return render(request, 'debates/feed.html', context)
 	
 def search(request):
+	user = request.user
 	query = request.GET.get('q', '')
 	tname = request.GET.get('t', '')
 	if tname != '':
@@ -477,11 +485,21 @@ def search(request):
 
 	debatesq = getpage(page, debates_list, 30)
 	debates = [d.object for d in debatesq]
+	
+	if (user.is_authenticated):
+		dupvoted = user.debates_upvoted.all()
+		ddownvoted = user.debates_downvoted.all()
+	else:
+		dupvoted = []
+		ddownvoted = []
 	context = {
 		'request': request,
 		'debatesq': debatesq,
 		'debates': debates,
 		'query': query,
+		'tname': tname,
 		'minjq': True,
+		'dupvoted': dupvoted,
+		'ddownvoted': ddownvoted,
 	}
 	return render(request, 'debates/search.html', context)

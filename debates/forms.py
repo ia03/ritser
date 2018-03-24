@@ -164,7 +164,7 @@ class DebateForm(forms.ModelForm):
 class ArgumentForm(forms.ModelForm):
     owner_name = forms.CharField(max_length=30)
     debate_id = forms.IntegerField()
-    captcha = ReCaptchaField(private_key=settings.GR_ARGUMENTFORM, public_key='6Lcd9EwUAAAAAAExN5gc7KSQ2da', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
+    captcha = ReCaptchaField(private_key=settings.GR_ARGUMENTFORM, public_key='6Lcd9EwUAAAAAAExN5gc7KSQ2da-BWNJSAKtH2r4', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
         if 'edit' in kwargs:

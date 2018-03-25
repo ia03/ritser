@@ -199,6 +199,7 @@ EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = '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'
+DEFAULT_FROM_EMAIL = 'webmaster@modebate.com'
 
 # All-auth settings
 SITE_ID = 2
@@ -210,6 +211,8 @@ else:
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 1800
 ACCOUNT_SIGNUP_FORM_CLASS = 'accounts.forms.SignupForm'
 ACCOUNT_ADAPTER = 'accounts.adapters.DefaultAccountAdapter'
+ACCOUNT_EMAIL_CONFIRMATION_COOLDOWN = 36000
+ACCOUNT_EMAIL_CONFIRMATION_HMAC = False
 
 SOCIALACCOUNT_PROVIDERS = {
     'reddit': {

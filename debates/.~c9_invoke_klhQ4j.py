@@ -278,7 +278,6 @@ class TopicForm(forms.ModelForm):
             self.edit = kwargs.pop("edit")
         else:
             self.edit = 0
-        self.modsl = []
         super(TopicForm, self).__init__(*args, **kwargs)
         donotrequire(self, 'owner', 'modsf', 'created_on', 'created_by', 'edited_on')
         self.fields['modsf'].label = 'Moderators (a space-separated list of their names)'
@@ -301,12 +300,6 @@ class TopicForm(forms.ModelForm):
             for mod in self.instance.moderators.all():
                 modns.append(mod.get_username())
             self.fields['modsf'].initial = ' '.join(modns)
-    def clean_name(self):
-        data = self.cleaned_data['name']
-        if self.edit != 0:
-            return self.instance.name
-        else:
-            return data
     def clean_owner_name(self):
         data = self.cleaned_data['owner_name']
         if self.edit != 0 and self.edit != 1:
@@ -330,13 +323,13 @@ class TopicForm(forms.ModelForm):
         data = self.cleaned_data.get('modsf')
         self.modnl = data.split()
         if len(set(self.modnl)) != len(self.modnl):
-            raise forms.ValidationError('List of moderators may not contain duplicates.', code='modsduplicate', params={'modnl': self.modnl})
+            forms.ValidationError('List of moderators may not contain duplicates.', code='modsduplicate', params={'modnl': self.modnl})
+        self.modsl = []
         for modname in self.modnl:
-            
             try:
                 self.modsl.append(User.objects.get(username=modname))
             except User.DoesNotExist:
-                raise forms.ValidationError('Moderator %(modname)s not found.', code='modnotfound', params={'modname': modname})
+                forms.ValidationError('Moderator %(modname)s not found.', code='modnotfound', params={'modname': modname})
         return data
     def clean_slvl(self):
         data = self.cleaned_data.get('slvl')
@@ -363,8 +356,6 @@ class TopicForm(forms.ModelForm):
             cleaned_data['owner'] = owner
             if self.edit != 1 and owner.approvedargs < 20 and not self.user.isgmod() and (self.edit == 0 or owner != self.user):
                 raise forms.ValidationError('You must have at least 20 approved arguments to own a topic.')
-            if owner in self.modsl:
-                raise forms.ValidationError('Owner must not be one of the moderators.')
         return cleaned_data
     class Meta:
         model = Topic

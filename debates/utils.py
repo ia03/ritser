@@ -118,5 +118,4 @@ class newdiff(diff_match_patch):
             html.append("<del>%s</del>" % text)
           elif op == self.DIFF_EQUAL:
             html.append("<span>%s</span>" % text)
-        print ("".join(html))
         return "".join(html)

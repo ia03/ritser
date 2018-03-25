@@ -482,13 +482,12 @@ def edittopic(request, tname):
 	user = request.user
 
 	if request.method == 'POST':
-		if user.isowner(topic):
+		isowner = user.isowner(topic)
+		if isowner:
 			form = TopicForm(request.POST, instance=topic, user=user, edit=2)
 		else:
 			form = TopicForm(request.POST, instance=topic, user=user, edit=1)
 		if form.is_valid():
-			
-		
 			with reversion.create_revision():
 				diffs = dmp.diff_main(bleach.clean(otitle), bleach.clean(form.cleaned_data['title']))
 				dmp.diff_cleanupSemantic(diffs)
@@ -497,7 +496,7 @@ def edittopic(request, tname):
 				dmp.diff_cleanupSemantic(diffs2)
 				bodchg = dmp.diff_prettyHtml(diffs2)
 				topic = form.save(commit=False)
-				if user.isowner(topic):
+				if isowner:
 					topic.moderators.set(form.modsl)
 				topic.save()
 				reversion.set_user(request.user)
@@ -505,7 +504,7 @@ def edittopic(request, tname):
 				reversion.add_meta(RevisionData, ip=client_ip, titchg=titchg, bodchg=bodchg)
 			return HttpResponseRedirect(reverse('topic', args=[tname]))
 		
-	else:
+	elif request.method == 'GET':
 		if user.isowner(topic):
 			form = TopicForm(instance=topic, user=user, edit=2)
 		else:

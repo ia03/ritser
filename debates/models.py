@@ -10,7 +10,7 @@ from reversion.models import Revision
 
 @reversion.register()
 class Topic(models.Model):
-	name = models.CharField(primary_key=True, max_length=30, unique=True, db_index=True)
+	name = models.SlugField(primary_key=True, max_length=30, unique=True, db_index=True)
 	title = models.CharField(max_length=30, blank=True) #to be displayed in the HTML title of the topic; should also be protected from xss attacks
 	private = models.BooleanField(default=False)
 	description = models.TextField(max_length=600000, default='The description has not been set yet.', blank=True)
@@ -42,7 +42,12 @@ class Debate(models.Model):
 	created_on = models.DateTimeField(default=timezone.now, db_index=True)
 	edited_on = models.DateTimeField(default=timezone.now)
 	approved_on = models.DateTimeField(default=timezone.now, db_index=True, blank=True, null=True)
-
+	def numapproved(self):
+		return self.arguments.filter(approvalstatus=0).count()
+	def numunapproved(self):
+		return self.arguments.filter(approvalstatus=1).count()
+	def numdenied(self):
+		return self.arguments.filter(approvalstatus=2).count()
 	def get_absolute_url(self):
 		return reverse('debate', args=[self.topic.name, self.id])
 	def __str__(self):
@@ -73,5 +78,5 @@ class Argument(models.Model):
 class RevisionData(models.Model):
 	revision = models.ForeignKey(reversion.models.Revision, on_delete=models.CASCADE)
 	ip = models.GenericIPAddressField()
-	titchg = models.CharField(max_length=600, blank=True)
-	bodchg = models.TextField(max_length=400000, blank=True)
+	titchg = models.TextField(blank=True)
+	bodchg = models.TextField(blank=True)

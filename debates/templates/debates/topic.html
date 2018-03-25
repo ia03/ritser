@@ -55,9 +55,9 @@
 
               <small><a href="{{debate.owner.get_absolute_url}}">{{debate.owner.get_username}}</a> - {% if topic.slvl < 1 %}<span title="{{debate.approved_on|date:"c"}}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{debate.created_on|date:"c"}}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% endif %}</small>
               <div class="arglinks">
-                <a href="{% url 'debateapproved' tname=topic.name did=debate.id %}" class="badge badge-primary">Approved</a>
-                <a href="{% url 'debateunapproved' tname=topic.name did=debate.id %}" class="badge badge-secondary">Unapproved</a>
-                <a href="{% url 'debatedenied' tname=topic.name did=debate.id %}" class="badge badge-danger">Denied</a>
+                <a href="{% url 'debateapproved' tname=topic.name did=debate.id %}" class="badge badge-primary">Approved: {{debate.numapproved}}</a>
+                <a href="{% url 'debateunapproved' tname=topic.name did=debate.id %}" class="badge badge-secondary">Unapproved: {{debate.numunapproved}}</a>
+                <a href="{% url 'debatedenied' tname=topic.name did=debate.id %}" class="badge badge-danger">Denied: {{debate.numdenied}}</a>
               </div>
             </div>
           </div>

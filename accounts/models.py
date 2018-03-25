@@ -14,7 +14,9 @@ class User(AbstractUser):
 	def get_absolute_url(self):
 		return reverse('user', args=[self.username])
 	def ismod(self, topic):
-		return (self.modstatus > 0) or (self.moderator_of.filter(name=topic.name))
+		return (self.modstatus > 0) or (self.moderator_of.filter(name=topic.name)) or topic.owner == self
+	def isowner(self, topic):
+		return self.modstatus > 0 or topic.owner == self
 	def isgmod(self):
 		return (self.modstatus > 0)
 	def isadmin(self):

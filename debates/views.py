@@ -6,13 +6,14 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
-from .forms import DebateForm, ArgumentForm
+from .forms import DebateForm, ArgumentForm, TopicForm
 from .utils import getpage, newdiff, debateslist
 from ipware import get_client_ip
 from .templatetags.markdown import markdownf
 import reversion, bleach
 from reversion.models import Version
 from haystack.query import SearchQuerySet
+from allauth.account.decorators import verified_email_required
 
 dmp = newdiff()
 
@@ -323,7 +324,7 @@ def editdebate(request, tname, did):
 	}
 	return render(request, 'debates/edit_debate.html', context)
 
-@login_required()
+@login_required
 def submitargument(request):
 	user = request.user
 	if request.method == 'POST':
@@ -442,7 +443,80 @@ def argumentedits(request, tname, did, aid):
 	}
 	return render(request, 'debates/argumentedits.html', context)
 
-@login_required()
+@verified_email_required
+def submittopic(request):
+	user = request.user
+	if request.method == 'POST':
+		form = TopicForm(request.POST, user=user, edit=0)
+		if form.is_valid():
+			with reversion.create_revision():
+				obj = form.save(commit=False)
+				obj.moderators.set(form.modsl)
+				obj.save()
+				reversion.set_user(user)
+				client_ip, is_routable = get_client_ip(request)
+				reversion.add_meta(RevisionData, ip=client_ip)
+			return HttpResponseRedirect(reverse('topic', args=[obj.name]))
+			
+	else:
+		name = request.GET.get('name', '')
+		title = request.GET.get('title', '')
+		description = request.GET.get('description', '')
+		data = {
+		'name': name,
+		'title': title,
+		'description': description,
+		}
+
+		form = TopicForm(initial=data, user=user, edit=0)
+	context = {
+		'form': form,
+	}
+	return render(request, 'debates/submit_topic.html', context)
+
+@login_required
+def edittopic(request, tname):
+	topic = get_object_or_404(Topic, name=tname)
+	otitle = topic.title
+	obody = topic.description
+	user = request.user
+
+	if request.method == 'POST':
+		if user.isowner(topic):
+			form = TopicForm(request.POST, instance=topic, user=user, edit=2)
+		else:
+			form = TopicForm(request.POST, instance=topic, user=user, edit=1)
+		if form.is_valid():
+			
+		
+			with reversion.create_revision():
+				diffs = dmp.diff_main(bleach.clean(otitle), bleach.clean(form.cleaned_data['title']))
+				dmp.diff_cleanupSemantic(diffs)
+				titchg = dmp.diff_prettyHtml(diffs)
+				diffs2 = dmp.diff_main(markdownf(obody), markdownf(form.cleaned_data['description']))
+				dmp.diff_cleanupSemantic(diffs2)
+				bodchg = dmp.diff_prettyHtml(diffs2)
+				topic = form.save(commit=False)
+				if user.isowner(topic):
+					topic.moderators.set(form.modsl)
+				topic.save()
+				reversion.set_user(request.user)
+				client_ip, is_routable = get_client_ip(request)
+				reversion.add_meta(RevisionData, ip=client_ip, titchg=titchg, bodchg=bodchg)
+			return HttpResponseRedirect(reverse('topic', args=[tname]))
+		
+	else:
+		if user.isowner(topic):
+			form = TopicForm(instance=topic, user=user, edit=2)
+		else:
+			form = TopicForm(instance=topic, user=user, edit=1)
+	context = {
+		'form': form,
+		'topic': topic,
+	}
+	return render(request, 'debates/edit_topic.html', context)
+
+@login_required
 def feed(request):
 	user = request.user
 	query = Debate.objects.none()

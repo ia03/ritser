@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+
+{% block title %}Edit Topic "{{topic.name}}" - MoDebate{% endblock %}
+
+{% block body %}
+
+<main role="main" class="container">
+  <h1>Edit Topic "{{topic.name}}"</h1>
+  <form action="{% url 'edittopic' tname=topic.name %}" method="post">
+    {% csrf_token %}
+    {% for field in form %}
+    {% for error in field.errors %}
+    <div class="alert alert-danger" role="alert">
+    {{ field.errors|striptags }}
+    </div>
+    {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+    {{ error|striptags }}
+    </div>
+    {% endfor %}
+    {# Include the visible fields #}
+    {% for field in form.visible_fields %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
+            {% render_field field class="form-control" %}
+        </div>
+    {% endfor %}
+    <input type="submit" class="btn btn-primary" value="Submit" />
+  </form>
+</main>
+{% endblock %}

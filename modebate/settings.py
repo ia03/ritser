@@ -186,6 +186,7 @@ if not DEBUG:
 GR_DEBATEFORM = os.environ['GR_DEBATEFORM']
 GR_ARGUMENTFORM = os.environ['GR_ARGUMENTFORM']
 GR_SIGNUPFORM = os.environ['GR_SIGNUPFORM']
+GR_TOPICFORM = os.environ['GR_TOPICFORM']
 
 NOCAPTCHA = True
 RECAPTCHA_USE_SSL = True     # Defaults to False

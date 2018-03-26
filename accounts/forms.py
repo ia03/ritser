@@ -3,6 +3,13 @@ from .models import User
 from debates.models import Topic
 from captcha.fields import ReCaptchaField
 from django.conf import settings
+from allauth.account.models import EmailAddress
+from allauth.account.adapter import get_adapter
+from allauth.account.utils import filter_users_by_email
+from django.utils.translation import pgettext, ugettext, ugettext_lazy as _
+
+
+
 class SignupForm(forms.Form):
     captcha = ReCaptchaField(private_key=settings.GR_SIGNUPFORM, public_key='6LfKRk0UAAAAAAVkc0FNDHtLNyzwYwBiEUpVeDCe', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
     def signup(self, request, user):
@@ -33,7 +40,44 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['bio', 'stopicsf']
-        
+class AddEmailForm(forms.Form):
+    captcha = ReCaptchaField(private_key=settings.GR_ADDEMAILFORM, public_key='6Lc71U4UAAAAALLVIW91zfM37xT_8DSYvCdyXA7M', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
+    email = forms.EmailField(
+        label=_("E-mail"),
+        required=True,
+        widget=forms.TextInput(
+            attrs={"type": "email",
+                   "size": "30",
+                   "placeholder": _('E-mail address')}))
+    def __init__(self, user=None, *args, **kwargs):
+        self.user = user
+        super(AddEmailForm, self).__init__(*args, **kwargs)
+    
+
+    def clean_email(self):
+        value = self.cleaned_data["email"]
+        value = get_adapter().clean_email(value)
+        errors = {
+            "this_account": _("This e-mail address is already associated"
+                              " with this account."),
+            "different_account": _("This e-mail address is already associated"
+                                   " with another account."),
+        }
+        users = filter_users_by_email(value)
+        on_this_account = [u for u in users if u.pk == self.user.pk]
+        on_diff_account = [u for u in users if u.pk != self.user.pk]
+
+        if on_this_account:
+            raise forms.ValidationError(errors["this_account"])
+        if on_diff_account and app_settings.UNIQUE_EMAIL:
+            raise forms.ValidationError(errors["different_account"])
+        return value
+
+    def save(self, request):
+        return EmailAddress.objects.add_email(request,
+                                              self.user,
+                                              self.cleaned_data["email"],
+                                              confirm=True)
 '''
 class UserCreationForm(forms.ModelForm):
     """

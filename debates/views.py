@@ -396,7 +396,6 @@ def debateedits(request, tname, did): #use same template for different approval 
 		isadmin = user.isadmin()
 	else:
 		isadmin = False
-	print (isadmin)
 
 	context = {
 		'debate': debate,
@@ -421,7 +420,6 @@ def argumentedits(request, tname, did, aid):
 		isadmin = user.isadmin()
 	else:
 		isadmin = False
-	print (isadmin)
 
 	context = {
 		'debate': debate,

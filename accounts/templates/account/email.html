@@ -1,6 +1,6 @@
 {% extends "account/base.html" %}
 
-{% load static %}
+{% load static widget_tweaks %}
 
 {% block title %}Account - MoDebate{% endblock %}
 
@@ -47,36 +47,27 @@
 
 
     <h2>Add E-mail Address</h2>
-
+    {% for field in form %}
+    {% for error in field.errors %}
+    <div class="alert alert-danger" role="alert">
+    {{ field.errors|striptags }}
+    </div>
+    {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+    {{ error|striptags }}
+    </div>
+    {% endfor %}
     <form method="post" action="{% url 'account_email' %}" class="add_email">
         {% csrf_token %}
-        <label for="id_email">E-mail:</label>
-        <input class="form-control" type="email" name="email" size="30" placeholder="E-mail address" required id="id_email" /></p>
         <div class="form-group">
-            <label for="id_captcha"><label for="id_captcha">Captcha:</label></label>
-            <script src="https://www.google.com/recaptcha/api.js?hl=en"></script>
-            <div class="g-recaptcha" data-sitekey="6Lc71U4UAAAAALLVIW91zfM37xT_8DSYvCdyXA7M" data-class="form-control" data-required="True" data-id="id_captcha" ></div>
-            <noscript>
-              <div style="width: 302px; height: 352px;">
-                <div style="width: 302px; height: 352px; position: relative;">
-                  <div style="width: 302px; height: 352px; position: absolute;">
-                    <iframe src="https://www.google.com/recaptcha/api/fallback?k=6Lc71U4UAAAAALLVIW91zfM37xT_8DSYvCdyXA7M"
-                            frameborder="0" scrolling="no"
-                            style="width: 302px; height:352px; border-style: none;">
-                    </iframe>
-                  </div>
-                  <div style="width: 250px; height: 80px; position: absolute; border-style: none;
-                              bottom: 21px; left: 25px; margin: 0px; padding: 0px; right: 25px;">
-                    <textarea id="g-recaptcha-response" name="g-recaptcha-response"
-                              class="recaptcha_challenge_field"
-                              style="width: 250px; height: 80px; border: 1px solid #c1c1c1;
-                                     margin: 0px; padding: 0px; resize: none;" value="">
-                    </textarea>
-                    <input type="hidden" name="recaptcha_response_field" value="manual_challenge" />
-                  </div>
-                </div>
-              </div>
-            </noscript>
+            <label for="{{ form.email.id_for_label }}">{{ form.email.label_tag }}</label>
+            {% render_field form.email class="form-control" %}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.captcha.id_for_label }}">{{ form.captcha.label_tag }}</label>
+            {% render_field form.captcha class="form-control" %}
         </div>
         <button class="btn btn-outline-primary" name="action_add" type="submit">Add E-mail</button>
     </form>

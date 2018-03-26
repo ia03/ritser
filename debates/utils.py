@@ -3,6 +3,7 @@ from django.utils.encoding import force_text
 from diff_match_patch import diff_match_patch
 from django.db.models import Q
 
+
 def debateslist(topic):
     if (topic.slvl == 0) or (topic.slvl == 1):
         return topic.debates.filter(Q(approvalstatus=0) | Q(approvalstatus=1))
@@ -62,7 +63,6 @@ class Pages:
 
         return pages_to_show
         
-dmp = diff_match_patch()
 
 def generate_diffs(old_version, new_version, field_name, cleanup):
     """Generates a diff array for the named field between the two versions."""
@@ -119,3 +119,9 @@ class newdiff(diff_match_patch):
           elif op == self.DIFF_EQUAL:
             html.append("<span>%s</span>" % text)
         return "".join(html)
+dmp = newdiff()
+
+def htmldiffs(original, new):
+    diffs = dmp.diff_main(original, new)
+    dmp.diff_cleanupSemantic(diffs)
+    return dmp.diff_prettyHtml(diffs)

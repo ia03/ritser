@@ -7,15 +7,13 @@ from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
 from .forms import DebateForm, ArgumentForm, TopicForm
-from .utils import getpage, newdiff, debateslist
+from .utils import getpage, newdiff, debateslist, htmldiffs
 from ipware import get_client_ip
 from .templatetags.markdown import markdownf
 import reversion, bleach
 from reversion.models import Version
 from haystack.query import SearchQuerySet
 from allauth.account.decorators import verified_email_required
-
-dmp = newdiff()
 
 # Create your views here.
 def index(request):
@@ -302,12 +300,8 @@ def editdebate(request, tname, did):
 			form = DebateForm(request.POST, instance=debate, user=user, edit=1)
 		if form.is_valid():
 			with reversion.create_revision():
-				diffs = dmp.diff_main(bleach.clean(oquestion), bleach.clean(form.cleaned_data['question']))
-				dmp.diff_cleanupSemantic(diffs)
-				titchg = dmp.diff_prettyHtml(diffs)
-				diffs2 = dmp.diff_main(markdownf(odescription), markdownf(form.cleaned_data['description']))
-				dmp.diff_cleanupSemantic(diffs2)
-				bodchg = dmp.diff_prettyHtml(diffs2)
+				titchg = htmldiffs(bleach.clean(oquestion), bleach.clean(form.cleaned_data['question']))
+				bodchg = htmldiffs(markdownf(odescription), markdownf(form.cleaned_data['description']))
 				debate = form.save()
 				reversion.set_user(request.user)
 				client_ip, is_routable = get_client_ip(request)
@@ -371,12 +365,8 @@ def editargument(request, tname, did, aid):
 			
 		
 			with reversion.create_revision():
-				diffs = dmp.diff_main(bleach.clean(otitle), bleach.clean(form.cleaned_data['title']))
-				dmp.diff_cleanupSemantic(diffs)
-				titchg = dmp.diff_prettyHtml(diffs)
-				diffs2 = dmp.diff_main(markdownf(obody), markdownf(form.cleaned_data['body']))
-				dmp.diff_cleanupSemantic(diffs2)
-				bodchg = dmp.diff_prettyHtml(diffs2)
+				titchg = htmldiffs(bleach.clean(otitle), bleach.clean(form.cleaned_data['title']))
+				bodchg = htmldiffs(markdownf(obody), markdownf(form.cleaned_data['body']))
 				argument = form.save()
 				reversion.set_user(request.user)
 				client_ip, is_routable = get_client_ip(request)
@@ -489,12 +479,8 @@ def edittopic(request, tname):
 			form = TopicForm(request.POST, instance=topic, user=user, edit=1)
 		if form.is_valid():
 			with reversion.create_revision():
-				diffs = dmp.diff_main(bleach.clean(otitle), bleach.clean(form.cleaned_data['title']))
-				dmp.diff_cleanupSemantic(diffs)
-				titchg = dmp.diff_prettyHtml(diffs)
-				diffs2 = dmp.diff_main(markdownf(obody), markdownf(form.cleaned_data['description']))
-				dmp.diff_cleanupSemantic(diffs2)
-				bodchg = dmp.diff_prettyHtml(diffs2)
+				titchg = htmldiffs(bleach.clean(otitle), bleach.clean(form.cleaned_data['title']))
+				bodchg = htmldiffs(markdownf(obody), markdownf(form.cleaned_data['description']))
 				topic = form.save(commit=False)
 				if isowner:
 					topic.moderators.set(form.modsl)

@@ -9,7 +9,7 @@
     <main role="main" class="container">
       <h1 class="mt-5">{{ctopicn}}</h1>
       <p class="lead">{{topic.title}}</p>
-      <a href="{% url 'topic' tname=topic.name %}">Main Page</a>
+      <a href="{% url 'topic' tname=topic.name %}">Main Page</a> - <a href="{% url 'edittopic' tname=topic.name %}">Edit/View source</a>
       <div class="row">
         <div class="col-md-6">Owner: <a href="{{ topic.owner.get_absolute_url }}">{{topic.owner.get_username}}</a><br>Security Level: {{topic.slvl}}<br>Default Debate Security Level: {{topic.debslvl}}<br>Created on {{topic.created_on|date}}</div>
         <div class="col-md-6 text-md-right">Moderators: {% for mod in mods %}{% if not forloop.first %}, {% endif %}<a href="{{mod.get_absolute_url}}">{{mod.get_username}}</a>{% endfor %}</div>

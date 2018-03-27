@@ -11,6 +11,7 @@ urlpatterns = [
 	path('t/<slug:tname>/', views.topic, name='topic'),
 	path('t/<slug:tname>/info', views.topicinfo, name='topicinfo'),
 	path('t/<slug:tname>/edit', views.edittopic, name='edittopic'),
+	path('t/<slug:tname>/edits', views.topicedits, name='topicedits'),
 	path('t/<slug:tname>/<int:did>/', views.debate, {'apprs': -1}, name='debate'),
 	path('t/<slug:tname>/<int:did>/edit', views.editdebate, name='editdebate'),
 	path('t/<slug:tname>/<int:did>/edits', views.debateedits, name='debateedits'),

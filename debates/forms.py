@@ -332,7 +332,6 @@ class TopicForm(forms.ModelForm):
         if len(set(self.modnl)) != len(self.modnl):
             raise forms.ValidationError('List of moderators may not contain duplicates.', code='modsduplicate', params={'modnl': self.modnl})
         for modname in self.modnl:
-            
             try:
                 self.modsl.append(User.objects.get(username=modname))
             except User.DoesNotExist:
@@ -363,7 +362,7 @@ class TopicForm(forms.ModelForm):
             cleaned_data['owner'] = owner
             if self.edit != 1 and owner.approvedargs < 20 and not self.user.isgmod() and (self.edit == 0 or owner != self.user): #add subscriber status here
                 raise forms.ValidationError('You must have at least 20 approved arguments to own a topic.')
-            if self.edit != 1 and owner.topics_owned > 5 and not self.user.isgmod() and (self.edit == 0 or owner != self.user): #add subscriber status here
+            if self.edit != 1 and owner.topics_owned.all().count() > 5 and not self.user.isgmod() and (self.edit == 0 or owner != self.user): #add subscriber status here
                 raise forms.ValidationError('You can only own a maximum of 5 topics.')
             if owner in self.modsl:
                 raise forms.ValidationError('Owner must not be one of the moderators.')

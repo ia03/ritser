@@ -9,7 +9,7 @@
     <main role="main" class="container">
       <h1 class="mt-5">{{ctopicn}}</h1>
       <p class="lead">{{topic.title}}</p>
-      <a href="{% url 'topicinfo' tname=topic.name %}">Details Page</a>
+      <a href="{% url 'topicinfo' tname=topic.name %}">Details Page</a> - <a href="{% url 'edittopic' tname=topic.name %}">Edit/View source</a> - <a href="{% url 'topicedits' tname=topic.name %}">Edits</a>
       <div class="row">
         <div class="col-md-6">Owner:
           <a href="{{topic.owner.get_absolute_url}}">

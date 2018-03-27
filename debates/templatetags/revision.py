@@ -9,6 +9,12 @@ register = template.Library()
 @register.filter(name='field')
 def field(version, name):
     return version.field_dict[name]
+@register.filter(name='moderators')
+def moderators(version):
+    mods = []
+    for modid in version.field_dict['moderators']:
+        mods.append(User.objects.get(id=modid))
+    return mods
 @register.filter(name='titchg')
 def titchg(version):
     return mark_safe(RevisionData.objects.get(revision=version.revision).titchg)

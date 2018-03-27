@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load markdown revision static %}
+{% block title %}{{topic.name}} - Edits - MoDebate{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static "debates/css/edits.css" %}">{% endblock %}
+{% block body %}
+<main role="main" class="container">
+  <h1 class="mt-5">{{topic.name}} - Edits</h1>
+  Owner:
+  <a href="{{topic.owner.get_absolute_url}}">{{topic.owner.get_username}}</a> -
+  Security Level: {{topic.slvl}} - 
+  Default Debate Security Level: {{topic.debslvl}}
+  <hr />
+  <div id="accordion">
+    {% for version in versions %}
+    <div class="card">
+      <div class="card-header" id="headingOne">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="false" aria-controls="collapse{{forloop.counter}}">
+            <span title="{{version.revision.date_created|date:"c"}}">{{version.revision.date_created|date:"D d M Y f A"}}</span> by {{version.revision.user.get_username}}
+          </button>
+        </h5>
+      </div>
+  
+      <div id="collapse{{forloop.counter}}" class="collapse" aria-labelledby="heading{{forloop.counter}}" data-parent="#accordion">
+        <div class="card-body">
+          User: <a href="{{version.revision.user.get_absolute_url}}">{{version.revision.user.get_username}}</a>
+          <br>
+          {% ifchanged %}
+          Owner: <a href="{{version|owner|url}}">{{version|owner|username}}</a> <br>{% endifchanged %}
+          {% ifchanged %}
+          Moderators: {% for mod in version|moderators %}{% if not forloop.first %}, {% endif %}<a href="{{mod.get_absolute_url}}">{{mod.get_username}}</a>{% endfor %}<br>{% endifchanged %}
+          {% ifchanged %}Security level: {{version|field:"slvl"}}
+          <br>{% endifchanged%}
+          {% ifchanged %}Default Debate Security level: {{version|field:"debslvl"}}
+          <br>{% endifchanged%}
+          {% if isadmin %}
+          IP: {{version|ip}}
+          <br>{% endif %}
+          Title: {% if forloop.last %}{{version|field:"title"}}{% else %}{{version|titchg}}{% endif %}
+          <br>
+          Description: {% if forloop.last %}{{version|field:"description"}}{% else %}{{version|bodchg}}{% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    
+  </div>
+  {% if versions.has_other_pages %}
+  {% load paginator %}
+  {% paginator versions request %}
+  {% endif %}
+</main>
+
+{% endblock %}

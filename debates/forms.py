@@ -17,9 +17,11 @@ def cleanownername(instance):
     data = instance.cleaned_data['owner_name']
     if instance.edit != 0:
         try:
-            User.objects.get(username=data)
+            owner = User.objects.get(username=data)
         except ObjectDoesNotExist:
             raise forms.ValidationError('User %(owner_name)s not found.', code='usernotfound', params={'owner_name': data})
+        if not owner.is_active:
+            raise forms.ValidationError('User %(owner_name)s can not be set as the owner.', code='userinactive', params={'owner_name': data})
     return data
 def cleanowner(instance):
     if instance.edit == 0:
@@ -311,9 +313,11 @@ class TopicForm(forms.ModelForm):
         data = self.cleaned_data['owner_name']
         if self.edit != 0 and self.edit != 1:
             try:
-                User.objects.get(username=data)
+                owner = User.objects.get(username=data)
             except ObjectDoesNotExist:
                 raise forms.ValidationError('User %(owner_name)s not found.', code='usernotfound', params={'owner_name': data})
+            if not owner.is_active:
+                raise forms.ValidationError('User %(owner_name)s can not be set as the owner.', code='userinactive', params={'owner_name': data})
         return data
     def clean_owner(self):
         return cleanowner(self)
@@ -333,9 +337,12 @@ class TopicForm(forms.ModelForm):
             raise forms.ValidationError('List of moderators may not contain duplicates.', code='modsduplicate', params={'modnl': self.modnl})
         for modname in self.modnl:
             try:
-                self.modsl.append(User.objects.get(username=modname))
+                mod = User.objects.get(username=modname)
             except User.DoesNotExist:
                 raise forms.ValidationError('Moderator %(modname)s not found.', code='modnotfound', params={'modname': modname})
+            if not mod.is_active:
+                raise forms.ValidationError('User %(modname)s can not be set as a moderator.', code='userinactive', params={'modname': modname})
+            self.modsl.append(mod)
         return data
     def clean_slvl(self):
         data = self.cleaned_data.get('slvl')

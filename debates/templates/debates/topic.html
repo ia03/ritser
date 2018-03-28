@@ -29,7 +29,7 @@
           </select>
         </div>
         <div class="col-md-6 text-md-right" id="modcol">
-          Moderators: {% for mod in fmods %}{% if not forloop.first %}, {% endif %}<a href="{{mod.get_absolute_url}}">{{mod.get_username}}</a>{% endfor %}{% if mods|length > 10 %}...{% endif %}
+          Moderators: {% for mod in fmods|slice:":10" %}{% if not forloop.first %}, {% endif %}<a href="{{mod.get_absolute_url}}">{{mod.get_username}}</a>{% endfor %}{% if mods|length > 10 %}...{% endif %}
           <a class="btn btn-primary{% if not ats %} disabled{% endif %}" id="submitdbtn" href="{% if ats %}{% url 'submitdebate' %}?topic={{topic.name}}{% else %}#{% endif %}">Submit Debate</a>
         </div>
       </div>

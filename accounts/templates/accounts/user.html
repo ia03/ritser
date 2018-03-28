@@ -8,6 +8,9 @@
 
 <main role="main" class="container">
     <h1>{{puser.username}}'s profile</h1>
+    Topics owned: {% for topic in puser.topics_owned.all %}{% if not forloop.first %}, {% endif %}<a href="{{topic.get_absolute_url}}">{{topic.name}}</a>{% endfor %} <br>
+    Moderator of: {% for topic in puser.moderator_of.all %}{% if not forloop.first %}, {% endif %}<a href="{{topic.get_absolute_url}}">{{topic.name}}</a>{% endfor %}
+    <br>
     Bio:
     <br>
     {{puser.bio|markdownf}}

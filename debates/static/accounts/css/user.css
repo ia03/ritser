@@ -1,0 +1,15 @@
+.list-group-item, .list-group-item:hover {
+  color: black;
+}
+
+.sinfo, .sinfo:hover {
+  color: #495057 !important;
+}
+.atit {
+  color: black;
+  text-decoration: none;
+}
+.atit:hover {
+  color: black;
+  text-decoration: none;
+}

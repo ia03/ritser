@@ -28,7 +28,7 @@ class Topic(models.Model):
 
 @reversion.register()
 class Debate(models.Model):
-	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='debates_owned')
+	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='debates')
 	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='debates')
 	slvl = models.IntegerField(default=1) #if slvl = 0, approved, unapproved, denied arguments visible by def. if slvl = 1 or 2(20+ approved args), approved and unapproved visible by def., else only approved args visible
 	approvalstatus = models.IntegerField(default=1) #0: approved 1: unapproved 2: denied 3: deleted
@@ -55,7 +55,7 @@ class Debate(models.Model):
 
 @reversion.register()
 class Argument(models.Model):
-	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='arguments_owned')
+	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='arguments')
 	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='arguments')
 	debate = models.ForeignKey(Debate, on_delete=models.CASCADE, related_name='arguments')
 	approvalstatus = models.IntegerField(default=1, db_index=True) #0: approved 1: unapproved 2: denied 3: deleted

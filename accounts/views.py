@@ -4,16 +4,25 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .models import User
 from .forms import ProfileForm
+from debates.utils import getpage
 
 # Create your views here.
 
 def user(request, uname):
 
 	user = get_object_or_404(User, username=uname)
+	
+	queryset = user.arguments.all()
+	
+	argumentslist = queryset.order_by('-created_on')
+	
+	page = request.GET.get('page', 1)
 
+	arguments = getpage(page, argumentslist, 10)
 
 	context = {
 		'puser': user,
+		'arguments': arguments,
 	}
 	return render(request, 'accounts/user.html', context)
 

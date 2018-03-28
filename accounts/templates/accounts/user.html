@@ -4,16 +4,42 @@
 
 {% block title %}{{puser.username}}'s profile - MoDebate{% endblock %}
 
+{% block head %}<link rel="stylesheet" href="{% static "accounts/css/user.css" %}">{% endblock %}
+
 {% block body %}
 
 <main role="main" class="container">
     <h1>{{puser.username}}'s profile</h1>
-    Topics owned: {% for topic in puser.topics_owned.all %}{% if not forloop.first %}, {% endif %}<a href="{{topic.get_absolute_url}}">{{topic.name}}</a>{% endfor %} <br>
-    Moderator of: {% for topic in puser.moderator_of.all %}{% if not forloop.first %}, {% endif %}<a href="{{topic.get_absolute_url}}">{{topic.name}}</a>{% endfor %}
-    <br>
+    {% with puser.topics_owned.all as topics_owned %}
+    {% if topics_owned %}Topics owned: {% for topic in puser.topics_owned.all %}{% if not forloop.first %}, {% endif %}<a href="{{topic.get_absolute_url}}">{{topic.name}}</a>{% endfor %} <br>{% endif %}
+    {% endwith %}
+    {% with puser.moderator_of.all as moderator_of %}
+    {% if moderator_of %}Moderator of: {% for topic in moderator_of %}{% if not forloop.first %}, {% endif %}<a href="{{topic.get_absolute_url}}">{{topic.name}}</a>{% endfor %} <br>{% endif %}
+    {% endwith %}
     Bio:
     <br>
     {{puser.bio|markdownf}}
+    <br>
+    Arguments:
+    <br>
+    {% if arguments %}
+          <div class="list-group" data-vote-url="{% url 'votedebate' %}">
+            {% for argument in arguments %}
+            <div class="list-group-item list-group-item-action flex-column align-items-start" data-debate-id="{{debate.id}}">
+              <div class="d-flex w-100 justify-content-between">
+                <a href="{{argument.get_absolute_url}}" class="atit"><h5 class="mb-1">{{argument.title}}</h5></a>
+              </div>
+                <p class="mb-0 argdesc">{{argument.body|markdownf}}</p>
+                <small class="sinfo">{% if argument.side == 0 %}For{% else %}Against{% endif %} - <a href="{{argument.debate.get_absolute_url}}">{{argument.debate.question}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
+            </div>
+            {% endfor %}
+          </div>
+    {% endif %}
+    {% if arguments.has_other_pages %}
+    {% load paginator %}
+    {% load link_name %}
+    {% paginator arguments request %}
+    {% endif %}
 </main>
 
 {% endblock %}

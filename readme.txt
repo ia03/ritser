@@ -21,6 +21,8 @@ register api on reddit https://www.reddit.com/wiki/api
 
 change reddit oauth settings(redirect uri) or create another oauth app for production and change client/app id in useragent
 
+add reddit social application
+
 run manage.py rebuild_index
 
 make daily clearsessions cron job

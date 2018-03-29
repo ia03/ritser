@@ -42,3 +42,5 @@ Get the notion that you have to prove your opponent wrong out of your head. When
 just both people sharing information to find the answer more easily.
 
 We strongly value freedom of speech. We will not censor certain groups of people to manipulate their political beliefs.
+
+https://io9.gizmodo.com/i-fooled-millions-into-thinking-chocolate-helps-weight-1707251800

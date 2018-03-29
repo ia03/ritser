@@ -12,6 +12,7 @@ def userarguments(request, uname):
 
 	user = get_object_or_404(User, username=uname)
 	
+	
 	queryset = user.arguments.all()
 	
 	argumentslist = queryset.order_by('-created_on')

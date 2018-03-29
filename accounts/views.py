@@ -8,7 +8,7 @@ from debates.utils import getpage
 
 # Create your views here.
 
-def user(request, uname):
+def userarguments(request, uname):
 
 	user = get_object_or_404(User, username=uname)
 	

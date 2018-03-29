@@ -26,6 +26,24 @@ def user(request, uname):
 	}
 	return render(request, 'accounts/user.html', context)
 
+def userdebates(request, uname):
+
+	user = get_object_or_404(User, username=uname)
+	
+	queryset = user.debates.all()
+	
+	debateslist = queryset.order_by('-created_on')
+	
+	page = request.GET.get('page', 1)
+
+	debates = getpage(page, debateslist, 10)
+
+	context = {
+		'puser': user,
+		'debates': debates,
+	}
+	return render(request, 'accounts/userdebates.html', context)
+
 @login_required()
 def profile(request):
 	if request.method == 'POST':

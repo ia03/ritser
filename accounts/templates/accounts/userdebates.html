@@ -4,13 +4,13 @@
 
 {% block title %}{{puser.username}}'s profile - MoDebate{% endblock %}
 
-{% block head %}<link rel="stylesheet" href="{% static "accounts/css/user.css" %}">{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static "debates/css/debateslist.css" %}">{% endblock %}
 
 {% block body %}
 
 <main role="main" class="container">
     <h1>{{puser.username}}'s profile</h1>
-    <a href="{{puser.get_debates}}">View Debates</a>
+    <a href="{{puser.get_arguments}}">View Arguments</a>
     <br>
     {% with puser.topics_owned.all as topics_owned %}
     {% if topics_owned %}Topics owned: {% for topic in puser.topics_owned.all %}{% if not forloop.first %}, {% endif %}<a href="{{topic.get_absolute_url}}">{{topic.name}}</a>{% endfor %} <br>{% endif %}
@@ -22,13 +22,13 @@
     <br>
     {{puser.bio|markdownf}}
     <br>
-    Arguments:
+    Debates:
     <br>
-    {% include 'snippets/argumentslist.html' %}
-    {% if arguments.has_other_pages %}
+    {% include 'snippets/debateslist.html' %}
+    {% if debates.has_other_pages %}
     {% load paginator %}
     {% load link_name %}
-    {% paginator arguments request %}
+    {% paginator debates request %}
     {% endif %}
 </main>
 

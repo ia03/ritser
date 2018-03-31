@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
+from timezone_field import TimeZoneField
 
 # Create your models here.
 class User(AbstractUser):
@@ -11,6 +12,7 @@ class User(AbstractUser):
 	bannote = models.CharField(max_length=10000, blank=True)
 	bio = models.TextField(max_length=200000, blank=True)
 	stopics = models.ManyToManyField('debates.Topic', related_name='susers', blank=True)
+	timezone = TimeZoneField(default='Europe/London')
 	def get_absolute_url(self):
 		if self.is_active:
 			return reverse('user', args=[self.username])

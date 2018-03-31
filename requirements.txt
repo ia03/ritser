@@ -13,3 +13,4 @@ django-allauth
 django-recaptcha
 whoosh>=1.3.1
 django-haystack
+django-timezone-field

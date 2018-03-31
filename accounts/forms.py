@@ -39,7 +39,7 @@ class ProfileForm(forms.ModelForm):
         return data
     class Meta:
         model = User
-        fields = ['bio', 'stopicsf']
+        fields = ['bio', 'stopicsf', 'timezone']
 class AddEmailForm(forms.Form):
     captcha = ReCaptchaField(private_key=settings.GR_ADDEMAILFORM, public_key='6Lc71U4UAAAAALLVIW91zfM37xT_8DSYvCdyXA7M', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
     email = forms.EmailField(

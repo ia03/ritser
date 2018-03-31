@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.reddit',
+    'timezone_field',
 ]
 
 MIDDLEWARE = [
@@ -64,7 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
+    'debates.middleware.TimeZoneMiddleware',
 ]
 
 ROOT_URLCONF = 'modebate.urls'

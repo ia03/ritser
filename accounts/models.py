@@ -12,9 +12,18 @@ class User(AbstractUser):
 	bio = models.TextField(max_length=200000, blank=True)
 	stopics = models.ManyToManyField('debates.Topic', related_name='susers', blank=True)
 	def get_absolute_url(self):
-		return reverse('user', args=[self.get_username()])
+		if self.is_active:
+			return reverse('user', args=[self.get_username()])
+		else:
+			return '#'
+	def get_username(self):
+		if self.is_active:
+			return self.username
+		else:
+			return '[INACTIVE]'
 	def get_debates(self):
 		return reverse('userdebates', args=[self.get_username()])
+		
 	def get_arguments(self):
 		return reverse('userarguments', args=[self.get_username()])
 	def ismod(self, topic):

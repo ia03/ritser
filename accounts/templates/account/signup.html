@@ -10,6 +10,8 @@
     
     <p>Already have an account? Sign in <a href="{{ login_url }}">here</a>.</p>
     
+    {% include 'snippets/formerrors.html' %}
+    
     <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
       {% csrf_token %}
       

@@ -34,6 +34,9 @@ def privacy(request):
 def terms(request):
 	return render(request, 'debates/terms.html')
 
+def cookies(request):
+	return render(request, 'debates/cookies.html')
+
 def topic(request, tname):
 
 	topic = get_object_or_404(Topic, name=tname)
@@ -431,7 +434,7 @@ def argumentedits(request, tname, did, aid):
 	}
 	return render(request, 'debates/argumentedits.html', context)
 
-@verified_email_required
+@login_required
 def submittopic(request):
 	user = request.user
 	if request.method == 'POST':

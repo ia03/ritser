@@ -7,6 +7,7 @@ urlpatterns = [
 	path('privacy/', views.privacy, name='privacy'),
 	path('terms/', views.terms, name='terms'),
 	path('about/', views.about, name='about'),
+	path('cookies/', views.cookies, name='cookies'),
 	path('feed/', views.feed, name='feed'),
 	path('t/<slug:tname>/', views.topic, name='topic'),
 	path('t/<slug:tname>/info', views.topicinfo, name='topicinfo'),

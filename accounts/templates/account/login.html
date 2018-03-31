@@ -33,6 +33,8 @@
     <a href="{{ signup_url }}">sign up</a> first.</p>
     {% endif %}
     
+    {% include 'snippets/formerrors.html' %}
+    
     <form class="login" method="POST" action="{% url 'account_login' %}">
       {% csrf_token %}
       <div class="form-group">

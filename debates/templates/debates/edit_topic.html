@@ -11,18 +11,7 @@
   <h1>Edit Topic "{{topic.name}}"</h1>
   <form action="{% url 'edittopic' tname=topic.name %}" method="post">
     {% csrf_token %}
-    {% for field in form %}
-    {% for error in field.errors %}
-    <div class="alert alert-danger" role="alert">
-    {{ field.errors|striptags }}
-    </div>
-    {% endfor %}
-    {% endfor %}
-    {% for error in form.non_field_errors %}
-    <div class="alert alert-danger" role="alert">
-    {{ error|striptags }}
-    </div>
-    {% endfor %}
+    {% include 'snippets/formerrors.html' %}
     {# Include the visible fields #}
     {% for field in form.visible_fields %}
         <div class="form-group">

@@ -316,7 +316,7 @@ class TopicForm(forms.ModelForm):
                 owner = User.objects.get(username=data)
             except ObjectDoesNotExist:
                 raise forms.ValidationError('User %(owner_name)s not found.', code='usernotfound', params={'owner_name': data})
-            if not owner.is_active:
+            if owner.active == 1 or owner.active == 3:
                 raise forms.ValidationError('User %(owner_name)s can not be set as the owner.', code='userinactive', params={'owner_name': data})
         return data
     def clean_owner(self):
@@ -340,7 +340,7 @@ class TopicForm(forms.ModelForm):
                 mod = User.objects.get(username=modname)
             except User.DoesNotExist:
                 raise forms.ValidationError('Moderator %(modname)s not found.', code='modnotfound', params={'modname': modname})
-            if not mod.is_active:
+            if mod.active == 1 or mod.active == 3:
                 raise forms.ValidationError('User %(modname)s can not be set as a moderator.', code='userinactive', params={'modname': modname})
             self.modsl.append(mod)
         return data

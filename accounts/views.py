@@ -8,10 +8,13 @@ from debates.utils import getpage
 
 # Create your views here.
 
+
 def userarguments(request, uname):
 
 	user = get_object_or_404(User, username=uname)
 	
+	if (user.active == 1 or user.active == 3) and not (request.user.is_authenticated and request.user.isgmod()):
+		return render(request, 'accounts/userinactive.html', {'puser': user})
 	
 	queryset = user.arguments.all()
 	
@@ -30,6 +33,9 @@ def userarguments(request, uname):
 def userdebates(request, uname):
 
 	user = get_object_or_404(User, username=uname)
+	
+	if (user.active == 1 or user.active == 3) and not (request.user.is_authenticated and request.user.isgmod()):
+		return render(request, 'accounts/userinactive.html', {'puser': user})
 	
 	queryset = user.debates.all()
 	

@@ -13,19 +13,19 @@ class User(AbstractUser):
 	stopics = models.ManyToManyField('debates.Topic', related_name='susers', blank=True)
 	def get_absolute_url(self):
 		if self.is_active:
-			return reverse('user', args=[self.get_username()])
+			return reverse('user', args=[self.username])
 		else:
 			return '#'
 	def get_username(self):
-		if self.is_active:
+		if self.active == 0 or self.active == 2:
 			return self.username
 		else:
-			return '[INACTIVE]'
+			return '[DELETED]'
 	def get_debates(self):
-		return reverse('userdebates', args=[self.get_username()])
+		return reverse('userdebates', args=[self.username])
 		
 	def get_arguments(self):
-		return reverse('userarguments', args=[self.get_username()])
+		return reverse('userarguments', args=[self.username])
 	def ismod(self, topic):
 		return (self.modstatus > 0) or (self.moderator_of.filter(name=topic.name)) or topic.owner == self
 	def isowner(self, topic):

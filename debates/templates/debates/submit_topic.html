@@ -8,7 +8,7 @@
 
 <main role="main" class="container">
   <h1>Submit Topic</h1>
-  <p>View the rules <a href="{% url 'rules' %}">here</a></p>
+  <p>View the rules <a href="{% url 'rules' %}">here.</a></p>
   <form action="{% url 'submittopic' %}" method="post">
     {% csrf_token %}
     {% include 'snippets/formerrors.html' %}

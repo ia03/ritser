@@ -41,7 +41,7 @@
 </form>
 
 {% else %}
-<p><strong>Warning:</strong> You currently do not have any e-mail addresses set up.</p>
+<p><strong>Warning:</strong> You currently do not have any e-mail addresses set up. E-mail can be used to recover your account if you forget your password.</p>
 
 {% endif %}
 
@@ -60,9 +60,14 @@
         </div>
         <button class="btn btn-outline-primary" name="action_add" type="submit">Add E-mail</button>
     </form>
+    {% if user.emailaddress_set.all %}
+    A raw list of this account's e-mails (this is for <a href="https://en.wikipedia.org/wiki/General_Data_Protection_Regulation">GDPR</a> compliance):
+    <br>
+    <textarea class="form-control" rows="3">{% for emailaddress in user.emailaddress_set.all %}{{ emailaddress.email }}
+    {% endfor %}</textarea>
+    {% endif %}
 </main>
 {% endblock %}
-
 
 {% block endjs %}
 <script src="{% static 'account/js/email.js' %}"></script>

@@ -9,11 +9,15 @@
     {% if useria.active == 1 %}
     <h1>Account Deleted</h1>
     
-    <p>This account has been deleted.</p>
+    <p>This account has been deleted and its email addresses have been wiped from MoDebate's servers.</p>
     {% elif useria.active == 2 %}
     <h1>Account Suspended</h1>
     
     <p>This account has been suspended until {{useria.bandate|date:"D d M Y f A"}}.</p>
+    A raw list of this account's e-mails (this is for <a href="https://en.wikipedia.org/wiki/General_Data_Protection_Regulation">GDPR</a> compliance):
+    <textarea class="form-control" rows="3">{% for emailaddress in useria.emailaddress_set.all %}{{ emailaddress.email }}
+{% endfor %}</textarea>
+    
     {% if useria.bannote %}
     Moderator note:
     <br>
@@ -22,7 +26,7 @@
     {% elif useria.active == 3 %}
     <h1>Account Terminated</h1>
     
-    <p>This account has been terminated by MoDebate staff.</p>
+    <p>This account has been terminated by MoDebate staff and its email addresses have been wiped from MoDebate's servers.</p>
     {% if useria.bannote %}
     Moderator note:
     <br>

@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Rules - MoDebate{% endblock %}
+
+{% block body %}
+  <main class="container">
+    <div class="page-header">
+      <h1>Rules</h1>
+    </div>
+    <p>MoDebate is a website that relies on user generated content and in order to serve our users better, we have created a set of rules for everyone to follow. The punishments are listed in the subsections of the rules.</p>
+    <h2>Content Policy</h2>
+    <ol>
+        <li>
+            All types of content
+            <ol>
+                <li>
+                    Must be legal
+                    <ol>
+                        <li>Usually punishable by deletion of the content and/or a user ban, but we may sometimes take other action in order to comply with the law</li>
+                    </ol>
+                </li>
+                <li>
+                    Must be on-topic
+                    <ol>
+                        <li>
+                            If only some of the content is off-topic, only that offending section is edited out, otherwise the content is 
+                            <ol>
+                                <li>Denied if it is a debate</li>
+                                <li>Deleted if it is an argument</li>
+                                <li>Shut down if it is a topic</li>
+                                <li>Deleted if it is anything else</li>
+                            </ol>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    Must not be spam (discussing a company is okay, advertising it is not)
+                    <ol>
+                        <li>Punishable by deletion of the content and/or a temporary/permanent account ban</li>
+                    </ol>
+                </li>
+                <li>
+                    Must not include someone’s personal information
+                    <ol>
+                        <li>Punishable by deletion of the content and/or a temporary/permanent account ban</li>
+                    </ol>
+                </li>
+                <li>
+                    Must not be harassment
+                    <ol>
+                        <li>Punishable by deletion of the content and/or a temporary/permanent account ban</li>
+                    </ol>
+                </li>
+                <li>
+                    Must not be emotionally manipulative
+                    <ol>
+                        <li>
+                            The user may be issued a temporary/permanent ban and the content is
+                            <ol>
+                                <li>Denied if it is a debate</li>
+                                <li>Denied if it is an argument</li>
+                                <li>Shut down if it is a topic</li>
+                                <li>Deleted if it is anything else</li>
+                            </ol>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    Must not manipulate people's biases
+                    <ol>
+                        <li>
+                            The user may be issued a temporary/permanent ban and the content is
+                            <ol>
+                                <li>Denied if it is a debate</li>
+                                <li>Denied if it is an argument</li>
+                                <li>Shut down if it is a topic</li>
+                                <li>Deleted if it is anything else</li>
+                            </ol>
+                        </li>
+                    </ol>
+                </li>
+            </ol>
+        </li>
+        <li>
+            Arguments
+            <ol>
+                <li>
+                    Must provide verifiable evidence
+                    <ol>
+                        The argument is denied
+                    </ol>
+                </li>
+            </ol>
+        </li>
+        <li>
+            Debates
+            <ol>
+                <li>
+                    Must not be biased in favour of either side
+                    <ol>
+                        <li>The debate is denied</li>
+                    </ol>
+                </li>
+                <li>
+                    Must have a reasonably useful description
+                    <ol>
+                        <li>The debate is denied or a reasonably useful description is edited in</li>
+                    </ol>
+                </li>
+            </ol>
+        </li>
+        <li>
+            Topics
+            <ol>
+                <li>
+                    Must not be biased in favour of either side
+                    <ol>
+                        <li>The topic is shut down or taken over by MoDebate</li>
+                    </ol>
+                </li>
+                <li>
+                    Must have a moderator team that can handle all submissions within 72 hours
+                    <ol>
+                        <li>The topic is taken over by MoDebate</li>
+                    </ol>
+                </li>
+                <li>
+                    Must have a reasonably useful description
+                    <ol>
+                        <li>The topic is shut down or taken over by MoDebate</li>
+                    </ol>
+                </li>
+                <li>
+                    Must have a public channel listed in the description where users may contact them
+                    <ol>
+                        <li>The topic is shut down or taken over by MoDebate</li>
+                    </ol>
+                </li>
+            </ol>
+        </li>
+    </ol>
+    <h2>User Policy</h2>
+    <ol>
+        <li>
+            Users
+            <ol>
+                <li>Must not impersonate someone else</li>
+                <li>Must not vote on debates on the basis of something other than how useful they are or their compliance with the rules</li>
+                <li>Must not remove useful content (even from their own submissions) that does not violate the rules by editing or deleting it</li>
+                <li>Must not abuse or attempt to break or interfere with the appropriate usage of the site in any way</li>
+                <li>Must not create other accounts in order to evade their bans</li>
+                <li>Must not offer bribes to moderators to avoid punishment</li>
+            </ol>
+        </li>
+        <li>
+            Moderators
+            <ol>
+                <li>May only punish people on the basis of the rules</li>
+                <li>May only use the punishments defined in the subsections of the rules broken</li>
+                <li>Must not accept bribes in exchange for reduced or no punishment</li>
+                <li>May use their editing powers in order to improve the quality of content on MoDebate</li>
+                <li>May take over content which repeatedly is in violation of the content policy because of its owner</li>
+                <li>Must not use their powers for any reason not described in the rules</li>
+            </ol>
+        </li>
+        <li>
+            Global Moderators
+            <ol>
+                <li>Must follow the moderator rules</li>
+                <li>May issue a temporary/permanent ban against users who repeatedly violate the rules</li>
+                <li>May issue a temporary/permanent ban against users who violate the User Policy</li>
+            </ol>
+        </li>
+    </ol>
+  </main>
+{% endblock %}

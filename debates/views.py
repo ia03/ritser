@@ -28,6 +28,9 @@ def about(request):
 	}
 	return render(request, 'debates/about.html', context)
 
+def rules(request):
+	return render(request, 'debates/rules.html')
+
 def privacy(request):
 	return render(request, 'debates/privacy.html')
 

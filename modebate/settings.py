@@ -216,6 +216,7 @@ ACCOUNT_ADAPTER = 'accounts.adapters.DefaultAccountAdapter'
 ACCOUNT_FORMS = {
     'add_email': 'accounts.forms.AddEmailForm',
 }
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 #ACCOUNT_EMAIL_CONFIRMATION_COOLDOWN = 300
 #ACCOUNT_EMAIL_CONFIRMATION_HMAC = False
 

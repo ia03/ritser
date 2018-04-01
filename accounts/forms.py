@@ -3,9 +3,11 @@ from .models import User
 from debates.models import Topic
 from captcha.fields import ReCaptchaField
 from django.conf import settings
+from django.contrib.auth.hashers import check_password
 from allauth.account.models import EmailAddress
 from allauth.account.adapter import get_adapter
 from allauth.account.utils import filter_users_by_email
+from allauth.account import app_settings
 from django.utils.translation import pgettext, ugettext, ugettext_lazy as _
 
 
@@ -17,10 +19,9 @@ class SignupForm(forms.Form):
         pass
 
 class ProfileForm(forms.ModelForm):
-    stopicsf = forms.CharField(required=False)
+    stopicsf = forms.CharField(required=False, label='Subscribed Topics (a space-separated list of their names)')
     def __init__(self, *args, **kwargs):
-        super(ProfileForm, self).__init__(*args, **kwargs)
-        self.fields['stopicsf'].label = 'Subscribed Topics (a space-separated list of their names)'
+        super().__init__(*args, **kwargs)
         stopicns = []
         for topic in self.instance.stopics.all():
             stopicns.append(topic.name)
@@ -51,7 +52,7 @@ class AddEmailForm(forms.Form):
                    "placeholder": _('E-mail address')}))
     def __init__(self, user=None, *args, **kwargs):
         self.user = user
-        super(AddEmailForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
     
 
     def clean_email(self):
@@ -78,6 +79,18 @@ class AddEmailForm(forms.Form):
                                               self.user,
                                               self.cleaned_data["email"],
                                               confirm=True)
+                                              
+class DeleteUserForm(forms.Form):
+    confirmation = forms.BooleanField(label='Check this if you are absolutely sure you want to delete your account', error_messages = {'required': 'You have not selected the confirmation checkbox.'})
+    password = forms.CharField(widget=forms.PasswordInput, error_messages = {'required': 'You must type in your password.'})
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super(DeleteUserForm, self).__init__(*args, **kwargs)
+    def clean_password(self):
+        data = self.cleaned_data['password']
+        if not check_password(data, self.user.password):
+            raise forms.ValidationError('The password inputted is incorrect.')
+        return data
 '''
 class UserCreationForm(forms.ModelForm):
     """

@@ -1,0 +1,23 @@
+{% extends "account/base.html" %}
+
+{% load widget_tweaks %}
+
+{% block title %}Delete Account - MoDebate{% endblock %}
+
+{% block body %}
+    <main role="main" class="container">
+    <h1>Delete Account</h1>
+    {% include 'snippets/formerrors.html' %}
+    <p>Deleting your account will not delete content submitted by it. It will, however, delete e-mails stored on it.</p>
+    <form method="POST" action="{% url 'account_delete' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="{{ form.password.id_for_label }}">{{ form.password.label_tag }}</label>
+          {% render_field form.password class="form-control" %}
+          <label for="{{ form.confirmation.id_for_label }}">{{ form.confirmation.label_tag }}</label>
+          {{form.confirmation}}
+        </div>
+        <input class="btn btn-danger" type="submit" name="action" value="Delete Account"/>
+    </form>
+    </main>
+{% endblock %}

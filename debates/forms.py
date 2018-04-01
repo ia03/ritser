@@ -62,8 +62,8 @@ def setapprovedon(instance):
         return None
 
 class DebateForm(forms.ModelForm):
-    topic_name = forms.CharField(max_length=30)
-    owner_name = forms.CharField()
+    topic_name = forms.CharField(max_length=30, error_messages = {'required': 'You must specify the name of the topic the debate will belong to.'})
+    owner_name = forms.CharField(error_messages = {'required': 'You must specify the name of the user who will own the debate.'})
     captcha = ReCaptchaField(private_key=settings.GR_DEBATEFORM, public_key='6LcV9EwUAAAAAIt0jamp3Z30425qTsD_paJlpfFo', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
@@ -77,8 +77,6 @@ class DebateForm(forms.ModelForm):
         self.fields['slvl'].label = 'Security Level'
         self.fields['modnote'].label = 'Moderator Note'
         self.fields['question'].error_messages = {'required': 'You must type in a question.'}
-        self.fields['topic_name'].error_messages = {'required': 'You must specify the name of the topic the debate will belong to.'}
-        self.fields['owner_name'].error_messages = {'required': 'You must specify the name of the user who will own the debate.'}
         if self.edit == 0:
             disablefield(self, 'slvl', 'owner_name', 'approvalstatus', 'modnote')
         elif self.edit == 1:
@@ -164,8 +162,8 @@ class DebateForm(forms.ModelForm):
 
 
 class ArgumentForm(forms.ModelForm):
-    owner_name = forms.CharField()
-    debate_id = forms.IntegerField()
+    owner_name = forms.CharField(error_messages = {'required': 'You must specify the name of the user who will own the argument.'})
+    debate_id = forms.IntegerField(label = 'Debate ID (comes after the topic name in the URL)', error_messages = {'required': 'You must specify the ID of the debate this argument will belong to.'})
     captcha = ReCaptchaField(private_key=settings.GR_ARGUMENTFORM, public_key='6Lcd9EwUAAAAAAExN5gc7KSQ2da-BWNJSAKtH2r4', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
@@ -179,12 +177,9 @@ class ArgumentForm(forms.ModelForm):
         self.fields['modnote'].label = 'Moderator Note (can be blank)'
         self.fields['side'].label = 'Side (0=For, 1=Against)'
         self.fields['approvalstatus'].label = 'Approval Status (0: Approved, 1: Unapproved, 2: Denied)'
-        self.fields['debate_id'].label = 'Debate ID (comes after the topic name in the URL)'
         self.fields['order'].label = 'Order (the greater this is, the higher this argument will be ranked)'
         self.fields['title'].error_messages = {'required': 'You must type in a title.'}
         self.fields['body'].error_messages = {'required': 'You must type in a body.'}
-        self.fields['debate_id'].error_messages = {'required': 'You must specify the ID of the debate this argument will belong to.'}
-        self.fields['owner_name'].error_messages = {'required': 'You must specify the name of the user who will own the argument.'}
         self.fields['side'].error_messages = {'required': 'You must specify a side for the argument.'}
         if self.edit == 0:
             disablefield(self, 'owner_name', 'order', 'approvalstatus', 'modnote')
@@ -271,7 +266,7 @@ class ArgumentForm(forms.ModelForm):
         }
 
 class TopicForm(forms.ModelForm):
-    modsf = forms.CharField(required=False)
+    modsf = forms.CharField(required=False, label = 'Moderators (a space-separated list of their names)')
     captcha = ReCaptchaField(private_key=settings.GR_TOPICFORM, public_key='6Lf2wk4UAAAAAKzFTTvHOnHfwU5-RVbrlxXcDVEm', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
     owner_name = forms.CharField()
     def __init__(self, *args, **kwargs):
@@ -283,7 +278,6 @@ class TopicForm(forms.ModelForm):
         self.modsl = []
         super(TopicForm, self).__init__(*args, **kwargs)
         donotrequire(self, 'owner', 'modsf', 'created_on', 'created_by', 'edited_on')
-        self.fields['modsf'].label = 'Moderators (a space-separated list of their names)'
         self.fields['slvl'].label = 'Security level'
         self.fields['debslvl'].label = 'Default debate security level'
         self.fields['name'].error_messages = {'required': 'You must type in a name.'}

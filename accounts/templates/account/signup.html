@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 
-{% load widget_tweaks %}
+{% load widget_tweaks static %}
 
 {% block title %}Signup - MoDebate{% endblock %}
+
+
 
 {% block body %}
 <main role="main" class="container">
@@ -31,6 +33,10 @@
             <label for="{{ form.password2.id_for_label }}">{{ form.password2.label_tag }}</label>
             {% render_field form.password2 class="form-control" %}
         </div>
+        <div class="form-group">
+            {% render_field form.gdprconsent class="form-check-input" %}
+            <label for="{{ form.gdprconsent.id_for_label }}" class="form-check-label">{{ form.gdprconsent.label_tag }}</label>
+        </div>
         {{form.captcha}}
     
       {% if redirect_field_value %}
@@ -39,4 +45,8 @@
       <button class="btn btn-primary" type="submit">Sign Up &raquo;</button>
     </form>
 </main>
+{% endblock %}
+
+{% block endjs %}
+<script src="{% static 'account/js/emailconsent.js' %}"></script>
 {% endblock %}

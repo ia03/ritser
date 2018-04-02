@@ -71,7 +71,7 @@ class DebateForm(forms.ModelForm):
             self.edit = kwargs.pop("edit")
         else:
             self.edit = 0
-        super(DebateForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         donotrequire(self, 'owner', 'topic', 'created_on', 'edited_on', 'approved_on')
         self.fields['approvalstatus'].label = 'Approval Status (0: Approved, 1: Unapproved, 2: Denied)'
         self.fields['slvl'].label = 'Security Level'
@@ -123,7 +123,7 @@ class DebateForm(forms.ModelForm):
             return data
 
     def clean(self):
-        cleaned_data = super(DebateForm, self).clean()
+        cleaned_data = super().clean()
         tname = cleaned_data.get('topic_name')
         owner_name = cleaned_data.get('owner_name')
         if (tname or self.edit == 1) and (owner_name or self.edit == 0):
@@ -171,7 +171,7 @@ class ArgumentForm(forms.ModelForm):
             self.edit = kwargs.pop("edit")
         else:
             self.edit = 0
-        super(ArgumentForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         donotrequire(self, 'owner', 'topic', 'debate', 'created_on', 'edited_on')
         self.fields['approvalstatus'].label = 'Approval Status'
         self.fields['modnote'].label = 'Moderator Note (can be blank)'
@@ -231,7 +231,7 @@ class ArgumentForm(forms.ModelForm):
             raise forms.ValidationError('Invalid side setting %(side), must be 0 or 1.', code='invalidside', params={'side': data})
         return data
     def clean(self):
-        cleaned_data = super(ArgumentForm, self).clean()
+        cleaned_data = super().clean()
         did = cleaned_data.get('debate_id')
         owner_name = cleaned_data.get('owner_name')
         if (did or self.edit == 1) and (owner_name or self.edit == 0):
@@ -276,7 +276,7 @@ class TopicForm(forms.ModelForm):
         else:
             self.edit = 0
         self.modsl = []
-        super(TopicForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         donotrequire(self, 'owner', 'modsf', 'created_on', 'created_by', 'edited_on')
         self.fields['slvl'].label = 'Security level'
         self.fields['debslvl'].label = 'Default debate security level'
@@ -349,7 +349,7 @@ class TopicForm(forms.ModelForm):
             raise forms.ValidationError('Invalid default debate security level setting %(debslvl)s, must be 0, 1, 2, or 3.', code='invaliddebslvl', params={'debslvl': data})
         return data
     def clean(self):
-        cleaned_data = super(TopicForm, self).clean()
+        cleaned_data = super().clean()
         owner_name = cleaned_data.get('owner_name')
         if owner_name or self.edit == 0 or self.edit == 1:
             if self.edit == 0:

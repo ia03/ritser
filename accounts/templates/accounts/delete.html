@@ -8,7 +8,7 @@
     <main role="main" class="container">
     <h1>Delete Account</h1>
     {% include 'snippets/formerrors.html' %}
-    <p>Deleting your account will not delete content submitted by it. It will, however, delete e-mails stored on it.</p>
+    <p>Deleting your account will not delete content submitted by it. It will, however, delete e-mails and social accounts stored on it.</p>
     <form method="POST" action="{% url 'account_delete' %}">
         {% csrf_token %}
         <div class="form-group">

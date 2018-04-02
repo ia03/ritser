@@ -8,6 +8,7 @@ from .forms import ProfileForm, DeleteUserForm
 from debates.utils import getpage
 from django.conf import settings
 from allauth.account.models import EmailAddress
+from allauth.socialaccount.models import SocialAccount
 
 # Create your views here.
 
@@ -91,6 +92,7 @@ def delete(request):
 			request.user.email = ""
 			request.user.save()
 			EmailAddress.objects.filter(user=request.user).delete()
+			SocialAccount.objects.filter(user=request.user).delete()
 			logout(request)
 			return HttpResponseRedirect(settings.ACCOUNT_LOGOUT_REDIRECT_URL)
 	elif request.method == 'GET':

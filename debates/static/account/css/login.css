@@ -1,0 +1,7 @@
+.socialaccount_providers {
+    display: none;
+}
+
+:checked ~ .socialaccount_providers {
+    display: block;
+}

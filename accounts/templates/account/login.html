@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 
-{% load account socialaccount widget_tweaks %}
+{% load account socialaccount widget_tweaks static %}
 
 {% block title %}Log In - MoDebate{% endblock %}
+
+{% block head %}<link rel="stylesheet" href="{% static "account/css/login.css" %}">{% endblock %}
 
 {% block body %}
 
@@ -13,14 +15,16 @@
     
     {% if socialaccount_providers %}
     <p>Please log in with one
-    of your existing third party accounts or <a href="{{ signup_url }}">sign up</a>
+    of your existing third party accounts by agreeing to the terms and clicking on the appropriate link or <a href="{{ signup_url }}">sign up</a>
     for a {{ site.name }} account and log in below:</p>
-    
     <div class="socialaccount_ballot">
     
+      <input type="checkbox" name="tos" required id="tos" />
+      <label for="tos" class="form-check-label">I am at least 13 years old and agree to the <a href="{% url 'terms' %}">Terms of Service</a> and <a href="{% url 'privacy' %}">Privacy Policy</a> of MoDebate.</label>
       <ul class="socialaccount_providers list-group">
         {% include "socialaccount/snippets/provider_list.html" with process="login" %}
       </ul>
+   
     
       <div class="login-or"><strong>or</strong></div>
     

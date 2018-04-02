@@ -10,13 +10,12 @@ from allauth.account.utils import filter_users_by_email
 from allauth.account import app_settings
 from django.utils.translation import pgettext, ugettext, ugettext_lazy as _
 
-
+consentemaillabel = 'I consent to any e-mails submitted being used for account recovery and an error message shown to new users when they try to sign up with any of them until I revoke this consent by deleting them.'
 
 class SignupForm(forms.Form):
-    gdprconsent = forms.BooleanField(required=False, label='I consent to any e-mails submitted being used for account recovery and an error message shown to new users when they try to sign up with any of them until I revoke this consent.')
+    gdprconsent = forms.BooleanField(required=False, label=consentemaillabel)
+    tos = forms.BooleanField(error_messages={'required': 'You must agree to the terms.'})
     captcha = ReCaptchaField(private_key=settings.GR_SIGNUPFORM, public_key='6LfKRk0UAAAAAAVkc0FNDHtLNyzwYwBiEUpVeDCe', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         
     def signup(self, request, user):
         """ Required, or else it throws deprecation warnings """
@@ -50,7 +49,7 @@ class ProfileForm(forms.ModelForm):
         model = User
         fields = ['bio', 'stopicsf', 'timezone']
 class AddEmailForm(forms.Form):
-    gdprconsent = forms.BooleanField(label='I consent to any e-mails submitted being used for account recovery and an error message shown to new users when they try to sign up with any of them until I revoke this consent.')
+    gdprconsent = forms.BooleanField(label=consentemaillabel)
     captcha = ReCaptchaField(private_key=settings.GR_ADDEMAILFORM, public_key='6Lc71U4UAAAAALLVIW91zfM37xT_8DSYvCdyXA7M', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
     email = forms.EmailField(
         label=_("E-mail"),

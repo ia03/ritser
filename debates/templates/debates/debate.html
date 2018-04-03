@@ -10,9 +10,9 @@
       <div class="row">
         <div class="col-md-1 align-middle" id="karmad">
           <div class="align-middle" id="voting" data-debate-id="{{debate.id}}" data-vote-url="{% url 'votedebate' %}">
-            {% if user.is_authenticated %}<div class="arrow-up{% if vote == 1 %}-selected{% endif %} votebtn"></div>{% endif %}
+            {% if userhasperm %}<div class="arrow-up{% if vote == 1 %}-selected{% endif %} votebtn"></div>{% endif %}
             <span class="karmacount" title="karma (votes)">{{debate.karma|intcomma}}</span>
-            {% if user.is_authenticated %}<div class="arrow-down{% if vote == -1 %}-selected{% endif %} votebtn"></div>{% endif %}
+            {% if userhasperm %}<div class="arrow-down{% if vote == -1 %}-selected{% endif %} votebtn"></div>{% endif %}
           </div>
         </div>
         <div class="col-md-11">

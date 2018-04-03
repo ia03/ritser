@@ -118,14 +118,15 @@ def topic(request, tname):
 		'sorta': sorta,
 		'dupvoted': dupvoted,
 		'ddownvoted': ddownvoted,
+		'hasperm': request.user.is_authenticated and request.user.hasperm(),
 	}
 	return render(request, 'debates/topic.html', context)
 
 def votedebate(request):
 	debate_id = int(request.POST.get('id'))
 	vote = int(request.POST.get('vote'))
-	if (not request.user.is_authenticated):
-		return HttpResponse('error - not authenticated')
+	if not (request.user.is_authenticated and request.user.hasperm()):
+		return HttpResponse('error - you do not have permission to perform that')
 	debate = get_object_or_404(Debate, id=debate_id)
 	user = request.user
 	if (debate.users_upvoting.filter(id=user.id).count() == 1):
@@ -243,6 +244,7 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 		'pagea': pagea,
 		'apprs': kwargs['apprs'],
 		'vote': vote,
+		'hasperm': request.user.is_authenticated and request.user.hasperm(),
 	}
 	return render(request, 'debates/debate.html', context)
 

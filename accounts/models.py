@@ -36,5 +36,7 @@ class User(AbstractUser):
 		return (self.modstatus > 0)
 	def isadmin(self):
 		return (self.modstatus > 1)
+	def hasperm(self):
+		return self.is_authenticated and self.active != 2
 	def __str__(self):
 		return self.username

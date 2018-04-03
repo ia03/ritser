@@ -135,8 +135,8 @@ class DebateForm(forms.ModelForm):
                 owner = cleaned_data.get('owner')
             else:
                 owner = User.objects.get(username=owner_name)
-            if self.edit == 1 and self.user != self.instance.owner:
-                raise forms.ValidationError('You do not have permission to edit this debate.')
+            if (not self.user.hasperm()) or (self.edit == 1 and self.user != self.instance.owner):
+                raise forms.ValidationError('You do not have permission to perform this action.')
             cleaned_data['topic'] = topic
             cleaned_data['owner'] = owner
             if self.edit == 0:
@@ -244,8 +244,8 @@ class ArgumentForm(forms.ModelForm):
                 owner = cleaned_data.get('owner')
             else:
                 owner = User.objects.get(username=owner_name)
-            if self.edit == 1 and self.user != self.instance.owner:
-                raise forms.ValidationError('You do not have permission to edit this debate.')
+            if (not self.user.hasperm() ) or (self.edit == 1 and self.user != self.instance.owner):
+                raise forms.ValidationError('You do not have permission to perform this action.')
             cleaned_data['debate'] = debate
             cleaned_data['topic'] = topic
             cleaned_data['owner'] = owner
@@ -358,8 +358,8 @@ class TopicForm(forms.ModelForm):
                 owner = self.instance.owner
             else:
                 owner = User.objects.get(username=owner_name)
-            if self.edit == 1 and (not self.user.ismod(self.instance)):
-                raise forms.ValidationError('You do not have permission to edit this topic.')
+            if (not self.user.hasperm()) or (self.edit == 1 and (not self.user.ismod(self.instance))):
+                raise forms.ValidationError('You do not have permission to perform this action.')
             cleaned_data['owner'] = owner
             if self.edit != 1 and owner.approvedargs < 20 and not self.user.isgmod() and (self.edit == 0 or owner != self.user): #add subscriber status here
                 raise forms.ValidationError('You must have at least 20 approved arguments to own a topic.')

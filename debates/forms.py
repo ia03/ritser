@@ -383,6 +383,9 @@ class BanForm(forms.Form):
     terminate = forms.BooleanField(required=False, label='Terminate')
     bandate = forms.DateField(label='Suspended until (MM/DD/YYYY)', required=False)
     bannote = forms.CharField(widget=forms.Textarea, required=False, max_length=10000, label='Ban Note (You can use markdown.)')
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        super().__init__(*args, **kwargs)
     def clean_username(self):
         data = self.cleaned_data['username']
         if not User.objects.filter(username=data).exists():
@@ -390,6 +393,8 @@ class BanForm(forms.Form):
         user = User.objects.get(username=data)
         if not user.is_active:
             raise forms.ValidationError('User %(username)s can not be suspended/terminated.', code='usernotactive', params={'username': data})
+        if user.modstatus >= self.user.modstatus:
+            raise forms.ValidationError('You do not have permission to suspend/terminate %(username)s.', code='userismod', params={'username': data})
         return data
     def clean(self):
         cleaned_data = super().clean()

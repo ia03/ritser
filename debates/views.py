@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
-from .forms import DebateForm, ArgumentForm, TopicForm, BanForm
+from .forms import DebateForm, ArgumentForm, TopicForm, BanForm, UnsuspendForm
 from .utils import getpage, newdiff, debateslist, htmldiffs
 from accounts.utils import DeleteUser
 from accounts.models import User
@@ -588,12 +588,12 @@ def search(request):
 @gmod_required
 def ban(request):
 	if request.method == 'POST':
-		form = BanForm(request.POST)
+		form = BanForm(request.POST, user=request.user)
 		if form.is_valid():
 			user = User.objects.get(username=form.cleaned_data['username'])
 			t = form.cleaned_data['terminate']
 			if t:
-				DeleteUser(user, 3)
+				DeleteUser(user, 3, bannote=form.cleaned_data['bannote'])
 				messages.success(request, 'You have successfully terminated this user.')
 			else:
 				user.active = 2
@@ -602,8 +602,24 @@ def ban(request):
 				user.save()
 				messages.success(request, 'You have successfully suspended this user.')
 	elif request.method == 'GET':
-		form = BanForm()
+		form = BanForm(user=request.user)
 	context = {
 		'form': form,
 	}
 	return render(request, 'debates/mod/ban.html', context)
+
+@gmod_required
+def unsuspend(request):
+	if request.method == 'POST':
+		form = UnsuspendForm(request.POST)
+		if form.is_valid():
+			user = User.objects.get(username=form.cleaned_data['username'])
+			user.active = 0
+			user.save()
+			messages.success(request, 'You have successfully unsuspended this user.')
+	elif request.method == 'GET':
+		form = UnsuspendForm()
+	context = {
+		'form': form,
+	}
+	return render(request, 'debates/mod/unsuspend.html', context)

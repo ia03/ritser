@@ -1,0 +1,25 @@
+{% extends "debates/mod/base.html" %}
+
+{% load widget_tweaks static %}
+
+{% block title %}Unsuspend - MoDebate{% endblock %}
+
+
+{% block body %}
+  <main role="main" class="container">
+    <div class="page-header">
+      <h1>Unsuspend a User</h1>
+    </div>
+    <form action="{% url 'unsuspend' %}" method="post">
+      {% csrf_token %}
+      {% include 'snippets/formerrors.html' %}
+      {# Include the visible fields #}
+      <div class="form-group">
+          <label for="{{ form.username.id_for_label }}">{{ form.username.label_tag }}</label>
+          {% render_field form.username class="form-control" %}
+      </div>
+    
+      <input type="submit" class="btn btn-primary" value="Submit" />
+    </form>
+  </main>
+{% endblock %}

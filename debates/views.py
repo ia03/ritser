@@ -10,7 +10,7 @@ from .models import Topic, Debate, Argument, RevisionData
 from .forms import DebateForm, ArgumentForm, TopicForm, BanForm, UnsuspendForm
 from .utils import getpage, newdiff, debateslist, htmldiffs
 from accounts.utils import DeleteUser
-from accounts.models import User
+from accounts.models import User, ModAction
 from .decorators import mod_required, gmod_required
 from ipware import get_client_ip
 from .templatetags.markdown import markdownf
@@ -592,14 +592,18 @@ def ban(request):
 		if form.is_valid():
 			user = User.objects.get(username=form.cleaned_data['username'])
 			t = form.cleaned_data['terminate']
+			bannote = form.cleaned_data['bannote']
+			bandate = form.cleaned_data['bandate']
 			if t:
-				DeleteUser(user, 3, bannote=form.cleaned_data['bannote'])
+				DeleteUser(user, 3, bannote=bannote)
+				ModAction.create(user=user, mod=request.user, action=2, note=bannote)
 				messages.success(request, 'You have successfully terminated this user.')
 			else:
 				user.active = 2
-				user.bandate = form.cleaned_data['bandate']
-				user.bannote = form.cleaned_data['bannote']
+				user.bandate = bandate
+				user.bannote = bannote
 				user.save()
+				ModAction.create(user=user, mod=request.user, action=0, note=bannote)
 				messages.success(request, 'You have successfully suspended this user.')
 	elif request.method == 'GET':
 		form = BanForm(user=request.user)
@@ -616,6 +620,7 @@ def unsuspend(request):
 			user = User.objects.get(username=form.cleaned_data['username'])
 			user.active = 0
 			user.save()
+			ModAction.create(user=user, mod=request.user, action=1)
 			messages.success(request, 'You have successfully unsuspended this user.')
 	elif request.method == 'GET':
 		form = UnsuspendForm()

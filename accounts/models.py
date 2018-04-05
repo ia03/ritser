@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 from django.urls import reverse
 from timezone_field import TimeZoneField
 
@@ -8,7 +9,7 @@ class User(AbstractUser):
 	approvedargs = models.IntegerField(default=0)
 	modstatus = models.IntegerField(default=0) #0: regular user #1: global moderator #2: admin #3: owner
 	active = models.IntegerField(default=0) #0: not banned 1: account deleted 2: temporarily banned 3: permanently banned
-	bandate = models.DateField(blank=True, null=True)
+	bandate = models.DateField(default=timezone.now)
 	bannote = models.CharField(max_length=10000, blank=True)
 	bio = models.TextField(max_length=200000, blank=True)
 	stopics = models.ManyToManyField('debates.Topic', related_name='susers', blank=True)
@@ -42,3 +43,10 @@ class User(AbstractUser):
 		return self.is_authenticated and self.active != 2
 	def __str__(self):
 		return self.username
+
+class ModAction(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='modlogs')
+	mod = models.ForeignKey(User, on_delete=models.CASCADE, related_name='modactions')
+	action = models.IntegerField(default=0) #0: suspend 1: unsuspend 2: terminate
+	note = models.CharField(max_length=10000, blank=True)
+	date = models.DateField(default=timezone.now)

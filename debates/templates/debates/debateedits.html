@@ -42,7 +42,7 @@
           <br>{% endifchanged %}
           Question: {% if forloop.last %}{{version|field:"question"}}{% else %}{{version|titchg}}{% endif %}
           <br>
-          Description: {% if forloop.last %}{{version|field:"description"}}{% else %}{{version|bodchg}}{% endif %}
+          Description: {% if forloop.last %}{{version|field:"description"|markdownf}}{% else %}{{version|bodchg}}{% endif %}
         </div>
       </div>
     </div>

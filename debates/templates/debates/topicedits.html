@@ -38,7 +38,7 @@
           <br>{% endif %}
           Title: {% if forloop.last %}{{version|field:"title"}}{% else %}{{version|titchg}}{% endif %}
           <br>
-          Description: {% if forloop.last %}{{version|field:"description"}}{% else %}{{version|bodchg}}{% endif %}
+          Description: {% if forloop.last %}{{version|field:"description"|markdownf}}{% else %}{{version|bodchg}}{% endif %}
         </div>
       </div>
     </div>

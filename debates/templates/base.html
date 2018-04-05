@@ -69,7 +69,7 @@
     {% block snavbar %}{% endblock %}
     {% if user.active == 2 %}
     <div class="alert alert-danger">
-    This account has been suspended until {{user.bandate|date:"D d M Y f A"}}. 
+    This account has been suspended until {{user.bandate|date:"D d M Y"}}. 
     {% if user.bannote %}
     {% load modnotes markdown %}
     {% modnotes user.bannote|markdownf %}

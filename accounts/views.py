@@ -5,10 +5,10 @@ from django.contrib.auth import logout
 from django.urls import reverse
 from .models import User
 from .forms import ProfileForm, DeleteUserForm
+from .utils import DeleteUser
 from debates.utils import getpage
 from django.conf import settings
-from allauth.account.models import EmailAddress
-from allauth.socialaccount.models import SocialAccount
+
 
 # Create your views here.
 
@@ -87,13 +87,7 @@ def delete(request):
 	if request.method == 'POST':
 		form = DeleteUserForm(request.POST, user=request.user)
 		if form.is_valid():
-			request.user.active = 1
-			request.user.is_active = False
-			request.user.email = ""
-			request.user.save()
-			EmailAddress.objects.filter(user=request.user).delete()
-			SocialAccount.objects.filter(user=request.user).delete()
-			logout(request)
+			DeleteUser(request.user, 1)
 			return HttpResponseRedirect(settings.ACCOUNT_LOGOUT_REDIRECT_URL)
 	elif request.method == 'GET':
 		form = DeleteUserForm(user=request.user)

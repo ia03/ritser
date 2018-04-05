@@ -3,15 +3,18 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
 from .forms import DebateForm, ArgumentForm, TopicForm, BanForm
 from .utils import getpage, newdiff, debateslist, htmldiffs
+from accounts.utils import DeleteUser
+from accounts.models import User
 from .decorators import mod_required, gmod_required
 from ipware import get_client_ip
 from .templatetags.markdown import markdownf
-import reversion, bleach, django.contrib.messages
+import reversion, bleach
 from reversion.models import Version
 from haystack.query import SearchQuerySet
 from allauth.account.decorators import verified_email_required
@@ -587,6 +590,14 @@ def ban(request):
 	if request.method == 'POST':
 		form = BanForm(request.POST)
 		if form.is_valid():
+			user = User.objects.get(username=form.cleaned_data['username'])
+			t = form.cleaned_data['terminate']
+			if t:
+				DeleteUser(user, 3)
+			else:
+				user.active = 2
+				user.bandate = form.cleaned_data['bandate']
+				user.save()
 			messages.success(request, 'Your suspension/termination has succeeded.')
 	elif request.method == 'GET':
 		form = BanForm()

@@ -5,7 +5,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from captcha.fields import ReCaptchaField
 from django.conf import settings
-from bootstrap_datepicker.widgets import DatePicker
 
 def disablefield(instance, *args):
     for arg in args:
@@ -382,14 +381,14 @@ class TopicForm(forms.ModelForm):
 class BanForm(forms.Form):
     username = forms.CharField(max_length=150)
     terminate = forms.BooleanField(required=False, label='Terminate')
-    bandate = forms.DateTimeField(widget=forms.DateTimeInput, label='Suspended until', required=False)
+    bandate = forms.DateField(label='Suspended until (MM/DD/YYYY)', required=False)
     def clean_username(self):
         data = self.cleaned_data['username']
-        if not User.objects.get(username=data).exists():
-            raise forms.ValidationError('User %(username) not found.', code='usernotfound', params={'username': data})
+        if not User.objects.filter(username=data).exists():
+            raise forms.ValidationError('User %(username)s not found.', code='usernotfound', params={'username': data})
         user = User.objects.get(username=data)
         if not user.is_active:
-            raise forms.ValidationError('User %(username) can not be suspended/terminated.', code='usernotactive', params={'username': data})
+            raise forms.ValidationError('User %(username)s can not be suspended/terminated.', code='usernotactive', params={'username': data})
         return data
     def clean(self):
         cleaned_data = super().clean()

@@ -592,7 +592,6 @@ def ban(request):
 		form = BanForm()
 	context = {
 		'form': form,
-		'oendjs': True,
 	}
 	return render(request, 'debates/mod/ban.html', context)
 	

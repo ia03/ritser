@@ -26,13 +26,21 @@
 
       <div class="collapse navbar-collapse" id="navbartoggler">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li class="nav-item{% if nbar == 'home' %} active{% endif %}">
-            <a class="nav-link" href="{% if user.is_authenticated %}{% url 'feed' %}{% else %}{% url 'index' %}{% endif %}">Home {% if nbar == 'home' %}<span class="sr-only">(current)</span>{% endif %}</a>
+          {% url 'index' as index %}
+          {% url 'feed' as feed %}
+          <li class="nav-item{% if request.get_full_path == index or request.get_full_path == feed %} active{% endif %}">
+            <a class="nav-link" href="{% if user.is_authenticated %}{{feed}}{% else %}{{index}}{% endif %}">Home {% if request.get_full_path == index or request.get_full_path == feed %}<span class="sr-only">(current)</span>{% endif %}</a>
           </li>
-          <li class="nav-item{% if nbar == 'about' %} active{% endif %}">
-            <a class="nav-link" href="{% url 'about' %}">About {% if nbar == 'about' %}<span class="sr-only">(current)</span>{% endif %}</a>
+          {% url 'about' as about %}
+          <li class="nav-item{% if request.get_full_path == about %} active{% endif %}">
+            <a class="nav-link" href="{{about}}">About {% if request.get_full_path == about %}<span class="sr-only">(current)</span>{% endif %}</a>
           </li>
-
+          {% if user.ismod %}
+          {% url 'ban' as ban %}
+          <li class="nav-item{% if request.get_full_path == ban %} active{% endif %}">
+            <a class="nav-link" href="{{ban}}">Moderate {% if request.get_full_path == ban %}<span class="sr-only">(current)</span>{% endif %}</a>
+          </li>
+          {% endif %}
         </ul>
         <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'search' %}">
           <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search for a debate" aria-label="Search">
@@ -96,9 +104,9 @@
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 
-    {% if not minjq %}<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>{% else %}<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>{% endif %}
+    {% if not oendjs %}{% if not minjq %}<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>{% else %}<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>{% endif %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>{% endif %}
     {% block endjs %}{% endblock %}
   </body>
 </html>

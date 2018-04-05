@@ -28,8 +28,10 @@ class User(AbstractUser):
 		
 	def get_arguments(self):
 		return reverse('userarguments', args=[self.username])
-	def ismod(self, topic):
+	def ismodof(self, topic):
 		return (self.modstatus > 0) or (self.moderator_of.filter(name=topic.name)) or topic.owner == self
+	def ismod(self):
+		return self.moderator_of.all().exists() or self.modstatus > 0
 	def isowner(self, topic):
 		return self.modstatus > 0 or topic.owner == self
 	def isgmod(self):

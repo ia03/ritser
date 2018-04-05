@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from captcha.fields import ReCaptchaField
 from django.conf import settings
+from bootstrap_datepicker.widgets import DatePicker
 
 def disablefield(instance, *args):
     for arg in args:
@@ -141,9 +142,9 @@ class DebateForm(forms.ModelForm):
             cleaned_data['owner'] = owner
             if self.edit == 0:
                 cleaned_data['slvl'] = topic.debslvl
-            if ((topic.slvl == 1 or topic.slvl == 2) and (owner.approvedargs < 10 and not self.user.ismod(topic)) and (self.edit == 0 or owner != self.user)): #add subscriber status here
+            if ((topic.slvl == 1 or topic.slvl == 2) and (owner.approvedargs < 10 and not self.user.ismodof(topic)) and (self.edit == 0 or owner != self.user)): #add subscriber status here
                 raise forms.ValidationError('You must have at least 10 approved arguments to post to a topic with a security level of 1 or 2.')
-            elif (topic.slvl == 3) and not self.user.ismod(topic):
+            elif (topic.slvl == 3) and not self.user.ismodof(topic):
                 raise forms.ValidationError('You must be a moderator in order to post to or edit in this topic.')
             cleaned_data['approved_on'] = setapprovedon(self)
 
@@ -249,7 +250,7 @@ class ArgumentForm(forms.ModelForm):
             cleaned_data['debate'] = debate
             cleaned_data['topic'] = topic
             cleaned_data['owner'] = owner
-            if debate.slvl == 2 and (owner.approvedargs < 20 and not self.user.ismod(topic) and (self.edit == 0 or owner != self.user)): #add subscriber status here
+            if debate.slvl == 2 and (owner.approvedargs < 20 and not self.user.ismodof(topic) and (self.edit == 0 or owner != self.user)): #add subscriber status here
                 raise forms.ValidationError('You must have at least 20 approved arguments to post to a debate with a security level of 2.')
             cleaned_data['approved_on'] = setapprovedon(self)
         return cleaned_data
@@ -358,7 +359,7 @@ class TopicForm(forms.ModelForm):
                 owner = self.instance.owner
             else:
                 owner = User.objects.get(username=owner_name)
-            if (not self.user.hasperm()) or (self.edit == 1 and (not self.user.ismod(self.instance))):
+            if (not self.user.hasperm()) or (self.edit == 1 and (not self.user.ismodof(self.instance))):
                 raise forms.ValidationError('You do not have permission to perform this action.')
             cleaned_data['owner'] = owner
             if self.edit != 1 and owner.approvedargs < 20 and not self.user.isgmod() and (self.edit == 0 or owner != self.user): #add subscriber status here
@@ -377,3 +378,20 @@ class TopicForm(forms.ModelForm):
             'created_by': forms.HiddenInput(),
             'edited_on': forms.HiddenInput(),
         }
+
+class BanForm(forms.Form):
+    username = forms.CharField(max_length=150)
+    terminate = forms.BooleanField(required=False, label='Terminate')
+    bandate = forms.DateTimeField(widget=forms.DateTimeInput, label='Suspended until', required=False)
+    def clean_username(self):
+        data = self.cleaned_data['username']
+        if not User.objects.get(username=data).exists():
+            raise forms.ValidationError('User %(username) not found.', code='usernotfound', params={'username': data})
+        user = User.objects.get(username=data)
+        if not user.is_active:
+            raise forms.ValidationError('User %(username) can not be suspended/terminated.', code='usernotactive', params={'username': data})
+        return data
+    def clean(self):
+        cleaned_data = super().clean()
+        if (not cleaned_data['terminate']) and cleaned_data['bandate'] == None:
+            raise forms.ValidationError('You must input a date.')

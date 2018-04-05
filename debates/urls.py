@@ -23,6 +23,7 @@ urlpatterns = [
 	path('t/<slug:tname>/<int:did>/argument/<int:aid>', views.argument, name='argument'),
 	path('t/<slug:tname>/<int:did>/argument/<int:aid>/edit', views.editargument, name='editargument'),
 	path('t/<slug:tname>/<int:did>/argument/<int:aid>/edits', views.argumentedits, name='argumentedits'),
+	path('mod/ban', views.ban, name='ban'), #TODO: add reports link to base.html moderate link
 	path('search/', views.search, name='search'),
 	path('submit_argument/', views.submitargument, name='submitargument'),
 	path('submit_debate/', views.submitdebate, name='submitdebate'),

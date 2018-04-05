@@ -6,11 +6,12 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
-from .forms import DebateForm, ArgumentForm, TopicForm
+from .forms import DebateForm, ArgumentForm, TopicForm, BanForm
 from .utils import getpage, newdiff, debateslist, htmldiffs
+from .decorators import mod_required, gmod_required
 from ipware import get_client_ip
 from .templatetags.markdown import markdownf
-import reversion, bleach
+import reversion, bleach, django.contrib.messages
 from reversion.models import Version
 from haystack.query import SearchQuerySet
 from allauth.account.decorators import verified_email_required
@@ -94,7 +95,7 @@ def topic(request, tname):
 	debates = getpage(page, debates_list, 30)
 
 	if (user.is_authenticated):
-		if ((topic.slvl == 1 or topic.slvl == 2) and (user.approvedargs < 10 and not user.ismod(topic))) or ((topic.slvl == 3) and not user.ismod(topic)):
+		if ((topic.slvl == 1 or topic.slvl == 2) and (user.approvedargs < 10 and not user.ismodof(topic))) or ((topic.slvl == 3) and not user.ismodof(topic)):
 			ats = False
 		else:
 			ats = True
@@ -114,7 +115,6 @@ def topic(request, tname):
 		'topic': topic,
 		'ctopicn': topic.name.capitalize(),
 		'debates': debates,
-		'request': request,
 		'sorta': sorta,
 		'dupvoted': dupvoted,
 		'ddownvoted': ddownvoted,
@@ -235,7 +235,6 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 
 	context = {
 		'debate': debate,
-		'request': request,
 		'minjq': True,
 		'topic': topic,
 		'argumentsf': argumentsf,
@@ -302,7 +301,7 @@ def editdebate(request, tname, did):
 	user = request.user
 
 	if request.method == 'POST':
-		if user.ismod(topic):
+		if user.ismodof(topic):
 			form = DebateForm(request.POST, instance=debate, user=user, edit=2)
 		else:
 			form = DebateForm(request.POST, instance=debate, user=user, edit=1)
@@ -316,7 +315,7 @@ def editdebate(request, tname, did):
 				reversion.add_meta(RevisionData, ip=client_ip, titchg=titchg, bodchg=bodchg)
 			return HttpResponseRedirect(reverse('debate', args=[tname, did]))
 	else:
-		if user.ismod(topic):
+		if user.ismodof(topic):
 			form = DebateForm(instance=debate, user=user, edit=2)
 		else:
 			form = DebateForm(instance=debate, user=user, edit=1)
@@ -365,7 +364,7 @@ def editargument(request, tname, did, aid):
 	user = request.user
 
 	if request.method == 'POST':
-		if user.ismod(topic):
+		if user.ismodof(topic):
 			form = ArgumentForm(request.POST, instance=argument, user=user, edit=2)
 		else:
 			form = ArgumentForm(request.POST, instance=argument, user=user, edit=1)
@@ -382,7 +381,7 @@ def editargument(request, tname, did, aid):
 			return HttpResponseRedirect(reverse('argument', args=[tname, did, aid]))
 		
 	else:
-		if user.ismod(topic):
+		if user.ismodof(topic):
 			form = ArgumentForm(instance=argument, user=user, edit=2)
 		else:
 			form = ArgumentForm(instance=argument, user=user, edit=1)
@@ -408,7 +407,6 @@ def debateedits(request, tname, did):
 	context = {
 		'debate': debate,
 		'topic': topic,
-		'request': request,
 		'versions': versions,
 		'isadmin': isadmin,
 	}
@@ -433,7 +431,6 @@ def argumentedits(request, tname, did, aid):
 		'debate': debate,
 		'argument': argument,
 		'topic': topic,
-		'request': request,
 		'versions': versions,
 		'isadmin': isadmin,
 	}
@@ -521,7 +518,6 @@ def topicedits(request, tname):
 
 	context = {
 		'topic': topic,
-		'request': request,
 		'versions': versions,
 		'isadmin': isadmin,
 	}
@@ -546,10 +542,8 @@ def feed(request):
 	
 	
 	context = {
-		'request': request,
 		'topics': topics,
 		'debates': debates,
-		'nbar': 'home',
 		'minjq': True,
 		'dupvoted': dupvoted,
 		'ddownvoted': ddownvoted,
@@ -578,7 +572,6 @@ def search(request):
 		dupvoted = []
 		ddownvoted = []
 	context = {
-		'request': request,
 		'debatesq': debatesq,
 		'debates': debates,
 		'query': query,
@@ -589,3 +582,48 @@ def search(request):
 	}
 	return render(request, 'debates/search.html', context)
 
+@gmod_required
+def ban(request):
+	if request.method == 'POST':
+		form = BanForm(request.POST)
+		if form.is_valid():
+			messages.success(request, 'Your suspension/termination has succeeded.')
+	elif request.method == 'GET':
+		form = BanForm()
+	context = {
+		'form': form,
+		'oendjs': True,
+	}
+	return render(request, 'debates/mod/ban.html', context)
+	
+'''
+if request.method == 'POST':
+		isowner = user.isowner(topic)
+		if isowner:
+			form = TopicForm(request.POST, instance=topic, user=user, edit=2)
+		else:
+			form = TopicForm(request.POST, instance=topic, user=user, edit=1)
+		if form.is_valid():
+			with reversion.create_revision():
+				titchg = htmldiffs(bleach.clean(otitle), bleach.clean(form.cleaned_data['title']))
+				bodchg = htmldiffs(markdownf(obody), markdownf(form.cleaned_data['description']))
+				topic = form.save(commit=False)
+				if isowner:
+					topic.moderators.set(form.modsl)
+				topic.save()
+				reversion.set_user(request.user)
+				client_ip, is_routable = get_client_ip(request)
+				reversion.add_meta(RevisionData, ip=client_ip, titchg=titchg, bodchg=bodchg)
+			return HttpResponseRedirect(reverse('topic', args=[tname]))
+		
+	elif request.method == 'GET':
+		if user.isowner(topic):
+			form = TopicForm(instance=topic, user=user, edit=2)
+		else:
+			form = TopicForm(instance=topic, user=user, edit=1)
+	context = {
+		'form': form,
+		'topic': topic,
+	}
+	return render(request, 'debates/edit_topic.html', context)
+'''

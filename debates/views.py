@@ -594,11 +594,12 @@ def ban(request):
 			t = form.cleaned_data['terminate']
 			if t:
 				DeleteUser(user, 3)
+				messages.success(request, 'You have successfully terminated this user.')
 			else:
 				user.active = 2
 				user.bandate = form.cleaned_data['bandate']
 				user.save()
-			messages.success(request, 'Your suspension/termination has succeeded.')
+				messages.success(request, 'You have successfully suspended this user.')
 	elif request.method == 'GET':
 		form = BanForm()
 	context = {

@@ -382,6 +382,7 @@ class BanForm(forms.Form):
     username = forms.CharField(max_length=150)
     terminate = forms.BooleanField(required=False, label='Terminate')
     bandate = forms.DateField(label='Suspended until (MM/DD/YYYY)', required=False)
+    bannote = forms.CharField(widget=forms.Textarea, required=False, max_length=10000, label='Ban Note (You can use markdown.)')
     def clean_username(self):
         data = self.cleaned_data['username']
         if not User.objects.filter(username=data).exists():
@@ -394,3 +395,14 @@ class BanForm(forms.Form):
         cleaned_data = super().clean()
         if (not cleaned_data['terminate']) and cleaned_data['bandate'] == None:
             raise forms.ValidationError('You must input a date.')
+
+class UnsuspendForm(forms.Form):
+    username = forms.CharField(max_length=150)
+    def clean_username(self):
+        data = self.cleaned_data['username']
+        if not User.objects.filter(username=data).exists():
+            raise forms.ValidationError('User %(username)s not found.', code='usernotfound', params={'username': data})
+        user = User.objects.get(username=data)
+        if user.active != 2:
+            raise forms.ValidationError('User %(username)s is not suspended.', code='usernotsuspended', params={'username': data})
+        return data

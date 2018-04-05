@@ -598,6 +598,7 @@ def ban(request):
 			else:
 				user.active = 2
 				user.bandate = form.cleaned_data['bandate']
+				user.bannote = form.cleaned_data['bannote']
 				user.save()
 				messages.success(request, 'You have successfully suspended this user.')
 	elif request.method == 'GET':
@@ -606,35 +607,3 @@ def ban(request):
 		'form': form,
 	}
 	return render(request, 'debates/mod/ban.html', context)
-	
-'''
-if request.method == 'POST':
-		isowner = user.isowner(topic)
-		if isowner:
-			form = TopicForm(request.POST, instance=topic, user=user, edit=2)
-		else:
-			form = TopicForm(request.POST, instance=topic, user=user, edit=1)
-		if form.is_valid():
-			with reversion.create_revision():
-				titchg = htmldiffs(bleach.clean(otitle), bleach.clean(form.cleaned_data['title']))
-				bodchg = htmldiffs(markdownf(obody), markdownf(form.cleaned_data['description']))
-				topic = form.save(commit=False)
-				if isowner:
-					topic.moderators.set(form.modsl)
-				topic.save()
-				reversion.set_user(request.user)
-				client_ip, is_routable = get_client_ip(request)
-				reversion.add_meta(RevisionData, ip=client_ip, titchg=titchg, bodchg=bodchg)
-			return HttpResponseRedirect(reverse('topic', args=[tname]))
-		
-	elif request.method == 'GET':
-		if user.isowner(topic):
-			form = TopicForm(instance=topic, user=user, edit=2)
-		else:
-			form = TopicForm(instance=topic, user=user, edit=1)
-	context = {
-		'form': form,
-		'topic': topic,
-	}
-	return render(request, 'debates/edit_topic.html', context)
-'''

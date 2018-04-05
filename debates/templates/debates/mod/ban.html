@@ -16,24 +16,29 @@
       <h1>Suspend/Terminate a User</h1>
     </div>
     <form action="{% url 'ban' %}" method="post">
-    {% csrf_token %}
-    {% include 'snippets/formerrors.html' %}
-    {# Include the visible fields #}
-    <div class="form-group">
-        <label for="{{ form.username.id_for_label }}">{{ form.username.label_tag }}</label>
-        {% render_field form.username class="form-control" %}
-    </div>
-    <div class="form-group">
-        <label for="{{ form.terminate.id_for_label }}">{{ form.terminate.label_tag }}</label>
-        {{form.terminate}}
-    </div>
-    <div class="form-group">
-        <label for="{{ form.bandate.id_for_label }}">{{ form.bandate.label_tag }}</label>
-        {% render_field form.bandate class="form-control" %}
-    </div>
-  
-    <input type="submit" class="btn btn-primary" value="Submit" />
-  </form>
+      {% csrf_token %}
+      {% include 'snippets/formerrors.html' %}
+      {# Include the visible fields #}
+      <div class="form-group">
+          <label for="{{ form.username.id_for_label }}">{{ form.username.label_tag }}</label>
+          {% render_field form.username class="form-control" %}
+      </div>
+      <div class="form-group">
+          <label for="{{ form.terminate.id_for_label }}">{{ form.terminate.label_tag }}</label>
+          {{form.terminate}}
+      </div>
+      <div class="form-group">
+          <label for="{{ form.bandate.id_for_label }}">{{ form.bandate.label_tag }}</label>
+          {% render_field form.bandate class="form-control" %}
+      </div>
+      <div class="form-group">
+          <label for="{{ form.bannote.id_for_label }}">{{ form.bannote.label_tag }}</label>
+          {% render_field form.bannote class="form-control" %}
+      </div>
+    
+      <input type="submit" class="btn btn-primary" value="Submit" />
+    </form>
+  </div>
 {% endblock %}
 
 {% block endjs %}<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.0/moment.min.js" integrity="sha256-DELCOgoVsZqjT78lDC7zcX+YFp+PEjh1k23mBMoDBwo=" crossorigin="anonymous"></script>

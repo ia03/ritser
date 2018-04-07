@@ -10,6 +10,14 @@
 
 <main role="main" class="container">
     <h1>{{puser.username}}'s profile</h1>
+    {% if puser.active == 2 %}
+    <div class="alert alert-danger">
+    This user's account is currently suspended. {% if user.isgmod %}<a href="{% url 'unsuspend'%}?user={{puser.username}}" class="alert-link">Unsuspend</a>{% endif %}
+    </div>
+    {% elif user.isgmod %}
+    <a href="{% url 'ban' %}?user={{puser.username}}" class="text-danger">Suspend/Terminate</a>
+    <br>
+    {% endif %}
     <a href="{{puser.get_debates}}">View Debates</a>
     <br>
     {% with puser.topics_owned.all as topics_owned %}

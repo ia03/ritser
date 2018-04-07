@@ -25,4 +25,4 @@ add reddit social application
 
 run manage.py rebuild_index
 
-make daily clearsessions cron job
+make daily clearsessions and cleansuspended cron jobs

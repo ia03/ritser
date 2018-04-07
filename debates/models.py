@@ -11,7 +11,7 @@ from reversion.models import Revision
 @reversion.register()
 class Topic(models.Model):
 	name = models.SlugField(primary_key=True, max_length=30, unique=True, db_index=True)
-	title = models.CharField(max_length=30, blank=True) #to be displayed in the HTML title of the topic; should also be protected from xss attacks
+	title = models.CharField(max_length=30, blank=True) #to be displayed in the HTML title of the topic
 	private = models.BooleanField(default=False)
 	description = models.TextField(max_length=600000, default='The description has not been set yet.', blank=True)
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='topics_owned')

@@ -607,7 +607,11 @@ def ban(request):
 				ModAction.objects.create(user=user, mod=request.user, action=0, modnote=bannote, until=bandate)
 				messages.success(request, 'You have successfully suspended this user.')
 	elif request.method == 'GET':
-		form = BanForm(user=request.user)
+		user = request.GET.get('user', '')
+		data = {
+			'username': user,
+		}
+		form = BanForm(initial=data, user=request.user)
 	context = {
 		'form': form,
 	}
@@ -624,7 +628,11 @@ def unsuspend(request):
 			ModAction.objects.create(user=user, mod=request.user, action=1)
 			messages.success(request, 'You have successfully unsuspended this user.')
 	elif request.method == 'GET':
-		form = UnsuspendForm()
+		user = request.GET.get('user', '')
+		data = {
+			'username': user,
+		}
+		form = UnsuspendForm(initial=data)
 	context = {
 		'form': form,
 	}

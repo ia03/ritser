@@ -1,0 +1,25 @@
+{% load modnotes markdown %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Mod</th>
+      <th scope="col">Action</th>
+      <th scope="col">Date (MM/DD/YYYY HH:MM:SS)</th>
+      <th scope="col">Until (MM/DD/YYYY)</th>
+      <th scope="col">Modnotes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for modaction in modactions %}
+    <tr>
+      <td><a href="{% url 'user' uname=modaction.user.username %}">{{modaction.user.username}}</a></td>
+      <td><a href="{% url 'user' uname=modaction.mod.username %}">{{modaction.mod.username}}</a></td>
+      <td>{% if modaction.action == 0 %}Suspended{% elif modaction.action == 1 %}Unsuspended{% elif modaction.action == 2 %}Terminated{% endif %}</td>
+      <td>{{modaction.date|date:"m/d/Y H:i:s"}}</td>
+      <td>{% if modaction.action == 0 %}{{modaction.until|date:"m/d/Y"}}{% else %}N/A{% endif %}</td>
+      <td>{% if modaction.note %}{% modnotes debate.note|markdownf %}{% else %}No{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

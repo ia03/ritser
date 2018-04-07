@@ -14,12 +14,12 @@ class User(AbstractUser):
 	bio = models.TextField(max_length=200000, blank=True)
 	stopics = models.ManyToManyField('debates.Topic', related_name='susers', blank=True)
 	timezone = TimeZoneField(default='Europe/London')
-	def get_absolute_url(self):
+	def get_absolute_url(self): #modlogs bypasses this
 		if self.is_active:
-			return reverse('user', args=[self.username])
+			return reverse('user', args=[self.username]) 
 		else:
 			return '#'
-	def get_username(self):
+	def get_username(self): #modlogs bypasses this
 		if self.active == 0 or self.active == 2:
 			return self.username
 		else:
@@ -49,4 +49,7 @@ class ModAction(models.Model):
 	mod = models.ForeignKey(User, on_delete=models.CASCADE, related_name='modactions')
 	action = models.IntegerField(default=0) #0: suspend 1: unsuspend 2: terminate
 	note = models.CharField(max_length=10000, blank=True)
-	date = models.DateField(default=timezone.now)
+	date = models.DateTimeField(default=timezone.now)
+	until = models.DateField(default=timezone.now, null=True, blank=True)
+	class Meta:
+		ordering = ['-date']

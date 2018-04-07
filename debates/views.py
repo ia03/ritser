@@ -596,14 +596,14 @@ def ban(request):
 			bandate = form.cleaned_data['bandate']
 			if t:
 				DeleteUser(user, 3, bannote=bannote)
-				ModAction.create(user=user, mod=request.user, action=2, note=bannote)
+				ModAction.objects.create(user=user, mod=request.user, action=2, note=bannote)
 				messages.success(request, 'You have successfully terminated this user.')
 			else:
 				user.active = 2
 				user.bandate = bandate
 				user.bannote = bannote
 				user.save()
-				ModAction.create(user=user, mod=request.user, action=0, note=bannote)
+				ModAction.objects.create(user=user, mod=request.user, action=0, note=bannote, until=bandate)
 				messages.success(request, 'You have successfully suspended this user.')
 	elif request.method == 'GET':
 		form = BanForm(user=request.user)
@@ -620,7 +620,7 @@ def unsuspend(request):
 			user = User.objects.get(username=form.cleaned_data['username'])
 			user.active = 0
 			user.save()
-			ModAction.create(user=user, mod=request.user, action=1)
+			ModAction.objects.create(user=user, mod=request.user, action=1)
 			messages.success(request, 'You have successfully unsuspended this user.')
 	elif request.method == 'GET':
 		form = UnsuspendForm()
@@ -628,3 +628,22 @@ def unsuspend(request):
 		'form': form,
 	}
 	return render(request, 'debates/mod/unsuspend.html', context)
+
+@gmod_required
+def modlogs(request):
+	username = request.GET.get('user', '')
+	mod = request.GET.get('mod', '')
+	modactions_list = ModAction.objects.all()
+	if username != '':
+		modactions_list = modactions_list.filter(user__username=username)
+	if mod != '':
+		modactions_list = modactions_list.filter(mod__username=mod)
+	page = request.GET.get('page', 1)
+	modactions = getpage(page, modactions_list, 30)
+	context = {
+		'username': username,
+		'mod': mod,
+		'modactions': modactions,
+		
+	}
+	return render(request, 'debates/mod/modlogs.html', context)

@@ -1,0 +1,25 @@
+{% extends "debates/mod/base.html" %}
+
+{% block title %}Search - MoDebate{% endblock %}
+
+{% block body %}
+    <main role="main" class="container">
+      <h1 class="mt-5">Search</h1>
+      <br>
+      <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'modlogs' %}">
+          <input class="form-control mr-sm-2 col-md-10" type="search" name="user" value="{{username}}" placeholder="Filter by user" aria-label="Search">
+          <input class="form-control mr-sm-2 col-md-10" type="search" name="mod" value="{{mod}}" placeholder="Filter by moderator" aria-label="Search">
+          <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+      </form>
+      <hr />
+       <br>
+     
+      {% include 'snippets/mod/modlogs.html' %}
+      {% if modactions.has_other_pages %}
+      {% load paginator %}
+      {% load link_name %}
+      {% paginator modactions request %}
+      {% endif %}
+    </main>
+
+{% endblock %}

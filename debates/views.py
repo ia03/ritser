@@ -656,3 +656,4 @@ def modlogs(request):
 		'usercol': True,
 	}
 	return render(request, 'debates/mod/modlogs.html', context)
+	

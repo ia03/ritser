@@ -1,3 +1,4 @@
+{% if modactions %}
 {% load modnotes markdown %}
 <table class="table">
   <thead>
@@ -23,3 +24,6 @@
     {% endfor %}
   </tbody>
 </table>
+{% else %}
+No mod logs found.
+{% endif %}

@@ -122,6 +122,7 @@ def topic(request, tname):
 		'dupvoted': dupvoted,
 		'ddownvoted': ddownvoted,
 		'hasperm': request.user.is_authenticated and request.user.hasperm(),
+		'topicdebateslist': True,
 	}
 	return render(request, 'debates/topic.html', context)
 

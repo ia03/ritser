@@ -36,38 +36,7 @@
       </div>
       <hr />
        <br>
-      {% if debates %}
-      <div class="list-group" data-vote-url="{% url 'votedebate' %}">
-      {% for debate in debates %}
-        <div class="list-group-item list-group-item-action flex-column align-items-start container" data-debate-id="{{debate.id}}">
-          <div class="row">
-            <div class="col-md-1 karmad">
-              {% if userhasperm %}<div class="arrow-up{% if debate in dupvoted %}-selected{% endif %} votebtn"></div>{% endif %}
-              <span class="karmacount" title="karma (votes)">{{debate.karma|intcomma}}</span>
-              {% if userhasperm %}<div class="arrow-down{% if debate in ddownvoted %}-selected{% endif %} votebtn"></div>{% endif %}
-            </div>
-            <div class="col-md-11">
-              <div class="d-flex w-100 justify-content-between">
-                <a href="{{debate.get_absolute_url}}" class="dtit"><h5 class="mb-1">{{debate.question}}</h5></a>
-              </div>
-
-
-              <p class="mb-1">{{debate.description|markdownf:"1"|truncatewords:50}}</p>
-
-              <small><a href="{{debate.owner.get_absolute_url}}">{{debate.owner.get_username}}</a> - {% if topic.slvl < 1 %}<span title="{{debate.approved_on|date:"c"}}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{debate.created_on|date:"c"}}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% endif %}</small>
-              <div class="arglinks">
-                <a href="{% url 'debateapproved' tname=topic.name did=debate.id %}" class="badge badge-primary">Approved: {{debate.numapproved}}</a>
-                <a href="{% url 'debateunapproved' tname=topic.name did=debate.id %}" class="badge badge-secondary">Unapproved: {{debate.numunapproved}}</a>
-                <a href="{% url 'debatedenied' tname=topic.name did=debate.id %}" class="badge badge-danger">Denied: {{debate.numdenied}}</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      {% endfor %}
-      </div>
-      {% else %}
-      No debates found.
-      {% endif %}
+      {% include 'snippets/debateslist.html' %}
       {% if debates.has_other_pages %}
       {% load paginator %}
       {% load link_name %}

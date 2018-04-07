@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.urls import reverse
-from .models import User
+from .models import User, ModAction
 from .forms import ProfileForm, DeleteUserForm
 from .utils import DeleteUser
 from debates.utils import getpage
@@ -55,7 +55,7 @@ def userdebates(request, uname):
 	}
 	return render(request, 'accounts/userdebates.html', context)
 
-@login_required()
+@login_required
 def profile(request):
 	if request.method == 'POST':
 		form = ProfileForm(request.POST, instance=request.user)
@@ -95,3 +95,13 @@ def delete(request):
 		'form': form,
 	}
 	return render(request, 'accounts/delete.html', context)
+
+@login_required
+def usermodlogs(request):
+	modactions_list = ModAction.objects.filter(user=request.user)
+	page = request.GET.get('page', 1)
+	modactions = getpage(page, modactions_list, 30)
+	context = {
+		'modactions': modactions,
+	}
+	return render(request, 'accounts/usermodlogs.html', context)

@@ -645,6 +645,6 @@ def modlogs(request):
 		'username': username,
 		'mod': mod,
 		'modactions': modactions,
-		
+		'usercol': True,
 	}
 	return render(request, 'debates/mod/modlogs.html', context)

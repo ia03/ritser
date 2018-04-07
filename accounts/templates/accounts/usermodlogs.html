@@ -1,0 +1,18 @@
+{% extends "account/base.html" %}
+
+{% block title %}Your Mod Logs - MoDebate{% endblock %}
+
+{% block body %}
+    <main role="main" class="container">
+      <h1 class="mt-5">Mod Logs</h1>
+      <br>
+     
+      {% include 'snippets/mod/modlogs.html' %}
+      {% if modactions.has_other_pages %}
+      {% load paginator %}
+      {% load link_name %}
+      {% paginator modactions request %}
+      {% endif %}
+    </main>
+
+{% endblock %}

@@ -3,7 +3,7 @@
 <table class="table">
   <thead>
     <tr>
-      <th scope="col">User</th>
+      {% if usercol %}<th scope="col">User</th>{% endif %}
       <th scope="col">Mod</th>
       <th scope="col">Action</th>
       <th scope="col">Date (MM/DD/YYYY HH:MM:SS)</th>
@@ -14,7 +14,7 @@
   <tbody>
     {% for modaction in modactions %}
     <tr>
-      <td><a href="{% url 'user' uname=modaction.user.username %}">{{modaction.user.username}}</a></td>
+      {% if usercol %}<td><a href="{% url 'user' uname=modaction.user.username %}">{{modaction.user.username}}</a></td>{% endif %}
       <td><a href="{% url 'user' uname=modaction.mod.username %}">{{modaction.mod.username}}</a></td>
       <td>{% if modaction.action == 0 %}Suspended{% elif modaction.action == 1 %}Unsuspended{% elif modaction.action == 2 %}Terminated{% endif %}</td>
       <td>{{modaction.date|date:"m/d/Y H:i:s"}}</td>

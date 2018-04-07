@@ -597,14 +597,14 @@ def ban(request):
 			bandate = form.cleaned_data['bandate']
 			if t:
 				DeleteUser(user, 3, bannote=bannote)
-				ModAction.objects.create(user=user, mod=request.user, action=2, note=bannote)
+				ModAction.objects.create(user=user, mod=request.user, action=2, modnote=bannote)
 				messages.success(request, 'You have successfully terminated this user.')
 			else:
 				user.active = 2
 				user.bandate = bandate
 				user.bannote = bannote
 				user.save()
-				ModAction.objects.create(user=user, mod=request.user, action=0, note=bannote, until=bandate)
+				ModAction.objects.create(user=user, mod=request.user, action=0, modnote=bannote, until=bandate)
 				messages.success(request, 'You have successfully suspended this user.')
 	elif request.method == 'GET':
 		form = BanForm(user=request.user)

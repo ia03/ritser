@@ -48,7 +48,7 @@ class ModAction(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='modlogs')
 	mod = models.ForeignKey(User, on_delete=models.CASCADE, related_name='modactions')
 	action = models.IntegerField(default=0) #0: suspend 1: unsuspend 2: terminate
-	note = models.CharField(max_length=10000, blank=True)
+	modnote = models.CharField(max_length=10000, blank=True)
 	date = models.DateTimeField(default=timezone.now)
 	until = models.DateField(default=timezone.now, null=True, blank=True)
 	class Meta:

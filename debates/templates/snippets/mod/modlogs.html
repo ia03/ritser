@@ -19,7 +19,7 @@
       <td>{% if modaction.action == 0 %}Suspended{% elif modaction.action == 1 %}Unsuspended{% elif modaction.action == 2 %}Terminated{% endif %}</td>
       <td>{{modaction.date|date:"m/d/Y H:i:s"}}</td>
       <td>{% if modaction.action == 0 %}{{modaction.until|date:"m/d/Y"}}{% else %}N/A{% endif %}</td>
-      <td>{% if modaction.note %}{% modnotes debate.note|markdownf %}{% else %}No{% endif %}</td>
+      <td>{% if modaction.modnote %}{% modnotes modaction.modnote|markdownf forloop.counter %}{% else %}No{% endif %}</td>
     </tr>
     {% endfor %}
   </tbody>

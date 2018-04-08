@@ -26,3 +26,5 @@ add reddit social application
 run manage.py rebuild_index
 
 make daily clearsessions and cleansuspended cron jobs
+
+install mod_security and configure for apache

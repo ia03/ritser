@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.urls import reverse
 from django.apps import apps
 from timezone_field import TimeZoneField
+from django.db.models import Q
 import django
 # Create your models here.
 
@@ -72,25 +73,26 @@ class User(AbstractUser):
             query = Argument.objects.filter(approvalstatus=1)
         else:
             query = Argument.objects.none()
+            queries = Q()
             for topic in self.topics_owned.all():
-                query = query.union(
-                    topic.arguments.filter(approvalstatus=1))
+                queries = queries | Q(topic=topic)
             for topic in self.moderator_of.all():
-                query = query.union(
-                    topic.arguments.filter(approvalstatus=1))
-        return query.order_by('-owner__approvedargs')
+                queries = queries | Q(topic=topic)
+            query = Argument.objects.filter(queries & Q(approvalstatus=1))
+        query = query.order_by('-owner__approvedargs')
+        return query
     def unapproveddebates(self):
         Debate = apps.get_model('debates.Debate')
         if self.isgmod():
             query = Debate.objects.filter(approvalstatus=1)
         else:
             query = Debate.objects.none()
+            queries = Q()
             for topic in self.topics_owned.all():
-                query = query.union(
-                    topic.debates.filter(approvalstatus=1))
+                queries = queries | Q(topic=topic)
             for topic in self.moderator_of.all():
-                query = query.union(
-                    topic.debates.filter(approvalstatus=1))
+                queries = queries | Q(topic=topic)
+            query = Debate.objects.filter(queries & Q(approvalstatus=1))
         return query.order_by('-owner__approvedargs')
     
     

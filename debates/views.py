@@ -613,7 +613,9 @@ def feed(request):
     query = Debate.objects.none()
     topics = user.stopics.all()
     for topic in topics:
-        query = query.union(debateslist(topic))
+        query = query.union(
+            debateslist(topic),
+            all=True)
     debates_list = query.order_by('-created_on')
 
     page = request.GET.get('page', 1)

@@ -580,7 +580,7 @@ class TopicForm(forms.ModelForm):
             ) and (self.edit == 0 or owner != self.user):  # add subscriber status here
                 raise forms.ValidationError(
                     'You must have at least 20 approved arguments to own a topic.')
-            if self.edit != 1 and owner.topics_owned.all().count() > 5 and not self.user.isgmod(
+            if self.edit != 1 and owner.topics_owned.all().count() >= 5 and not self.user.isgmod(
             ) and (self.edit == 0 or owner != self.user):  # add subscriber status here
                 raise forms.ValidationError(
                     'You can only own a maximum of 5 topics.')

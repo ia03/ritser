@@ -9,7 +9,7 @@
 
 <main role="main" class="container">
   <h1>Edit Argument "{{ argument.title }}"</h1>
-  <form action="{% url 'editargument' tname=argument.topic.name did=argument.debate.id aid=argument.id %}" method="post">
+  <form action="{{ argument.get_edit_url }}" method="post">
     {% csrf_token %}
     {% include 'snippets/formerrors.html' %}
     {# Include the visible fields #}

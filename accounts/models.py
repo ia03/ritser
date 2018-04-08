@@ -79,7 +79,7 @@ class User(AbstractUser):
             for topic in self.moderator_of.all():
                 queries = queries | Q(topic=topic)
             query = Argument.objects.filter(queries & Q(approvalstatus=1))
-        query = query.order_by('-owner__approvedargs')
+        query = query.order_by('-owner__approvedargs', 'created_on')
         return query
     def unapproveddebates(self):
         Debate = apps.get_model('debates.Debate')
@@ -93,7 +93,7 @@ class User(AbstractUser):
             for topic in self.moderator_of.all():
                 queries = queries | Q(topic=topic)
             query = Debate.objects.filter(queries & Q(approvalstatus=1))
-        return query.order_by('-owner__approvedargs')
+        return query.order_by('-owner__approvedargs', '-created_on')
     
     
     def __str__(self):

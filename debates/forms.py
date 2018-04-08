@@ -359,7 +359,7 @@ class ArgumentForm(forms.ModelForm):
         data = self.cleaned_data.get('side')
         if data not in [0, 1]:
             raise forms.ValidationError(
-                'Invalid side setting %(side), must be 0 or 1.',
+                'Invalid side setting %(side)s, must be 0 or 1.',
                 code='invalidside',
                 params={
                     'side': data})

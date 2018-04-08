@@ -24,6 +24,8 @@ def mod_required(topic=False):
         return methodwrap(topic)
     else:
         return methodwrap
+
+
 def gmod_required(function):
     @wraps(function)
     def wrap(request, *args, **kwargs):

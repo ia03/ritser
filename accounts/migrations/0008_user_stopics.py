@@ -14,6 +14,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='stopics',
-            field=models.ManyToManyField(blank=True, related_name='susers', to='debates.Topic'),
+            field=models.ManyToManyField(
+                blank=True,
+                related_name='susers',
+                to='debates.Topic'),
         ),
     ]

@@ -3,16 +3,19 @@ from .models import Topic, Debate, Argument
 
 # Register your models here.
 
+
 class TopicAdmin(admin.ModelAdmin):
-	pass
-	
+    pass
+
+
 class DebateAdmin(admin.ModelAdmin):
-	pass
+    pass
+
 
 class ArgumentAdmin(admin.ModelAdmin):
-	pass
+    pass
 
-	
+
 admin.site.register(Topic, TopicAdmin)
 admin.site.register(Debate, DebateAdmin)
 admin.site.register(Argument, ArgumentAdmin)

@@ -15,93 +15,100 @@ from django.conf import settings
 
 def userarguments(request, uname):
 
-	user = get_object_or_404(User, username=uname)
-	
-	if (user.active == 1 or user.active == 3) and not (request.user.is_authenticated and request.user.isgmod()):
-		return render(request, 'accounts/userinactive.html', {'puser': user})
-	
-	queryset = user.arguments.all()
-	
-	argumentslist = queryset.order_by('-created_on')
-	
-	page = request.GET.get('page', 1)
+    user = get_object_or_404(User, username=uname)
 
-	arguments = getpage(page, argumentslist, 10)
+    if (user.active == 1 or user.active == 3) and not (
+            request.user.is_authenticated and request.user.isgmod()):
+        return render(request, 'accounts/userinactive.html', {'puser': user})
 
-	context = {
-		'puser': user,
-		'arguments': arguments,
-	}
-	return render(request, 'accounts/user.html', context)
+    queryset = user.arguments.all()
+
+    argumentslist = queryset.order_by('-created_on')
+
+    page = request.GET.get('page', 1)
+
+    arguments = getpage(page, argumentslist, 10)
+
+    context = {
+        'puser': user,
+        'arguments': arguments,
+    }
+    return render(request, 'accounts/user.html', context)
+
 
 def userdebates(request, uname):
 
-	user = get_object_or_404(User, username=uname)
-	
-	if (user.active == 1 or user.active == 3) and not (request.user.is_authenticated and request.user.isgmod()):
-		return render(request, 'accounts/userinactive.html', {'puser': user})
-	
-	queryset = user.debates.all()
-	
-	debateslist = queryset.order_by('-created_on')
-	
-	page = request.GET.get('page', 1)
+    user = get_object_or_404(User, username=uname)
 
-	debates = getpage(page, debateslist, 10)
+    if (user.active == 1 or user.active == 3) and not (
+            request.user.is_authenticated and request.user.isgmod()):
+        return render(request, 'accounts/userinactive.html', {'puser': user})
 
-	context = {
-		'puser': user,
-		'debates': debates,
-	}
-	return render(request, 'accounts/userdebates.html', context)
+    queryset = user.debates.all()
+
+    debateslist = queryset.order_by('-created_on')
+
+    page = request.GET.get('page', 1)
+
+    debates = getpage(page, debateslist, 10)
+
+    context = {
+        'puser': user,
+        'debates': debates,
+    }
+    return render(request, 'accounts/userdebates.html', context)
+
 
 @login_required
 def profile(request):
-	if request.method == 'POST':
-		form = ProfileForm(request.POST, instance=request.user)
-		if form.is_valid():
-			request.user = form.save(commit=False)
-			request.user.stopics.set(form.stopicsl)
-			request.user.save()
-			return HttpResponseRedirect(reverse('profile'))
-	elif request.method == 'GET':
-		form = ProfileForm(instance=request.user)
-	
-	context = {
-		'form': form,
-	}
-	return render(request, 'accounts/profile.html', context)
-	
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            request.user = form.save(commit=False)
+            request.user.stopics.set(form.stopicsl)
+            request.user.save()
+            return HttpResponseRedirect(reverse('profile'))
+    elif request.method == 'GET':
+        form = ProfileForm(instance=request.user)
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'accounts/profile.html', context)
+
+
 def inactive(request):
-	useriaid = request.session.pop('useriaid', -1)
-	context = {
-		
-	}
-	if useriaid == -1:
-		context['useria'] = None
-	else:
-		context['useria'] = User.objects.get(id=useriaid)
-	return render(request, 'account/account_inactive.html', context)
+    useriaid = request.session.pop('useriaid', -1)
+    context = {
+
+    }
+    if useriaid == -1:
+        context['useria'] = None
+    else:
+        context['useria'] = User.objects.get(id=useriaid)
+    return render(request, 'account/account_inactive.html', context)
+
 
 def delete(request):
-	if request.method == 'POST':
-		form = DeleteUserForm(request.POST, user=request.user)
-		if form.is_valid():
-			DeleteUser(request.user, 1)
-			return HttpResponseRedirect(settings.ACCOUNT_LOGOUT_REDIRECT_URL)
-	elif request.method == 'GET':
-		form = DeleteUserForm(user=request.user)
-	context = {
-		'form': form,
-	}
-	return render(request, 'accounts/delete.html', context)
+    if request.method == 'POST':
+        form = DeleteUserForm(request.POST, user=request.user)
+        if form.is_valid():
+            DeleteUser(request.user, 1)
+            return HttpResponseRedirect(settings.ACCOUNT_LOGOUT_REDIRECT_URL)
+    elif request.method == 'GET':
+        form = DeleteUserForm(user=request.user)
+    context = {
+        'form': form,
+    }
+    return render(request, 'accounts/delete.html', context)
+
 
 @login_required
 def usermodlogs(request):
-	modactions_list = ModAction.objects.filter(user=request.user)
-	page = request.GET.get('page', 1)
-	modactions = getpage(page, modactions_list, 30)
-	context = {
-		'modactions': modactions,
-	}
-	return render(request, 'accounts/usermodlogs.html', context)
+    modactions_list = ModAction.objects.filter(user=request.user)
+    page = request.GET.get('page', 1)
+    modactions = getpage(page, modactions_list, 30)
+    context = {
+        'modactions': modactions,
+    }
+    return render(request, 'accounts/usermodlogs.html', context)

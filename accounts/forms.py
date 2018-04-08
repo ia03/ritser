@@ -12,45 +12,75 @@ from django.utils.translation import pgettext, ugettext, ugettext_lazy as _
 
 consentemaillabel = 'I consent to any e-mails submitted being used for account recovery and an error message shown to new users when they try to sign up with any of them until I revoke this consent by deleting them.'
 
+
 class SignupForm(forms.Form):
     gdprconsent = forms.BooleanField(required=False, label=consentemaillabel)
-    tos = forms.BooleanField(error_messages={'required': 'You must agree to the terms.'})
-    captcha = ReCaptchaField(private_key=settings.GR_SIGNUPFORM, public_key='6LfKRk0UAAAAAAVkc0FNDHtLNyzwYwBiEUpVeDCe', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
-        
+    tos = forms.BooleanField(
+        error_messages={
+            'required': 'You must agree to the terms.'})
+    captcha = ReCaptchaField(
+        private_key=settings.GR_SIGNUPFORM,
+        public_key='6LfKRk0UAAAAAAVkc0FNDHtLNyzwYwBiEUpVeDCe',
+        error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'}
+    )
+
     def signup(self, request, user):
         """ Required, or else it throws deprecation warnings """
         pass
+
     def clean(self):
         cleaned_data = super().clean()
         if cleaned_data['email'] != '' and cleaned_data['gdprconsent'] == False:
-            raise forms.ValidationError('You have not checked the consent checkbox.')
+            raise forms.ValidationError(
+                'You have not checked the consent checkbox.')
         return cleaned_data
+
+
 class ProfileForm(forms.ModelForm):
-    stopicsf = forms.CharField(required=False, label='Subscribed Topics (a space-separated list of their names)')
+    stopicsf = forms.CharField(
+        required=False,
+        label='Subscribed Topics (a space-separated list of their names)')
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         stopicns = []
         for topic in self.instance.stopics.all():
             stopicns.append(topic.name)
         self.fields['stopicsf'].initial = ' '.join(stopicns)
+
     def clean_stopicsf(self):
         data = self.cleaned_data.get('stopicsf')
         self.stopicnl = data.split()
         if len(set(self.stopicnl)) != len(self.stopicnl):
-            forms.ValidationError('List of subscribed topics may not contain duplicates.', code='stopicsduplicate', params={'stopicsl': self.stopicnl})
+            forms.ValidationError(
+                'List of subscribed topics may not contain duplicates.',
+                code='stopicsduplicate',
+                params={'stopicsl': self.stopicnl}
+            )
         self.stopicsl = []
         for topicname in self.stopicnl:
             try:
                 self.stopicsl.append(Topic.objects.get(name=topicname))
             except Topic.DoesNotExist:
-                forms.ValidationError('Subscribed topic name not found.', code='stopicnotfound', params={'topicname': topicname})
+                forms.ValidationError(
+                    'Subscribed topic name not found.',
+                    code='stopicnotfound',
+                    params={'topicname': topicname}
+                )
         return data
+
     class Meta:
         model = User
         fields = ['bio', 'stopicsf', 'timezone']
+
+
 class AddEmailForm(forms.Form):
     gdprconsent = forms.BooleanField(label=consentemaillabel)
-    captcha = ReCaptchaField(private_key=settings.GR_ADDEMAILFORM, public_key='6Lc71U4UAAAAALLVIW91zfM37xT_8DSYvCdyXA7M', error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'})
+    captcha = ReCaptchaField(
+        private_key=settings.GR_ADDEMAILFORM,
+        public_key='6Lc71U4UAAAAALLVIW91zfM37xT_8DSYvCdyXA7M',
+        error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'}
+    )
     email = forms.EmailField(
         label=_("E-mail"),
         required=True,
@@ -58,10 +88,10 @@ class AddEmailForm(forms.Form):
             attrs={"type": "email",
                    "size": "30",
                    "placeholder": _('E-mail address')}))
+
     def __init__(self, user=None, *args, **kwargs):
         self.user = user
         super().__init__(*args, **kwargs)
-    
 
     def clean_email(self):
         value = self.cleaned_data["email"]
@@ -81,28 +111,41 @@ class AddEmailForm(forms.Form):
         if on_diff_account and app_settings.UNIQUE_EMAIL:
             raise forms.ValidationError(errors["different_account"])
         return value
+
     def clean(self):
         cleaned_data = super().clean()
         if cleaned_data['email'] != '' and cleaned_data['gdprconsent'] == False:
-            raise forms.ValidationError('You have not checked the consent checkbox.')
+            raise forms.ValidationError(
+                'You have not checked the consent checkbox.')
         return cleaned_data
+
     def save(self, request):
         return EmailAddress.objects.add_email(request,
                                               self.user,
                                               self.cleaned_data["email"],
                                               confirm=True)
-                                              
+
+
 class DeleteUserForm(forms.Form):
-    confirmation = forms.BooleanField(label='Check this if you are absolutely sure you want to delete your account', error_messages = {'required': 'You have not selected the confirmation checkbox.'})
-    password = forms.CharField(widget=forms.PasswordInput, error_messages = {'required': 'You must type in your password.'})
+    confirmation = forms.BooleanField(
+        label='Check this if you are absolutely sure you want to delete your account',
+        error_messages={
+            'required': 'You have not selected the confirmation checkbox.'})
+    password = forms.CharField(
+        widget=forms.PasswordInput, error_messages={
+            'required': 'You must type in your password.'})
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
         super(DeleteUserForm, self).__init__(*args, **kwargs)
+
     def clean_password(self):
         data = self.cleaned_data['password']
         if not check_password(data, self.user.password):
             raise forms.ValidationError('The password inputted is incorrect.')
         return data
+
+
 '''
 class UserCreationForm(forms.ModelForm):
     """

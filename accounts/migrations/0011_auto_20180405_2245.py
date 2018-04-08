@@ -16,25 +16,44 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ModAction',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('action', models.IntegerField(default=0)),
-                ('note', models.CharField(blank=True, max_length=10000)),
-                ('date', models.DateField(default=django.utils.timezone.now)),
+                ('id',
+                 models.AutoField(
+                     auto_created=True,
+                     primary_key=True,
+                     serialize=False,
+                     verbose_name='ID')),
+                ('action',
+                 models.IntegerField(
+                     default=0)),
+                ('note',
+                 models.CharField(
+                     blank=True,
+                     max_length=10000)),
+                ('date',
+                 models.DateField(
+                     default=django.utils.timezone.now)),
             ],
         ),
         migrations.AlterField(
             model_name='user',
             name='bandate',
-            field=models.DateField(default=django.utils.timezone.now),
+            field=models.DateField(
+                default=django.utils.timezone.now),
         ),
         migrations.AddField(
             model_name='modaction',
             name='mod',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='modactions', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='modactions',
+                to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='modaction',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='modlogs', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='modlogs',
+                to=settings.AUTH_USER_MODEL),
         ),
     ]

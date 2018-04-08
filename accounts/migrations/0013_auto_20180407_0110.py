@@ -14,11 +14,15 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='modaction',
             name='date',
-            field=models.DateTimeField(default=django.utils.timezone.now),
+            field=models.DateTimeField(
+                default=django.utils.timezone.now),
         ),
         migrations.AlterField(
             model_name='modaction',
             name='until',
-            field=models.DateField(blank=True, default=django.utils.timezone.now, null=True),
+            field=models.DateField(
+                blank=True,
+                default=django.utils.timezone.now,
+                null=True),
         ),
     ]

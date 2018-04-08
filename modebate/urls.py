@@ -21,11 +21,16 @@ from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('img/favicon.ico')), name="favicon"), #favicon for older browsers
+    path(
+        'favicon.ico',
+        RedirectView.as_view(
+            url=staticfiles_storage.url('img/favicon.ico')),
+        name="favicon"),
+    # favicon for older browsers
     re_path(r'^', include('accounts.urls')),
     re_path(r'^accounts/', include('allauth.urls')),
     # path('signup', accounts.views.signup, name='signup'),
-	re_path(r'^', include('debates.urls')),
+    re_path(r'^', include('debates.urls')),
 ]
 
 

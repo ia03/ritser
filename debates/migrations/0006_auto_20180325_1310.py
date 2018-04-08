@@ -13,6 +13,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='topic',
             name='name',
-            field=models.SlugField(max_length=30, primary_key=True, serialize=False, unique=True),
+            field=models.SlugField(
+                max_length=30,
+                primary_key=True,
+                serialize=False,
+                unique=True),
         ),
     ]

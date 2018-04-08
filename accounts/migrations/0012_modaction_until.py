@@ -14,6 +14,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='modaction',
             name='until',
-            field=models.DateTimeField(blank=True, default=django.utils.timezone.now, null=True),
+            field=models.DateTimeField(
+                blank=True,
+                default=django.utils.timezone.now,
+                null=True),
         ),
     ]

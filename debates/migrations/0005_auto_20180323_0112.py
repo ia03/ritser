@@ -14,6 +14,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='debate',
             name='created_on',
-            field=models.DateTimeField(db_index=True, default=django.utils.timezone.now),
+            field=models.DateTimeField(
+                db_index=True,
+                default=django.utils.timezone.now),
         ),
     ]

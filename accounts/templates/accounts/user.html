@@ -2,33 +2,33 @@
 
 {% load static markdown %}
 
-{% block title %}{{puser.username}}'s profile - MoDebate{% endblock %}
+{% block title %}{{ puser.username }}'s profile - MoDebate{% endblock %}
 
 {% block head %}<link rel="stylesheet" href="{% static "accounts/css/user.css" %}">{% endblock %}
 
 {% block body %}
 
 <main role="main" class="container">
-    <h1>{{puser.username}}'s profile</h1>
+    <h1>{{ puser.username }}'s profile</h1>
     {% if puser.active == 2 %}
     <div class="alert alert-danger">
-    This user's account is currently suspended. {% if user.isgmod %}<a href="{% url 'unsuspend'%}?user={{puser.username}}" class="alert-link">Unsuspend</a>{% endif %}
+    This user's account is currently suspended. {% if user.isgmod %}<a href="{% url 'unsuspend'%}?user={{ puser.username }}" class="alert-link">Unsuspend</a>{% endif %}
     </div>
     {% elif user.isgmod %}
-    <a href="{% url 'ban' %}?user={{puser.username}}" class="text-danger">Suspend/Terminate</a>
+    <a href="{% url 'ban' %}?user={{ puser.username }}" class="text-danger">Suspend/Terminate</a>
     <br>
     {% endif %}
-    <a href="{{puser.get_debates}}">View Debates</a>
+    <a href="{{ puser.get_debates }}">View Debates</a>
     <br>
     {% with puser.topics_owned.all as topics_owned %}
-    {% if topics_owned %}Topics owned: {% for topic in puser.topics_owned.all %}{% if not forloop.first %}, {% endif %}<a href="{{topic.get_absolute_url}}">{{topic.name}}</a>{% endfor %} <br>{% endif %}
+    {% if topics_owned %}Topics owned: {% for topic in puser.topics_owned.all %}{% if not forloop.first %}, {% endif %}<a href="{{ topic.get_absolute_url}}">{{topic.name }}</a>{% endfor %} <br>{% endif %}
     {% endwith %}
     {% with puser.moderator_of.all as moderator_of %}
-    {% if moderator_of %}Moderator of: {% for topic in moderator_of %}{% if not forloop.first %}, {% endif %}<a href="{{topic.get_absolute_url}}">{{topic.name}}</a>{% endfor %} <br>{% endif %}
+    {% if moderator_of %}Moderator of: {% for topic in moderator_of %}{% if not forloop.first %}, {% endif %}<a href="{{ topic.get_absolute_url}}">{{topic.name }}</a>{% endfor %} <br>{% endif %}
     {% endwith %}
     Bio:
     <br>
-    {{puser.bio|markdownf}}
+    {{ puser.bio|markdownf }}
     <hr>
     Arguments:
     <br>

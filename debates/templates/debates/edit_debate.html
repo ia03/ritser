@@ -3,12 +3,12 @@
 {% load widget_tweaks %}
 
 
-{% block title %}Edit Debate "{{debate.question}}" - MoDebate{% endblock %}
+{% block title %}Edit Debate "{{ debate.question }}" - MoDebate{% endblock %}
 
 {% block body %}
 
 <main role="main" class="container">
-  <h1>Edit Debate "{{debate.question}}"</h1>
+  <h1>Edit Debate "{{ debate.question }}"</h1>
   <form action="{% url 'editdebate' tname=debate.topic.name did=debate.id %}" method="post">
     {% csrf_token %}
     {% include 'snippets/formerrors.html' %}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load markdown humanize static %}
 
-{% block title %}{{debate.question}} - {{topic.name}} - MoDebate{% endblock %}
+{% block title %}{{ debate.question }} - {{ topic.name }} - MoDebate{% endblock %}
 
 {% block head %}<link rel="stylesheet" href="{% static "debates/css/debate.css" %}">{% endblock %}
 
@@ -9,27 +9,27 @@
     <main role="main" class="container">
       <div class="row">
         <div class="col-md-1 align-middle" id="karmad">
-          <div class="align-middle" id="voting" data-debate-id="{{debate.id}}" data-vote-url="{% url 'votedebate' %}">
+          <div class="align-middle" id="voting" data-debate-id="{{ debate.id }}" data-vote-url="{% url 'votedebate' %}">
             {% if user.hasperm %}<div class="arrow-up{% if vote == 1 %}-selected{% endif %} votebtn"></div>{% endif %}
-            <span class="karmacount" title="karma (votes)">{{debate.karma|intcomma}}</span>
+            <span class="karmacount" title="karma (votes)">{{ debate.karma|intcomma }}</span>
             {% if user.hasperm %}<div class="arrow-down{% if vote == -1 %}-selected{% endif %} votebtn"></div>{% endif %}
           </div>
         </div>
         <div class="col-md-11">
-          <h1 class="mt-5">{{debate.question}}</h1>
-          Topic: <a href="{{topic.get_absolute_url}}">{{topic.name}}</a> -
+          <h1 class="mt-5">{{ debate.question }}</h1>
+          Topic: <a href="{{ topic.get_absolute_url}}">{{topic.name }}</a> -
           Owner:
-          <a href="{{debate.owner.get_absolute_url}}">{{debate.owner.get_username}}</a> -
-          Security Level : {{debate.slvl}}(<a href="{% url 'rules' %}#securitylevels">?</a>){% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %} - <a href="{% url 'editdebate' tname=topic.name did=debate.id %}">Edit/View source</a> - <a href="{% url 'debateedits' tname=topic.name did=debate.id %}">Edits</a> - {% if topic.slvl > 1 %}<span title="{{debate.approved_on|date:"c"}}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{debate.created_on|date:"c"}}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}
+          <a href="{{ debate.owner.get_absolute_url}}">{{debate.owner.get_username }}</a> -
+          Security Level : {{ debate.slvl }}(<a href="{% url 'rules' %}#securitylevels">?</a>){% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %} - <a href="{% url 'editdebate' tname=topic.name did=debate.id %}">Edit/View source</a> - <a href="{% url 'debateedits' tname=topic.name did=debate.id %}">Edits</a> - {% if topic.slvl > 1 %}<span title="{{ debate.approved_on|date:"c" }}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{ debate.created_on|date:"c" }}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}
           {% if debate.modnote %}
           {% load modnotes %}
           {% modnotes debate.modnote|markdownf %}
           {% endif %}
           <br>
-          {{debate.description|markdownf}}
+          {{ debate.description|markdownf }}
         </div>
       </div>
-      <a href="{% url 'submitargument' %}?debate={{debate.id}}" class="btn btn-primary btn-sm">Submit Argument</a>
+      <a href="{% url 'submitargument' %}?debate={{ debate.id }}" class="btn btn-primary btn-sm">Submit Argument</a>
       <a href="{{ debate.get_absolute_url }}">Default Arguments</a> -
       <a href="{% url 'debateapproved' tname=topic.name did=debate.id %}">Approved Arguments</a> -
       <a href="{% url 'debateunapproved' tname=topic.name did=debate.id %}">Unapproved Arguments</a> -
@@ -49,12 +49,12 @@
           {% if argumentsf %}
           <div class="list-group" data-vote-url="{% url 'votedebate' %}">
             {% for argument in argumentsf %}
-            <div class="list-group-item list-group-item-action flex-column align-items-start" data-debate-id="{{debate.id}}">
+            <div class="list-group-item list-group-item-action flex-column align-items-start" data-debate-id="{{ debate.id }}">
               <div class="d-flex w-100 justify-content-between">
-                <a href="{{argument.get_absolute_url}}" class="atit"><h5 class="mb-1">{{argument.title}}</h5></a>
+                <a href="{{ argument.get_absolute_url }}" class="atit"><h5 class="mb-1">{{ argument.title }}</h5></a>
               </div>
-                <p class="mb-0 argdesc">{{argument.body|markdownf}}</p>
-                <small class="sinfo"><a href="{{argument.owner.get_absolute_url}}">{{argument.owner.get_username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
+                <p class="mb-0 argdesc">{{ argument.body|markdownf }}</p>
+                <small class="sinfo"><a href="{{ argument.owner.get_absolute_url}}">{{argument.owner.get_username }}</a> - <span title="{{ argument.created_on|date:"c" }}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
 
 
 
@@ -72,7 +72,7 @@
               {% if argumentsf.number == 1 %}
               <li class="page-item disabled"><span class="page-link">⇤</span></li>
               {% else %}
-              <li class="page-item"><a class="page-link" href="{{request.get_full_path|link_namef:1|link_namea:pagea}}">⇤</a></li>
+              <li class="page-item"><a class="page-link" href="{{ request.get_full_path|link_namef:1|link_namea:pagea }}">⇤</a></li>
               {% endif %}
               {% if not argumentsf.has_previous %}
               <li class="page-item disabled">
@@ -80,16 +80,16 @@
               </li>
               {% else %}
               <li class="page-item">
-                <a class="page-link" href="{{request.get_full_path|link_namef:argumentsf.previous_page_number|link_namea:pagea}}" tabindex="-1">&laquo;</a>
+                <a class="page-link" href="{{ request.get_full_path|link_namef:argumentsf.previous_page_number|link_namea:pagea }}" tabindex="-1">&laquo;</a>
               </li>
               {% endif %}
               {% for p in argumentsf.paginator|proper_paginate:argumentsf.number %}
               {% if argumentsf.number == p %}
               <li class="page-item active">
-                <a class="page-link" href="{{request.get_full_path|link_namef:p|link_namea:pagea}}">{{p}} <span class="sr-only">(current)</span></a>
+                <a class="page-link" href="{{ request.get_full_path|link_namef:p|link_namea:pagea}}">{{p }} <span class="sr-only">(current)</span></a>
               </li>
               {% else %}
-              <li class="page-item"><a class="page-link" href="{{request.get_full_path|link_namef:p|link_namea:pagea}}">{{p}}</a></li>
+              <li class="page-item"><a class="page-link" href="{{ request.get_full_path|link_namef:p|link_namea:pagea}}">{{p }}</a></li>
               {% endif %}
               {% endfor %}
               {% if not argumentsf.has_next %}
@@ -98,7 +98,7 @@
               </li>
               {% else %}
               <li class="page-item">
-                <a class="page-link" href="{{request.get_full_path|link_namef:argumentsf.next_page_number|link_namea:pagea}}">&raquo;</a>
+                <a class="page-link" href="{{ request.get_full_path|link_namef:argumentsf.next_page_number|link_namea:pagea }}">&raquo;</a>
               </li>
               {% endif %}
               {% if argumentsf.number == argumentsf.paginator.num_pages %}
@@ -117,12 +117,12 @@
           {% if argumentsa %}
           <div class="list-group" data-vote-url="{% url 'votedebate' %}">
             {% for argument in argumentsa %}
-            <div class="list-group-item list-group-item-action flex-column align-items-start" data-debate-id="{{debate.id}}">
+            <div class="list-group-item list-group-item-action flex-column align-items-start" data-debate-id="{{ debate.id }}">
               <div class="d-flex w-100 justify-content-between">
-                <a href="{{argument.get_absolute_url}}" class="atit"><h5 class="mb-1">{{argument.title}}</h5></a>
+                <a href="{{ argument.get_absolute_url }}" class="atit"><h5 class="mb-1">{{ argument.title }}</h5></a>
               </div>
-                <p class="mb-0">{{argument.body|markdownf}}</p>
-                <small class="sinfo"><a href="{{argument.owner.get_absolute_url}}">{{argument.owner.get_username}}</a> - <span title="{{argument.created_on|date:"c"}}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Danger</span>{% endif %}</small>
+                <p class="mb-0">{{ argument.body|markdownf }}</p>
+                <small class="sinfo"><a href="{{ argument.owner.get_absolute_url}}">{{argument.owner.get_username }}</a> - <span title="{{ argument.created_on|date:"c" }}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Danger</span>{% endif %}</small>
 
             </div>
             {% endfor %}
@@ -138,7 +138,7 @@
               {% if argumentsa.number == 1 %}
               <li class="page-item disabled"><span>⇤</span></li>
               {% else %}
-              <li class="page-item"><a class="page-link" href="{{request.get_full_path|link_namef:pagef|link_namea:1}}">⇤</a></li>
+              <li class="page-item"><a class="page-link" href="{{ request.get_full_path|link_namef:pagef|link_namea:1 }}">⇤</a></li>
               {% endif %}
               {% if not argumentsa.has_previous %}
               <li class="page-item disabled">
@@ -146,16 +146,16 @@
               </li>
               {% else %}
               <li class="page-item">
-                <a class="page-link" href="{{request.get_full_path|link_namef:pagef|link_namea:argumentsa.previous_page_number}}" tabindex="-1">&laquo;</a>
+                <a class="page-link" href="{{ request.get_full_path|link_namef:pagef|link_namea:argumentsa.previous_page_number }}" tabindex="-1">&laquo;</a>
               </li>
               {% endif %}
               {% for p in argumentsa.paginator|proper_paginate:argumentsa.number %}
               {% if argumentsa.number == p %}
               <li class="page-item active">
-                <a class="page-link" href="{{request.get_full_path|link_namef:pagef|link_namea:p}}">{{p}} <span class="sr-only">(current)</span></a>
+                <a class="page-link" href="{{ request.get_full_path|link_namef:pagef|link_namea:p}}">{{p }} <span class="sr-only">(current)</span></a>
               </li>
               {% else %}
-              <li class="page-item"><a class="page-link" href="{{request.get_full_path|link_namef:pagef|link_namea:p}}">{{p}}</a></li>
+              <li class="page-item"><a class="page-link" href="{{ request.get_full_path|link_namef:pagef|link_namea:p}}">{{p }}</a></li>
               {% endif %}
               {% endfor %}
               {% if not argumentsa.has_next %}
@@ -164,7 +164,7 @@
               </li>
               {% else %}
               <li class="page-item">
-                <a class="page-link" href="{{request.get_full_path|link_namef:pagef|link_namea:argumentsa.next_page_number}}">&raquo;</a>
+                <a class="page-link" href="{{ request.get_full_path|link_namef:pagef|link_namea:argumentsa.next_page_number }}">&raquo;</a>
               </li>
               {% endif %}
               {% if argumentsa.number == argumentsa.paginator.num_pages %}

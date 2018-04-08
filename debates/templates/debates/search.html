@@ -10,8 +10,8 @@
       <h1 class="mt-5">Search</h1>
       <br>
       <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'search' %}">
-          <input class="form-control mr-sm-2 col-md-10" type="search" name="q" value="{{query}}" placeholder="Search for a debate" aria-label="Search">
-          <input class="form-control mr-sm-2 col-md-10" type="search" name="t" value="{{tname}}" placeholder="Topic to search in (leave blank to search in all topics)" aria-label="Search">
+          <input class="form-control mr-sm-2 col-md-10" type="search" name="q" value="{{ query }}" placeholder="Search for a debate" aria-label="Search">
+          <input class="form-control mr-sm-2 col-md-10" type="search" name="t" value="{{ tname }}" placeholder="Topic to search in (leave blank to search in all topics)" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
       </form>
       <hr />

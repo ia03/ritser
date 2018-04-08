@@ -3,12 +3,12 @@
 {% load widget_tweaks %}
 
 
-{% block title %}Edit Argument "{{argument.title}}" - MoDebate{% endblock %}
+{% block title %}Edit Argument "{{ argument.title }}" - MoDebate{% endblock %}
 
 {% block body %}
 
 <main role="main" class="container">
-  <h1>Edit Argument "{{argument.title}}"</h1>
+  <h1>Edit Argument "{{ argument.title }}"</h1>
   <form action="{% url 'editargument' tname=argument.topic.name did=argument.debate.id aid=argument.id %}" method="post">
     {% csrf_token %}
     {% include 'snippets/formerrors.html' %}

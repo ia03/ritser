@@ -8,7 +8,7 @@
 {% block body %}
     <main role="main" class="container">
       <h1 class="mt-5">Feed</h1>
-      {% if topics %}Topics: {% for topic in topics %}{% if not forloop.first %}, {% endif %}<a href="{{topic.get_absolute_url}}">{{topic.name}}</a>{% endfor %}{% if topics|length > 20 %}...{% endif %}
+      {% if topics %}Topics: {% for topic in topics %}{% if not forloop.first %}, {% endif %}<a href="{{ topic.get_absolute_url}}">{{topic.name }}</a>{% endfor %}{% if topics|length > 20 %}...{% endif %}
       <br>
       Remove or add topics in your <a href="{% url 'profile' %}">profile page.</a>
       <hr />

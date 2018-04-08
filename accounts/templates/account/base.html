@@ -10,28 +10,28 @@
     <ul class="navbar-nav mr-auto">
       {% url 'profile' as profile %}
       <li class="nav-item{% if request.path == profile %} active{% endif %}">
-        <a class="nav-link" href="{{profile}}">Profile{% if request.path == profile %} <span class="sr-only">(current)</span>{% endif %}</a>
+        <a class="nav-link" href="{{ profile }}">Profile{% if request.path == profile %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
       {% url 'account_change_password' as chgpwd %}
       {% url 'account_set_password' as setpwd %}
       <li class="nav-item{% if request.path == chgpwd or request.path == setpwd %} active{% endif %}">
-        <a class="nav-link" href="{{chgpwd}}">Password{% if request.path == chgpwd or request.path == setpwd %} <span class="sr-only">(current)</span>{% endif %}</a>
+        <a class="nav-link" href="{{ chgpwd }}">Password{% if request.path == chgpwd or request.path == setpwd %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
       {% url 'socialaccount_connections' as conurl %}
       <li class="nav-item{% if request.path == conurl %} active{% endif %}">
-        <a class="nav-link" href="{{conurl}}">Connections{% if request.path == conurl %} <span class="sr-only">(current)</span>{% endif %}</a>
+        <a class="nav-link" href="{{ conurl }}">Connections{% if request.path == conurl %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
       {% url 'account_email' as email %}
       <li class="nav-item{% if request.path == email %} active{% endif %}">
-        <a class="nav-link" href="{{email}}">Email{% if request.path == email %} <span class="sr-only">(current)</span>{% endif %}</a>
+        <a class="nav-link" href="{{ email }}">Email{% if request.path == email %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
       {% url 'account_modlogs' as modlogs %}
       <li class="nav-item{% if request.path == modlogs %} active{% endif %}">
-        <a class="nav-link" href="{{modlogs}}">Mod Logs{% if request.path == modlogs %} <span class="sr-only">(current)</span>{% endif %}</a>
+        <a class="nav-link" href="{{ modlogs }}">Mod Logs{% if request.path == modlogs %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
       {% url 'account_logout' as logout %}
       <li class="nav-item{% if request.path == logout %} active{% endif %}">
-        <a class="nav-link" href="{{logout}}">Log out{% if request.path == logout %} <span class="sr-only">(current)</span>{% endif %}</a>
+        <a class="nav-link" href="{{ logout }}">Log out{% if request.path == logout %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
     </ul>
   </div>

@@ -29,20 +29,20 @@
           {% url 'index' as index %}
           {% url 'feed' as feed %}
           <li class="nav-item{% if request.path == index or request.path == feed %} active{% endif %}">
-            <a class="nav-link" href="{% if user.is_authenticated %}{{feed}}{% else %}{{index}}{% endif %}">Home {% if request.path == index or request.path == feed %}<span class="sr-only">(current)</span>{% endif %}</a>
+            <a class="nav-link" href="{% if user.is_authenticated %}{{ feed }}{% else %}{{ index }}{% endif %}">Home {% if request.path == index or request.path == feed %}<span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           {% url 'about' as about %}
           <li class="nav-item{% if request.path == about %} active{% endif %}">
-            <a class="nav-link" href="{{about}}">About {% if request.path == about %}<span class="sr-only">(current)</span>{% endif %}</a>
+            <a class="nav-link" href="{{ about }}">About {% if request.path == about %}<span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           {% url 'rules' as rules %}
           <li class="nav-item{% if request.path == rules %} active{% endif %}">
-            <a class="nav-link" href="{{rules}}">Rules {% if request.path == rules %}<span class="sr-only">(current)</span>{% endif %}</a>
+            <a class="nav-link" href="{{ rules }}">Rules {% if request.path == rules %}<span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           {% if user.ismod %}
           {% url 'ban' as ban %}
           <li class="nav-item{% if request.path == ban %} active{% endif %}">
-            <a class="nav-link" href="{{ban}}">Moderate {% if request.path == ban %}<span class="sr-only">(current)</span>{% endif %}</a>
+            <a class="nav-link" href="{{ ban }}">Moderate {% if request.path == ban %}<span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           {% endif %}
         </ul>
@@ -54,17 +54,17 @@
         {% if user.is_authenticated %}
         {% url 'profile' as profile %}
          <li class="nav-item{% if request.path == profile %} active{% endif %}">
-        <a class="nav-link" href="{{profile}}">{{user.get_username}}{% if request.path == profile %} <span class="sr-only">(current)</span>{% endif %}</a>
+        <a class="nav-link" href="{{ profile}}">{{user.get_username }}{% if request.path == profile %} <span class="sr-only">(current)</span>{% endif %}</a>
          </li>
          </ul>
         {% else %}
         {% url 'account_login' as login %}
         <li class="nav-item{% if request.path == login %} active{% endif %}">
-        <a class="nav-link" href="{{login}}">Login{% if request.path == login %} <span class="sr-only">(current)</span>{% endif %}</a>
+        <a class="nav-link" href="{{ login }}">Login{% if request.path == login %} <span class="sr-only">(current)</span>{% endif %}</a>
          </li>
          {% url 'account_signup' as signup %}
          <li class="nav-item{% if request.path == signup %} active{% endif %}">
-        <a class="nav-link" href="{{signup}}">Signup{% if request.path == signup %} <span class="sr-only">(current)</span>{% endif %}</a>
+        <a class="nav-link" href="{{ signup }}">Signup{% if request.path == signup %} <span class="sr-only">(current)</span>{% endif %}</a>
          </li>
         {% endif %}
         </ul>

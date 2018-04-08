@@ -18,6 +18,7 @@ import reversion, bleach
 from reversion.models import Version
 from haystack.query import SearchQuerySet
 from allauth.account.decorators import verified_email_required
+from itertools import chain
 
 # Create your views here.
 def index(request):
@@ -525,6 +526,10 @@ def topicedits(request, tname):
 	}
 	return render(request, 'debates/topicedits.html', context)
 
+'''
+		MISC PAGES
+'''
+
 @login_required
 def feed(request):
 	user = request.user
@@ -583,6 +588,12 @@ def search(request):
 		'ddownvoted': ddownvoted,
 	}
 	return render(request, 'debates/search.html', context)
+
+
+
+'''
+		MODERATOR ACTIONS
+'''
 
 @gmod_required
 def ban(request):
@@ -655,3 +666,9 @@ def modlogs(request):
 	}
 	return render(request, 'debates/mod/modlogs.html', context)
 	
+@mod_required
+def unapprovedargs(request):
+	context = {
+		
+	}
+	return render(request, 'debates/mod/unapprovedargs.html', context)

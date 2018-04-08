@@ -7,7 +7,7 @@
         <a href="{{ argument.get_absolute_url }}" class="atit"><h5 class="mb-1">{{ argument.title }}</h5></a>
       </div>
         <p class="mb-0 argdesc">{{ argument.body|markdownf }}</p>
-        <small class="sinfo">{% if argument.side == 0 %}For{% else %}Against{% endif %} - <a href="{{ argument.debate.get_absolute_url}}">{{argument.debate.question }}</a> - <span title="{{ argument.created_on|date:"c" }}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
+        <small class="sinfo">{% if usercol %}<a href="{{ argument.owner.get_absolute_url }}">{{ argument.owner.get_username }}</a> - {% endif %}{% if argument.side == 0 %}For{% else %}Against{% endif %} - <a href="{{ argument.debate.get_absolute_url}}">{{ argument.debate.question }}</a> - <span title="{{ argument.created_on|date:"c" }}">{{ argument.created_on|date:"D d M Y f A" }}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}{% if editalist %} - <a href="{{ argument.get_edit_url }}">Edit</a>{% endif %}</small>
     </div>
     {% endfor %}
   </div>

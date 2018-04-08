@@ -2,16 +2,20 @@
 
 {% block body %}
 <main role="main" class="container">
+        
+        {% block htitle %}{% endblock %}
         <div class="row">
         <div class="col-md-3">
             <div class="list-group">
-              <a href="#" class="list-group-item list-group-item-action active">
+            {% url 'unapprovedargs' as unapprovedargs %}
+              <a href="{{ unapprovedargs }}" class="list-group-item list-group-item-action{% if request.path == unapprovedargs %} active{% endif %}">
                 Arguments
-                <span class="badge badge-light badge-pill">0</a>
+                <span class="badge badge-{% if request.path == unapprovedargs %}light{% else %}primary{% endif %} badge-pill">0</a>
               </a>
-              <a href="#" class="list-group-item list-group-item-action">
-                  Debates
-                  <span class="badge badge-primary badge-pill">0</a>
+            {% url 'unapproveddebs' as unapproveddebs %}
+              <a href="{{ unapproveddebs }}" class="list-group-item list-group-item-action{% if request.path == unapproveddebs %} active{% endif %}">
+                Debates
+                <span class="badge badge-{% if request.path == unapproveddebs %}light{% else %}primary{%endif %} badge-pill">0</a>
               </a>
             </div>
         </div>

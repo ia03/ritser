@@ -2,10 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.urls import reverse
+from django.apps import apps
 from timezone_field import TimeZoneField
-
+import django
 # Create your models here.
-
 
 class User(AbstractUser):
     approvedargs = models.IntegerField(default=0)
@@ -28,6 +28,7 @@ class User(AbstractUser):
             return reverse('user', args=[self.username])
         else:
             return '#'
+
 
     def get_username(self):  # modlogs bypasses this
         if self.active == 0 or self.active == 2:
@@ -63,8 +64,36 @@ class User(AbstractUser):
         return self.is_authenticated and self.active != 2
 
     def get_approvedargs(self):
-        return self.approvedargs
-
+        return self.arguments.filter(approvalstatus=0).count()
+    
+    def unapprovedarguments(self):
+        Argument = apps.get_model('debates.Argument')
+        if self.isgmod():
+            query = Argument.objects.filter(approvalstatus=1)
+        else:
+            query = Argument.objects.none()
+            for topic in self.topics_owned.all():
+                query = query.union(
+                    topic.arguments.filter(approvalstatus=1))
+            for topic in self.moderator_of.all():
+                query = query.union(
+                    topic.arguments.filter(approvalstatus=1))
+        return query.order_by('-owner__approvedargs')
+    def unapproveddebates(self):
+        Debate = apps.get_model('debates.Debate')
+        if self.isgmod():
+            query = Debate.objects.filter(approvalstatus=1)
+        else:
+            query = Debate.objects.none()
+            for topic in self.topics_owned.all():
+                query = query.union(
+                    topic.debates.filter(approvalstatus=1))
+            for topic in self.moderator_of.all():
+                query = query.union(
+                    topic.debates.filter(approvalstatus=1))
+        return query.order_by('-owner__approvedargs')
+    
+    
     def __str__(self):
         return self.username
 

@@ -6,6 +6,7 @@ from accounts.models import User
 import reversion
 from reversion.models import Revision
 
+
 # Create your models here.
 
 
@@ -128,10 +129,16 @@ class Argument(models.Model):
         return reverse(
             'argument',
             args=[
-                self.topic.name,
+                self.topic_id,
                 self.debate_id,
                 self.id])
-
+    def get_edit_url(self):
+        return reverse(
+            'editargument',
+            args=[
+                self.topic_id,
+                self.debate_id,
+                self.id])
     def __str__(self):
         return self.title
 

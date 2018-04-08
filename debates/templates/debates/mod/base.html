@@ -8,6 +8,12 @@
  {% comment %}https://stackoverflow.com/questions/22047251/django-dynamically-get-view-url-and-check-if-its-the-current-page{% endcomment %}
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
+      {% if user.ismod %}
+      {% url 'unapprovedargs' as unapprovedargs %}
+      <li class="nav-item{% if request.path == unapprovedargs %} active{% endif %}">
+        <a class="nav-link" href="{{ unapprovedargs }}">Unapproved{% if request.path == unapprovedargs %} <span class="sr-only">(current)</span>{% endif %}</a>
+      </li>
+      {% endif %}
       {% if user.isgmod %}
       {% url 'ban' as ban %}
       <li class="nav-item{% if request.path == ban %} active{% endif %}">

@@ -744,7 +744,7 @@ def modlogs(request):
     if mod != '':
         modactions_list = modactions_list.filter(mod__username=mod)
     page = request.GET.get('page', 1)
-    modactions = getpage(page, modactions_list, 30)
+    modactions = getpage(page, modactions_list, 50)
     context = {
         'username': username,
         'mod': mod,
@@ -756,7 +756,25 @@ def modlogs(request):
 
 @mod_required
 def unapprovedargs(request):
+    user = request.user
+    unapprovedargs_list = user.unapprovedarguments()
+    page = request.GET.get('page', 1)
+    unapprovedargs = getpage(page, unapprovedargs_list, 25)
     context = {
-
+    	'arguments': unapprovedargs,
+    	'editalist': True,
+    	'usercol': True,
     }
     return render(request, 'debates/mod/unapprovedargs.html', context)
+
+@mod_required
+def unapproveddebs(request):
+    user = request.user
+    unapproveddebs_list = user.unapproveddebates()
+    page = request.GET.get('page', 1)
+    unapproveddebs = getpage(page, unapproveddebs_list, 30)
+    context = {
+        'debates': unapproveddebs,
+        'minjq': True,
+    }
+    return render(request, 'debates/mod/unapproveddebs.html', context)

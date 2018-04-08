@@ -125,6 +125,10 @@ class Argument(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
     edited_on = models.DateTimeField(default=timezone.now)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.owner.approvedargs = self.owner.get_approvedargs()
+
     def get_absolute_url(self):
         return reverse(
             'argument',
@@ -141,7 +145,7 @@ class Argument(models.Model):
                 self.id])
     def __str__(self):
         return self.title
-
+    
 # Revisions:
 
 

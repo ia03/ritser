@@ -123,7 +123,16 @@ class DebateFormTestCase (TestCase):
         }
         self.test_topic.slvl = 1
         self.test_topic.save()
-        self.tuser.approvedargs = 10
+        for i in range(10):
+            a = Argument.objects.create(
+                owner=self.tuser,
+                topic=self.test_topic,
+                debate=self.test_debate,
+                approvalstatus=0,
+                title=str(i),
+                body='test')
+            a.save()
+        self.tuser.approvedargs = self.tuser.get_approvedargs()
         self.tuser.save()
         form = DebateForm(data=form_data, user=self.tuser, edit=0)
         self.assertTrue(form.is_valid())

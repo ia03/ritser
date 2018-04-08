@@ -397,13 +397,6 @@ class ArgumentForm(forms.ModelForm):
                     'You must be a moderator to post to a debate with a security level of 4.')
             cleaned_data['approved_on'] = setapprovedon(self)
         return cleaned_data
-    def save(self, commit=True):
-        obj = super(ArgumentForm, self).save(commit=commit)
-        if self.edit == 2:
-            owner = obj.owner
-            owner.approvedargs = owner.get_approvedargs()
-            owner.save()
-        return obj
     class Meta:
         model = Argument
         fields = [

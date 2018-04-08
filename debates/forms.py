@@ -118,8 +118,8 @@ class DebateForm(forms.ModelForm):
             return self.instance.slvl
         elif self.edit == 2:
             data = self.cleaned_data.get('slvl')
-            if data not in [0, 1, 2, 3]:
-                raise forms.ValidationError('Invalid security level setting %(slvl)s, must be 0, 1, 2, or 3.', code='invalidslvl', params={'slvl': data})
+            if data not in [0, 1, 2, 3, 4]:
+                raise forms.ValidationError('Invalid security level setting %(slvl)s, must be 0, 1, 2, 3 or 4.', code='invalidslvl', params={'slvl': data})
             return data
 
     def clean(self):
@@ -249,8 +249,10 @@ class ArgumentForm(forms.ModelForm):
             cleaned_data['debate'] = debate
             cleaned_data['topic'] = topic
             cleaned_data['owner'] = owner
-            if debate.slvl == 2 and (owner.get_approvedargs() < 20 and not self.user.ismodof(topic) and (self.edit == 0 or owner != self.user)): #add subscriber status here
-                raise forms.ValidationError('You must have at least 20 approved arguments to post to a debate with a security level of 2.')
+            if (debate.slvl == 2 or debate.slvl == 3) and (owner.get_approvedargs() < 20 and not self.user.ismodof(topic) and (self.edit == 0 or owner != self.user)): #add subscriber status here
+                raise forms.ValidationError('You must have at least 20 approved arguments to post to a debate with a security level of 2 or 3.')
+            if (debate.slvl == 4) and not self.user.ismodof(topic):
+                raise forms.ValidationError('You must be a moderator to post to a debate with a security level of 4.')
             cleaned_data['approved_on'] = setapprovedon(self)
         return cleaned_data
         
@@ -345,8 +347,8 @@ class TopicForm(forms.ModelForm):
         return data
     def clean_debslvl(self):
         data = self.cleaned_data.get('debslvl')
-        if data not in [0, 1, 2, 3]:
-            raise forms.ValidationError('Invalid default debate security level setting %(debslvl)s, must be 0, 1, 2, or 3.', code='invaliddebslvl', params={'debslvl': data})
+        if data not in [0, 1, 2, 3, 4]:
+            raise forms.ValidationError('Invalid default debate security level setting %(debslvl)s, must be 0, 1, 2, 3, or 4.', code='invaliddebslvl', params={'debslvl': data})
         return data
     def clean(self):
         cleaned_data = super().clean()

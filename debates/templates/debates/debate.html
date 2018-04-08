@@ -20,7 +20,7 @@
           Topic: <a href="{{topic.get_absolute_url}}">{{topic.name}}</a> -
           Owner:
           <a href="{{debate.owner.get_absolute_url}}">{{debate.owner.get_username}}</a> -
-          Security Level: {{debate.slvl}}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %} - <a href="{% url 'editdebate' tname=topic.name did=debate.id %}">Edit/View source</a> - <a href="{% url 'debateedits' tname=topic.name did=debate.id %}">Edits</a> - {% if topic.slvl > 1 %}<span title="{{debate.approved_on|date:"c"}}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{debate.created_on|date:"c"}}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}
+          Security Level : {{debate.slvl}}(<a href="{% url 'rules' %}#securitylevels">?</a>){% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %} - <a href="{% url 'editdebate' tname=topic.name did=debate.id %}">Edit/View source</a> - <a href="{% url 'debateedits' tname=topic.name did=debate.id %}">Edits</a> - {% if topic.slvl > 1 %}<span title="{{debate.approved_on|date:"c"}}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{debate.created_on|date:"c"}}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}
           {% if debate.modnote %}
           {% load modnotes %}
           {% modnotes debate.modnote|markdownf %}

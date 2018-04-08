@@ -30,7 +30,7 @@ class Topic(models.Model):
 class Debate(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='debates')
 	topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='debates')
-	slvl = models.IntegerField(default=1) #if slvl = 0, approved, unapproved, denied arguments visible by def. if slvl = 1 or 2(20+ approved args), approved and unapproved visible by def., else only approved args visible
+	slvl = models.IntegerField(default=1) #if slvl = 0, approved, unapproved, denied arguments visible by def. if slvl = 1 or 2(20+ approved args), approved and unapproved visible by def., slvl=3 means only approved args visible(20+ approved args), slvl=4 means mod submissions only
 	approvalstatus = models.IntegerField(default=1) #0: approved 1: unapproved 2: denied 3: deleted
 	karma = models.IntegerField(default=0, db_index=True)
 	users_upvoting = models.ManyToManyField(User, related_name='debates_upvoted', blank=True)

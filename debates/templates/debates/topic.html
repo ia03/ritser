@@ -17,7 +17,7 @@
             {{topic.owner.get_username}}
           </a><br> Security Level: {{topic.slvl}}
           <br>
-          Default Debate Security Level: {{topic.debslvl}}
+          Default Debate Security Level: {{topic.debslvl}} <a href="{% url 'rules' %}#securitylevels">What do these numbers mean?</a>
           <br>
           Created on {{topic.created_on|date}}
           <br>

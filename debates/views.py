@@ -121,7 +121,6 @@ def topic(request, tname):
 		'sorta': sorta,
 		'dupvoted': dupvoted,
 		'ddownvoted': ddownvoted,
-		'hasperm': request.user.is_authenticated and request.user.hasperm(),
 		'topicdebateslist': True,
 	}
 	return render(request, 'debates/topic.html', context)
@@ -247,7 +246,6 @@ def debate(request, tname, did, **kwargs): #use same template for different appr
 		'pagea': pagea,
 		'apprs': kwargs['apprs'],
 		'vote': vote,
-		'hasperm': request.user.is_authenticated and request.user.hasperm(),
 	}
 	return render(request, 'debates/debate.html', context)
 

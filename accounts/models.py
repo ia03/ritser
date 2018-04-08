@@ -41,6 +41,8 @@ class User(AbstractUser):
 		return (self.modstatus > 1)
 	def hasperm(self):
 		return self.is_authenticated and self.active != 2
+	def get_approvedargs(self):
+		return self.approvedargs
 	def __str__(self):
 		return self.username
 

@@ -141,7 +141,7 @@ class DebateForm(forms.ModelForm):
             cleaned_data['owner'] = owner
             if self.edit == 0:
                 cleaned_data['slvl'] = topic.debslvl
-            if ((topic.slvl == 1 or topic.slvl == 2) and (owner.approvedargs < 10 and not self.user.ismodof(topic)) and (self.edit == 0 or owner != self.user)): #add subscriber status here
+            if ((topic.slvl == 1 or topic.slvl == 2) and (owner.get_approvedargs() < 10 and not self.user.ismodof(topic)) and (self.edit == 0 or owner != self.user)): #add subscriber status here
                 raise forms.ValidationError('You must have at least 10 approved arguments to post to a topic with a security level of 1 or 2.')
             elif (topic.slvl == 3) and not self.user.ismodof(topic):
                 raise forms.ValidationError('You must be a moderator in order to post to or edit in this topic.')
@@ -249,7 +249,7 @@ class ArgumentForm(forms.ModelForm):
             cleaned_data['debate'] = debate
             cleaned_data['topic'] = topic
             cleaned_data['owner'] = owner
-            if debate.slvl == 2 and (owner.approvedargs < 20 and not self.user.ismodof(topic) and (self.edit == 0 or owner != self.user)): #add subscriber status here
+            if debate.slvl == 2 and (owner.get_approvedargs() < 20 and not self.user.ismodof(topic) and (self.edit == 0 or owner != self.user)): #add subscriber status here
                 raise forms.ValidationError('You must have at least 20 approved arguments to post to a debate with a security level of 2.')
             cleaned_data['approved_on'] = setapprovedon(self)
         return cleaned_data
@@ -361,7 +361,7 @@ class TopicForm(forms.ModelForm):
             if (not self.user.hasperm()) or (self.edit == 1 and (not self.user.ismodof(self.instance))):
                 raise forms.ValidationError('You do not have permission to perform this action.')
             cleaned_data['owner'] = owner
-            if self.edit != 1 and owner.approvedargs < 20 and not self.user.isgmod() and (self.edit == 0 or owner != self.user): #add subscriber status here
+            if self.edit != 1 and owner.get_approvedargs() < 20 and not self.user.isgmod() and (self.edit == 0 or owner != self.user): #add subscriber status here
                 raise forms.ValidationError('You must have at least 20 approved arguments to own a topic.')
             if self.edit != 1 and owner.topics_owned.all().count() > 5 and not self.user.isgmod() and (self.edit == 0 or owner != self.user): #add subscriber status here
                 raise forms.ValidationError('You can only own a maximum of 5 topics.')

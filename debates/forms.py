@@ -398,10 +398,17 @@ class BanForm(forms.Form):
         if user.modstatus >= self.user.modstatus:
             raise forms.ValidationError('You do not have permission to suspend/terminate %(username)s.', code='userismod', params={'username': data})
         return data
+    def clean_bandate(self):
+        data = self.cleaned_data['bandate']
+        if data is not None:
+            if data < timezone.now().date():
+                raise forms.ValidationError('The date the user is suspended until may not be in the past.')
+        return data
     def clean(self):
         cleaned_data = super().clean()
-        if (not cleaned_data['terminate']) and cleaned_data['bandate'] == None:
-            raise forms.ValidationError('You must input a date.')
+        if 'bandate' in cleaned_data:
+            if (not cleaned_data.get('terminate')) and cleaned_data.get('bandate') == None:
+                raise forms.ValidationError('You must input a date.')
 
 class UnsuspendForm(forms.Form):
     username = forms.CharField(max_length=150)

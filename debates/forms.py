@@ -1,7 +1,6 @@
 from django import forms
 from .models import Topic, Debate, Argument
 from accounts.models import User
-from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from captcha.fields import ReCaptchaField
 from django.conf import settings
@@ -23,7 +22,7 @@ def cleanownername(instance):
     if instance.edit != 0:
         try:
             owner = User.objects.get(username=data)
-        except ObjectDoesNotExist:
+        except User.DoesNotExist:
             raise forms.ValidationError(
                 'User %(owner_name)s not found.',
                 code='usernotfound',
@@ -152,7 +151,7 @@ class DebateForm(forms.ModelForm):
         if self.edit != 1:
             try:
                 Topic.objects.get(name=data)
-            except ObjectDoesNotExist:
+            except Topic.DoesNotExist:
                 raise forms.ValidationError(
                     'Topic %(topic_name)s not found.',
                     code='topicnotfound',
@@ -315,7 +314,7 @@ class ArgumentForm(forms.ModelForm):
         if self.edit != 1:
             try:
                 Debate.objects.get(id=data)
-            except ObjectDoesNotExist:
+            except Debate.DoesNotExist:
                 raise forms.ValidationError(
                     'Debate %(debate_id)s not found.',
                     code='debatenotfound',
@@ -397,6 +396,7 @@ class ArgumentForm(forms.ModelForm):
                     'You must be a moderator to post to a debate with a security level of 4.')
             cleaned_data['approved_on'] = setapprovedon(self)
         return cleaned_data
+
     class Meta:
         model = Argument
         fields = [
@@ -425,13 +425,16 @@ class ArgumentForm(forms.ModelForm):
 class TopicForm(forms.ModelForm):
     modsf = forms.CharField(
         required=False,
-        label='Moderators (a space-separated list of their names)')
+        label='Moderators (a space-separated list of their names)',
+        error_messages={
+            'required': 'You must input the moderators\' names.'})
     captcha = ReCaptchaField(
         private_key=settings.GR_TOPICFORM,
         public_key='6Lf2wk4UAAAAAKzFTTvHOnHfwU5-RVbrlxXcDVEm',
         error_messages={
             'required': 'Invalid ReCAPTCHA. Please try again.'})
-    owner_name = forms.CharField()
+    owner_name = forms.CharField(error_messages={
+        'required': 'You must specify the name of the user who will own the topic.'})
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
@@ -458,8 +461,6 @@ class TopicForm(forms.ModelForm):
             'required': 'You must specify a security level for the topic.'}
         self.fields['debslvl'].error_messages = {
             'required': 'You must specify a default debate security level for the topic.'}
-        self.fields['owner_name'].error_messages = {
-            'required': 'You must specify the name of the user who will own the topic.'}
         if self.edit == 0:
             disablefield(self, 'owner_name')
         elif self.edit == 1:
@@ -485,7 +486,7 @@ class TopicForm(forms.ModelForm):
         if self.edit != 0 and self.edit != 1:
             try:
                 owner = User.objects.get(username=data)
-            except ObjectDoesNotExist:
+            except User.DoesNotExist:
                 raise forms.ValidationError(
                     'User %(owner_name)s not found.',
                     code='usernotfound',
@@ -612,7 +613,10 @@ class TopicForm(forms.ModelForm):
 
 
 class BanForm(forms.Form):
-    username = forms.CharField(max_length=150)
+    username = forms.CharField(
+        max_length=150,
+        error_messages={
+            'required': 'You must input the chosen user\'s username.'})
     terminate = forms.BooleanField(required=False, label='Terminate')
     bandate = forms.DateField(
         label='Suspended until (MM/DD/YYYY)',
@@ -629,7 +633,9 @@ class BanForm(forms.Form):
 
     def clean_username(self):
         data = self.cleaned_data['username']
-        if not User.objects.filter(username=data).exists():
+        try:
+            User.objects.get(username=data)
+        except User.DoesNotExist:
             raise forms.ValidationError(
                 'User %(username)s not found.',
                 code='usernotfound',
@@ -667,11 +673,16 @@ class BanForm(forms.Form):
 
 
 class UnsuspendForm(forms.Form):
-    username = forms.CharField(max_length=150)
+    username = forms.CharField(
+        max_length=150,
+        error_messages={
+            'required': 'You must input the username of the chosen user.'})
 
     def clean_username(self):
         data = self.cleaned_data['username']
-        if not User.objects.filter(username=data).exists():
+        try:
+            User.objects.get(username=data)
+        except User.DoesNotExist:
             raise forms.ValidationError(
                 'User %(username)s not found.',
                 code='usernotfound',
@@ -685,3 +696,51 @@ class UnsuspendForm(forms.Form):
                 params={
                     'username': data})
         return data
+
+
+pmchoices = (
+    (1, 'Argument'),
+    (2, 'Debate'),
+)
+
+
+class DeleteForm(forms.Form):
+    mtype = forms.ChoiceField(
+        widget=forms.RadioSelect(),
+        choices=pmchoices,
+        label='Type of Post',
+        error_messages={
+            'required': 'You must specify the type of post to delete.'})
+    idno = forms.IntegerField(
+        label='ID',
+        error_messages={
+            'required': 'You must specify the ID of the post to delete.'})
+
+    def clean(self):
+        cleaned_data = super().clean()
+        mtype = cleaned_data['mtype']
+        idno = cleaned_data['idno']
+        print(mtype)
+        if mtype == '1':
+            try:
+                argument = Argument.objects.get(id=idno)
+            except Argument.DoesNotExist:
+                raise forms.ValidationError(
+                    'Argument with ID %(aid)s not found.',
+                    code='argumentnotfound',
+                    params={
+                        'aid': idno})
+            self.post = argument
+        elif mtype == '2':
+            try:
+                debate = Debate.objects.get(id=idno)
+            except Debate.DoesNotExist:
+                raise forms.ValidationError(
+                    'Debate with ID %(did)s not found.',
+                    code='debatenotfound',
+                    params={
+                        'did': idno})
+            self.post = debate
+        print(self.post)
+        print('hey')
+        return cleaned_data

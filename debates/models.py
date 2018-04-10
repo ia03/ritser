@@ -136,6 +136,7 @@ class Argument(models.Model):
                 self.topic_id,
                 self.debate_id,
                 self.id])
+
     def get_edit_url(self):
         return reverse(
             'editargument',
@@ -143,9 +144,10 @@ class Argument(models.Model):
                 self.topic_id,
                 self.debate_id,
                 self.id])
+
     def __str__(self):
         return self.title
-    
+
 # Revisions:
 
 

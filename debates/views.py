@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
-from .forms import DebateForm, ArgumentForm, TopicForm, BanForm, UnsuspendForm
+from .forms import DebateForm, ArgumentForm, TopicForm, BanForm, UnsuspendForm, DeleteForm
 from .utils import getpage, newdiff, debateslist, htmldiffs
 from accounts.utils import DeleteUser
 from accounts.models import User, ModAction
@@ -669,7 +669,7 @@ def search(request):
 
 
 '''
-		MODERATOR ACTIONS
+		MODERATOR PAGES
 '''
 
 
@@ -737,6 +737,40 @@ def unsuspend(request):
 
 
 @gmod_required
+def delete(request):
+    if request.method == 'POST':
+        form = DeleteForm(request.POST)
+        if form.is_valid():
+            post = form.post
+            versions = Version.objects.get_for_object(post)
+            versions.delete()
+            post.approvalstatus = 3
+
+            if isinstance(post, Argument):
+                post.title = "[DELETED]"
+                post.body = "[DELETED]"
+                messages.success(
+                    request, 'You have successfully deleted this argument.')
+                ModAction.objects.create(
+                    user=post.owner, mod=request.user, action=3)
+            else:
+                post.question = "[DELETED]"
+                post.description = "[DELETED]"
+                messages.success(
+                    request, 'You have successfully deleted this debate.')
+                ModAction.objects.create(
+                    user=post.owner, mod=request.user, action=4)
+            post.owner = request.user
+            post.save()
+    elif request.method == 'GET':
+        form = DeleteForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'debates/mod/delete.html', context)
+
+
+@gmod_required
 def modlogs(request):
     username = request.GET.get('user', '')
     mod = request.GET.get('mod', '')
@@ -763,11 +797,12 @@ def unapprovedargs(request):
     page = request.GET.get('page', 1)
     unapprovedargs = getpage(page, unapprovedargs_list, 25)
     context = {
-    	'arguments': unapprovedargs,
-    	'editalist': True,
-    	'usercol': True,
+        'arguments': unapprovedargs,
+        'editalist': True,
+        'usercol': True,
     }
     return render(request, 'debates/mod/unapprovedargs.html', context)
+
 
 @mod_required
 def unapproveddebs(request):

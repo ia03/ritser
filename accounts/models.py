@@ -67,7 +67,7 @@ class User(AbstractUser):
     def get_approvedargs(self):
         return self.arguments.filter(approvalstatus=0).count()
     
-    def unapprovedarguments(self):
+    def unapprovedargslist(self):
         Argument = apps.get_model('debates.Argument')
         if self.isgmod():
             query = Argument.objects.filter(approvalstatus=1)
@@ -79,9 +79,12 @@ class User(AbstractUser):
             for topic in self.moderator_of.all():
                 queries = queries | Q(topic=topic)
             query = Argument.objects.filter(queries & Q(approvalstatus=1))
-        query = query.order_by('-owner__approvedargs', 'created_on')
         return query
-    def unapproveddebates(self):
+    
+    def unapprovedarguments(self):
+        return self.unapprovedargslist().order_by('-owner__approvedargs', 'created_on')
+    
+    def unapproveddebslist(self):
         Debate = apps.get_model('debates.Debate')
         if self.isgmod():
             query = Debate.objects.filter(approvalstatus=1)
@@ -93,7 +96,10 @@ class User(AbstractUser):
             for topic in self.moderator_of.all():
                 queries = queries | Q(topic=topic)
             query = Debate.objects.filter(queries & Q(approvalstatus=1))
-        return query.order_by('-owner__approvedargs', '-created_on')
+        return query
+        
+    def unapproveddebates(self):
+        return self.unapproveddebslist().order_by('-owner__approvedargs', '-created_on')
     
     
     def __str__(self):

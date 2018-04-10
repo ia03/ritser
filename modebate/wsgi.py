@@ -1,5 +1,5 @@
 """
-WSGI config for udebate project.
+WSGI config for modebate project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

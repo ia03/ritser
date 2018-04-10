@@ -37,6 +37,8 @@ https://simpleisbetterthancomplex.com/tutorial/2017/08/20/how-to-use-celery-with
 
 Important: register business
 https://www.ontario.ca/page/register-business-name-limited-partnership
+federal incorporation is best
+https://www.itbusiness.ca/blog/corporations-101-for-tech-pros-provincial-or-federal-incorporations/44010
 
 Get the notion that you have to prove your opponent wrong out of your head. When you're debating, you're not "wrong" or "right" and neither is your opponent. You're
 just both people sharing information to find the answer more easily. Don't be afraid of being wrong, and don't see your opponent as an enemy in the debate.

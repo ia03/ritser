@@ -39,7 +39,7 @@ Important: register business
 https://www.ontario.ca/page/register-business-name-limited-partnership
 
 Get the notion that you have to prove your opponent wrong out of your head. When you're debating, you're not "wrong" or "right" and neither is your opponent. You're
-just both people sharing information to find the answer more easily.
+just both people sharing information to find the answer more easily. Don't be afraid of being wrong, and don't see your opponent as an enemy in the debate.
 
 We strongly value freedom of speech. We will not censor certain groups of people to manipulate their political beliefs.
 

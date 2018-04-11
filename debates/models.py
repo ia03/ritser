@@ -32,8 +32,12 @@ class Topic(models.Model):
     # arguments can submit debates. 2: Users with at least 10 approved
     # arguments can submit a debate request 3: Only moderators can submit
     # debates.
-    slvl = models.IntegerField(default=0)
-    debslvl = models.IntegerField(default=1)
+    slvl = models.IntegerField(
+        default=0,
+        verbose_name='security level')
+    debslvl = models.IntegerField(
+        default=1,
+        verbose_name='default debate security level')
     moderators = models.ManyToManyField(User, related_name='moderator_of')
     created_on = models.DateTimeField(default=timezone.now)
     created_by = models.ForeignKey(
@@ -63,7 +67,7 @@ class Debate(models.Model):
     # slvl = 1 or 2(20+ approved args), approved and unapproved visible by
     # def., slvl=3 means only approved args visible(20+ approved args), slvl=4
     # means mod submissions only
-    slvl = models.IntegerField(default=1)
+    slvl = models.IntegerField(default=1, verbose_name='security level')
     # 0: approved 1: unapproved 2: denied 3: deleted
     approvalstatus = models.IntegerField(default=1)
     karma = models.IntegerField(default=0, db_index=True)
@@ -71,7 +75,10 @@ class Debate(models.Model):
         User, related_name='debates_upvoted', blank=True)
     users_downvoting = models.ManyToManyField(
         User, related_name='debates_downvoted', blank=True)
-    modnote = models.TextField(max_length=200000, blank=True)
+    modnote = models.TextField(
+        max_length=200000,
+        blank=True,
+        verbose_name='moderator note')
     active = models.BooleanField(default=True)
     question = models.CharField(max_length=300)
     description = models.TextField(max_length=200000, blank=True)

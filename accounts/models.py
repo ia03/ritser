@@ -117,8 +117,10 @@ class ModAction(models.Model):
         on_delete=models.CASCADE,
         related_name='modactions')
     # 0: suspend 1: unsuspend 2: terminate 3: del. arg 4: del. debate
+    # 5: mov. debate 6: mov. topic
     action = models.IntegerField(default=0)
-    pid = models.IntegerField(null=True, blank=True)
+    pid = models.CharField(max_length=150, blank=True)
+    pid2 = models.CharField(max_length=150, blank=True)
     modnote = models.CharField(max_length=10000, blank=True)
     date = models.DateTimeField(default=timezone.now)
     until = models.DateField(default=timezone.now, null=True, blank=True)

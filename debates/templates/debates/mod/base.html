@@ -24,6 +24,10 @@
       <li class="nav-item{% if request.path == unsuspend %} active{% endif %}">
         <a class="nav-link" href="{{ unsuspend }}">Unsuspend{% if request.path == unsuspend %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
+      {% url 'move' as move %}
+      <li class="nav-item{% if request.path == move %} active{% endif %}">
+        <a class="nav-link" href="{{ move }}">Move{% if request.path == move %} <span class="sr-only">(current)</span>{% endif %}</a>
+      </li>
       {% url 'delete' as delete %}
       <li class="nav-item{% if request.path == delete %} active{% endif %}">
         <a class="nav-link" href="{{ delete }}">Delete{% if request.path == delete %} <span class="sr-only">(current)</span>{% endif %}</a>

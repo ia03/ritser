@@ -207,6 +207,8 @@ class DebateForm(forms.ModelForm):
                 topic = Topic.objects.get(name=tname)
             if self.edit == 0:
                 owner = cleaned_data.get('owner')
+                if self.user.ismodof(topic):
+                    cleaned_data['approvalstatus'] = 0
             else:
                 owner = User.objects.get(username=owner_name)
             if (not self.user.hasperm()) or (self.edit ==
@@ -378,6 +380,8 @@ class ArgumentForm(forms.ModelForm):
             topic = debate.topic
             if self.edit == 0:
                 owner = cleaned_data.get('owner')
+                if self.user.ismodof(debate.topic):
+                    cleaned_data['approvalstatus'] = 0
             else:
                 owner = User.objects.get(username=owner_name)
             if (not self.user.hasperm()) or (self.edit ==
@@ -701,8 +705,8 @@ class UnsuspendForm(forms.Form):
 
 
 pmchoices = (
-    (1, 'Argument'),
-    (2, 'Debate'),
+    ('1', 'Argument'),
+    ('2', 'Debate'),
 )
 
 
@@ -743,4 +747,66 @@ class DeleteForm(forms.Form):
                     params={
                         'did': idno})
             self.post = debate
+        return cleaned_data
+
+
+mmchoices = (
+    ('1', 'Debate'),
+    ('2', 'Topic'),
+)
+
+
+class MoveForm(forms.Form):
+    mtype = forms.ChoiceField(
+        widget=forms.RadioSelect(),
+        choices=mmchoices,
+        label='Type of Container',
+        error_messages={
+            'required': 'You must specify the type of container post.'})
+    fid = forms.CharField(label='ID/Name of first Debate/Topic')
+    sid = forms.CharField(label='ID/Name of second Debate/Topic')
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        mtype = cleaned_data['mtype']
+        fid = cleaned_data['fid']
+        sid = cleaned_data['sid']
+        if mtype == '1':
+            try:
+                debate = Debate.objects.get(id=fid)
+            except Debate.DoesNotExist:
+                raise forms.ValidationError(
+                    'Debate with ID %(did)s not found.',
+                    code='debatenotfound',
+                    params={
+                        'did': fid})
+            try:
+                debate2 = Debate.objects.get(id=sid)
+            except Debate.DoesNotExist:
+                raise forms.ValidationError(
+                    'Debate with ID %(did)s not found.',
+                    code='debatenotfound',
+                    params={
+                        'did': sid})
+            self.post = debate
+            self.post2 = debate2
+        elif mtype == '2':
+            try:
+                topic = Topic.objects.get(name=fid)
+            except Topic.DoesNotExist:
+                raise forms.ValidationError(
+                    'Topic with name %(tname)s not found.',
+                    code='topicnotfound',
+                    params={
+                        'tname': fid})
+            try:
+                topic2 = Topic.objects.get(name=sid)
+            except Topic.DoesNotExist:
+                raise forms.ValidationError(
+                    'Topic with name %(tname)s not found.',
+                    code='topicnotfound',
+                    params={
+                        'tname': sid})
+            self.post = topic
+            self.post2 = topic2
         return cleaned_data

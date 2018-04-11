@@ -38,6 +38,7 @@ urlpatterns = [
     # TODO: add reports link to base.html moderate link
     path('mod/ban', views.ban, name='ban'),
     path('mod/unsuspend', views.unsuspend, name='unsuspend'),
+    path('mod/move', views.move, name='move'),
     path('mod/delete', views.delete, name='delete'),
     path('mod/logs', views.modlogs, name='modlogs'),
     path(

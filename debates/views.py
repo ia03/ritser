@@ -7,7 +7,8 @@ from django.contrib import messages
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
-from .forms import DebateForm, ArgumentForm, TopicForm, BanForm, UnsuspendForm, DeleteForm
+from .forms import (DebateForm, ArgumentForm, TopicForm, BanForm,
+    UnsuspendForm, DeleteForm, MoveForm)
 from .utils import getpage, newdiff, debateslist, htmldiffs
 from accounts.utils import DeleteUser
 from accounts.models import User, ModAction
@@ -735,6 +736,47 @@ def unsuspend(request):
     }
     return render(request, 'debates/mod/unsuspend.html', context)
 
+@gmod_required
+def move(request):
+    if request.method == 'POST':
+        form = MoveForm(request.POST)
+        if form.is_valid():
+            post = form.post
+            pid = form.cleaned_data['fid']
+            pid2 = form.cleaned_data['sid']
+            post2 = form.post2
+            S1 = 'You have successfully moved all arguments in that debate.'
+            S2 = 'You have successfully moved all debates in that topic.'
+            if isinstance(post, Debate):
+                arguments = Argument.objects.filter(debate=post)
+                if post.topic_id == post2.topic_id:
+                    arguments.update(debate=post2)
+                else:
+                    arguments.update(debate=post2, topic=post2.topic)
+                action = 5
+                messages.success(request, S1)
+            else:
+                debates = Debate.objects.filter(topic=post)
+                debates.update(topic=post2)
+                arguments = Argument.objects.filter(topic=post)
+                arguments.update(topic=post2)
+                action = 6
+                messages.success(request, S2)
+            ModAction.objects.create(
+                    user=post.owner,
+                    mod=request.user,
+                    action=action,
+                    pid=pid,
+                    pid2=pid2)
+            post.owner = request.user
+            post.save()
+    elif request.method == 'GET':
+        form = MoveForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'debates/mod/move.html', context)
+
 
 @gmod_required
 def delete(request):
@@ -752,23 +794,20 @@ def delete(request):
                 post.body = "[DELETED]"
                 messages.success(
                     request, 'You have successfully deleted this argument.')
-                ModAction.objects.create(
-                    user=post.owner,
-                    mod=request.user,
-                    action=3,
-                    pid=post.id)
+                action = 3
             else:
                 post.question = "[DELETED]"
                 post.description = "[DELETED]"
                 messages.success(
                     request, 'You have successfully deleted this debate.')
-                ModAction.objects.create(
-                    user=post.owner,
-                    mod=request.user,
-                    action=4,
-                    pid=post.id)
-            post.owner = request.user
-            post.save()
+                action = 4
+            ModAction.objects.create(
+                user=post.owner,
+                mod=request.user,
+                action=action,
+                pid=post.id)
+        post.owner = request.user
+        post.save()
     elif request.method == 'GET':
         form = DeleteForm()
     context = {

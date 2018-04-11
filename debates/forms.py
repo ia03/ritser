@@ -741,6 +741,4 @@ class DeleteForm(forms.Form):
                     params={
                         'did': idno})
             self.post = debate
-        print(self.post)
-        print('hey')
         return cleaned_data

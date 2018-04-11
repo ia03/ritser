@@ -1,4 +1,6 @@
 *.pyc
 __pycache__/
 /modebate/whoosh_index
+/debates/migrations
+/accounts/migrations
 .~c9_invoke*

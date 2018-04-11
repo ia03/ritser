@@ -2,5 +2,7 @@
 __pycache__/
 /modebate/whoosh_index
 /debates/migrations
+!/debates/migrations/__init__.py
 /accounts/migrations
+!/accounts/migrations/__init__.py
 .~c9_invoke*

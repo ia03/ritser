@@ -118,6 +118,7 @@ class ModAction(models.Model):
         related_name='modactions')
     # 0: suspend 1: unsuspend 2: terminate 3: del. arg 4: del. debate
     action = models.IntegerField(default=0)
+    pid = models.IntegerField(null=True, blank=True)
     modnote = models.CharField(max_length=10000, blank=True)
     date = models.DateTimeField(default=timezone.now)
     until = models.DateField(default=timezone.now, null=True, blank=True)

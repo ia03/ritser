@@ -16,7 +16,7 @@
     <tr>
       {% if usercol %}<td><a href="{% url 'user' uname=modaction.user.username %}">{{ modaction.user.username }}</a></td>{% endif %}
       <td><a href="{% url 'user' uname=modaction.mod.username %}">{{ modaction.mod.username }}</a></td>
-      <td>{% if modaction.action == 0 %}Suspended{% elif modaction.action == 1 %}Unsuspended{% elif modaction.action == 2 %}Terminated{% elif modaction.action == 3 %}Del. Argument{% elif modaction.action == 4 %}Del. Debate{% endif %}</td>
+      <td>{% if modaction.action == 0 %}Suspended{% elif modaction.action == 1 %}Unsuspended{% elif modaction.action == 2 %}Terminated{% elif modaction.action == 3 %}Del. Arg. {{ modaction.pid }}{% elif modaction.action == 4 %}Del. Debate {{ modaction.pid }}{% endif %}</td>
       <td>{{modaction.date|date:"m/d/Y H:i:s"}}</td>
       <td>{% if modaction.action == 0 %}{{ modaction.until|date:"m/d/Y" }}{% else %}N/A{% endif %}</td>
       <td>{% if modaction.modnote %}{% modnotes modaction.modnote|markdownf forloop.counter %}{% else %}None{% endif %}</td>

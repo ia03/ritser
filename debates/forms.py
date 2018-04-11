@@ -282,7 +282,9 @@ class ArgumentForm(forms.ModelForm):
         self.fields['approvalstatus'].label = 'Approval Status'
         self.fields['modnote'].label = 'Moderator Note (can be blank)'
         self.fields['side'].label = 'Side (0=For, 1=Against)'
-        self.fields['approvalstatus'].label = 'Approval Status (0: Approved, 1: Unapproved, 2: Denied)'
+        self.fields['approvalstatus'].label = ('Approval Status'
+                                               '(0: Approved,'
+                                               '1: Unapproved, 2: Denied)')
         self.fields['order'].label = 'Order (the greater this is, the higher this argument will be ranked)'
         self.fields['title'].error_messages = {
             'required': 'You must type in a title.'}

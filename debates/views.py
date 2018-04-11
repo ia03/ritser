@@ -744,7 +744,8 @@ def delete(request):
             post = form.post
             versions = Version.objects.get_for_object(post)
             versions.delete()
-            post.approvalstatus = 3
+            post.approvalstatus = 2
+            post.modnote = "[DELETED]"
 
             if isinstance(post, Argument):
                 post.title = "[DELETED]"
@@ -752,14 +753,20 @@ def delete(request):
                 messages.success(
                     request, 'You have successfully deleted this argument.')
                 ModAction.objects.create(
-                    user=post.owner, mod=request.user, action=3)
+                    user=post.owner,
+                    mod=request.user,
+                    action=3,
+                    pid=post.id)
             else:
                 post.question = "[DELETED]"
                 post.description = "[DELETED]"
                 messages.success(
                     request, 'You have successfully deleted this debate.')
                 ModAction.objects.create(
-                    user=post.owner, mod=request.user, action=4)
+                    user=post.owner,
+                    mod=request.user,
+                    action=4,
+                    pid=post.id)
             post.owner = request.user
             post.save()
     elif request.method == 'GET':

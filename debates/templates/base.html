@@ -33,16 +33,16 @@
           </li>
           {% url 'about' as about %}
           <li class="nav-item{% if request.path == about %} active{% endif %}">
-            <a class="nav-link" href="{{ about }}">About {% if request.path == about %}<span class="sr-only">(current)</span>{% endif %}</a>
+            <a class="nav-link" href="{{ about }}">About{% if request.path == about %}<span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           {% url 'rules' as rules %}
           <li class="nav-item{% if request.path == rules %} active{% endif %}">
-            <a class="nav-link" href="{{ rules }}">Rules {% if request.path == rules %}<span class="sr-only">(current)</span>{% endif %}</a>
+            <a class="nav-link" href="{{ rules }}">Rules{% if request.path == rules %}<span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           {% if user.ismod %}
           {% url 'unapprovedargs' as unapprovedargs %}
           <li class="nav-item{% if request.path == unapprovedargs %} active{% endif %}">
-            <a class="nav-link" href="{{ unapprovedargs }}">Moderate {% if request.path == unapprovedargs %}<span class="sr-only">(current)</span>{% endif %}</a>
+            <a class="nav-link" href="{{ unapprovedargs }}">Moderate{% if request.path == unapprovedargs %}<span class="sr-only">(current)</span>{% endif %}</a>
           </li>
           {% endif %}
         </ul>

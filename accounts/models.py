@@ -45,12 +45,12 @@ class User(AbstractUser):
 
     def ismodof(self, topic):
         return (
-            self.modstatus > 0) or (
+            self.isgmod()) or (
             self.moderator_of.filter(
                 name=topic.name)) or topic.owner == self
 
     def ismod(self):
-        return self.moderator_of.all().exists() or self.modstatus > 0
+        return self.moderator_of.all().exists() or self.topics_owned.all().exists() or self.modstatus > 0
 
     def isowner(self, topic):
         return self.modstatus > 0 or topic.owner == self

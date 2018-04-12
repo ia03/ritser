@@ -14,8 +14,8 @@ def mod_required(topic=False):
                 topica = get_object_or_404(Topic, args[0])
                 ismod = user.ismodof(topica)
             else:
-                ismod = user.moderator_of.all().exists()
-            if ismod or user.isgmod():
+                ismod = user.ismod()
+            if ismod:
                 return function(request, *args, **kwargs)
             else:
                 raise PermissionDenied

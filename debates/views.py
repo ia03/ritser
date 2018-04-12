@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.db.models import Q
@@ -205,7 +205,9 @@ def topicinfo(request, tname):
 # says what type it is
 def debate(request, tname, did, **kwargs):
     topic = get_object_or_404(Topic, name=tname)
-    debate = get_object_or_404(Debate, topic=topic, id=did)
+    debate = get_object_or_404(Debate, id=did)
+    if debate.topic != topic:
+        return redirect(debate)
     user = request.user
 
     if (kwargs['apprs'] == -1):
@@ -280,6 +282,8 @@ def argument(request, tname, did, aid):
     topic = get_object_or_404(Topic, name=tname)
     debate = get_object_or_404(Debate, id=did)
     argument = get_object_or_404(Argument, id=aid)
+    if argument.debate != debate or argument.topic != topic:
+        return redirect(argument)
 
     context = {
         'argument': argument,
@@ -746,8 +750,10 @@ def move(request):
             pid = form.cleaned_data['fid']
             pid2 = form.cleaned_data['sid']
             post2 = form.post2
-            S1 = 'You have successfully moved all arguments in that debate.'
-            S2 = 'You have successfully moved all debates in that topic.'
+            S1 = ('You have successfully moved all arguments in the first '
+                  'debate to the second debate.')
+            S2 = ('You have successfully moved all debates in the first '
+                  'topic to the second topic.')
             if isinstance(post, Debate):
                 arguments = Argument.objects.filter(debate=post)
                 if post.topic_id == post2.topic_id:
@@ -794,13 +800,15 @@ def delete(request):
                 post.title = "[DELETED]"
                 post.body = "[DELETED]"
                 messages.success(
-                    request, 'You have successfully deleted this argument.')
+                    request, ('You have successfully deleted the selected '
+                              'argument.'))
                 action = 3
             else:
                 post.question = "[DELETED]"
                 post.description = "[DELETED]"
                 messages.success(
-                    request, 'You have successfully deleted this debate.')
+                    request, ('You have successfully deleted the selected '
+                              'debate.'))
                 action = 4
             ModAction.objects.create(
                 user=post.owner,
@@ -867,12 +875,15 @@ def unapproveddebs(request):
 @mod_required
 def slvls(request):
     if request.method == 'POST':
-        form = UpdateSlvlForm(request.POST)
+        form = UpdateSlvlForm(request.POST, user=request.user)
         if form.is_valid():
-            form.topic.debates.all()
-
+            debates = form.topic.debates.all()
+            debates.update(slvl=form.cleaned_data['slvl'])
+            messages.success(
+                request, ('You have successfully changed the security levels '
+                          ' of all debates in the selected topic.'))
     elif request.method == 'GET':
-        form = UpdateSlvlForm()
+        form = UpdateSlvlForm(user=request.user)
     context = {
         'form': form,
     }

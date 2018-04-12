@@ -8,7 +8,7 @@ from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
 from .forms import (DebateForm, ArgumentForm, TopicForm, BanForm,
-    UnsuspendForm, DeleteForm, MoveForm, UpdateSlvlForm)
+                    UnsuspendForm, DeleteForm, MoveForm, UpdateSlvlForm)
 from .utils import getpage, newdiff, debateslist, htmldiffs
 from accounts.utils import DeleteUser
 from accounts.models import User, ModAction
@@ -736,6 +736,7 @@ def unsuspend(request):
     }
     return render(request, 'debates/mod/unsuspend.html', context)
 
+
 @gmod_required
 def move(request):
     if request.method == 'POST':
@@ -763,11 +764,11 @@ def move(request):
                 action = 6
                 messages.success(request, S2)
             ModAction.objects.create(
-                    user=post.owner,
-                    mod=request.user,
-                    action=action,
-                    pid=pid,
-                    pid2=pid2)
+                user=post.owner,
+                mod=request.user,
+                action=action,
+                pid=pid,
+                pid2=pid2)
             post.owner = request.user
             post.save()
     elif request.method == 'GET':
@@ -869,7 +870,7 @@ def slvls(request):
         form = UpdateSlvlForm(request.POST)
         if form.is_valid():
             form.topic.debates.all()
-            
+
     elif request.method == 'GET':
         form = UpdateSlvlForm()
     context = {

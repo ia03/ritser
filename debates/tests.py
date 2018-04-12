@@ -166,6 +166,7 @@ class DebateFormTestCase (TestCase):
             owner=self.tuser,
             topic=self.test_topic)
         form = DebateForm(form_data, instance=debate, user=self.tuser, edit=1)
+        print(form.errors)
         self.assertTrue(form.is_valid())
 
     def test_debateinvedit(self):

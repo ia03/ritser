@@ -4,9 +4,20 @@ from accounts.models import User
 from django.utils import timezone
 from captcha.fields import ReCaptchaField
 from django.conf import settings
-from .utils import (chkdeb, chktop, chkusr, disablefield, donotrequire,
-    cleanownername, cleanowner, cleancreatedon, cleanapprovalstatus,
-    cleaneditedon, cleanmodnote, setapprovedon, cleandslvl)
+from .utils import (
+    chkdeb,
+    chktop,
+    chkusr,
+    disablefield,
+    donotrequire,
+    cleanownername,
+    cleanowner,
+    cleancreatedon,
+    cleanapprovalstatus,
+    cleaneditedon,
+    cleanmodnote,
+    setapprovedon,
+    cleandslvl)
 
 
 class DebateForm(forms.ModelForm):
@@ -65,7 +76,8 @@ class DebateForm(forms.ModelForm):
 
     def clean_topic_name(self):
         data = self.cleaned_data['topic_name']
-        chktop(data)
+        if self.edit != 1:
+            chktop(data)
         return data
 
     def clean_topic(self):
@@ -553,7 +565,7 @@ class BanForm(forms.Form):
         cleaned_data = super().clean()
         if 'bandate' in cleaned_data:
             if (not cleaned_data.get('terminate')
-                    ) and cleaned_data.get('bandate') is None:
+                ) and cleaned_data.get('bandate') is None:
                 raise forms.ValidationError('You must input a date.')
 
 
@@ -609,7 +621,7 @@ class DeleteForm(forms.Form):
                         'aid': idno})
             self.post = argument
         elif mtype == '2':
-           
+
             debate = chkdeb(idno)
             self.post = debate
         return cleaned_data
@@ -630,7 +642,7 @@ class MoveForm(forms.Form):
             'required': 'You must specify the type of container post.'})
     fid = forms.CharField(label='ID/Name of first Debate/Topic')
     sid = forms.CharField(label='ID/Name of second Debate/Topic')
-    
+
     def clean(self):
         cleaned_data = super().clean()
         mtype = cleaned_data['mtype']
@@ -652,11 +664,11 @@ class MoveForm(forms.Form):
 class UpdateSlvlForm(forms.Form):
     tname = forms.CharField(label='Topic name')
     slvl = forms.IntegerField(label='Security level')
-    
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
         super().__init__(*args, **kwargs)
-    
+
     def clean_tname(self):
         data = self.cleaned_data['tname']
         topic = chktop(data)
@@ -668,7 +680,7 @@ class UpdateSlvlForm(forms.Form):
                     'tname': data})
         self.topic = topic
         return data
-        
+
     def clean_slvl(self):
         data = self.cleaned_data['slvl']
         cleandslvl(data)

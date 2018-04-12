@@ -141,7 +141,6 @@ def htmldiffs(original, new):
     return dmp.diff_prettyHtml(diffs)
 
 
-
 # form utility functions
 
 
@@ -154,6 +153,8 @@ def chkdeb(did):
             code='debatenotfound',
             params={
                 'debate_id': did})
+
+
 def chktop(tname):
     try:
         return Topic.objects.get(name=tname)
@@ -164,6 +165,7 @@ def chktop(tname):
             params={
                 'tname': tname})
 
+
 def chkusr(uname):
     try:
         return User.objects.get(username=uname)
@@ -173,6 +175,7 @@ def chkusr(uname):
             code='usernotfound',
             params={
                 'uname': uname})
+
 
 def disablefield(instance, *args):
     for arg in args:
@@ -257,6 +260,7 @@ def setapprovedon(instance):
         return instance.instance.approved_on
     elif instance.edit == 0:
         return None
+
 
 def cleandslvl(data):
     if data not in [0, 1, 2, 3, 4]:

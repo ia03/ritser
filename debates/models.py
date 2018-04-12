@@ -49,6 +49,11 @@ class Topic(models.Model):
     def get_absolute_url(self):
         return reverse('topic', args=[self.name])
 
+    def get_edit_url(self):
+        return reverse(
+            'edittopic',
+            args=[self.name])
+
     def __str__(self):
         return self.name
 
@@ -101,6 +106,13 @@ class Debate(models.Model):
 
     def get_absolute_url(self):
         return reverse('debate', args=[self.topic.name, self.id])
+
+    def get_edit_url(self):
+        return reverse(
+            'editdebate',
+            args=[
+                self.topic_id,
+                self.id])
 
     def __str__(self):
         return self.question

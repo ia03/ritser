@@ -292,8 +292,8 @@ class ArgumentForm(forms.ModelForm):
                     cleaned_data['approvalstatus'] = 0
             else:
                 owner = User.objects.get(username=owner_name)
-            if (not self.user.hasperm()) or (self.edit ==
-                                             1 and self.user != self.instance.owner):
+            if (not self.user.hasperm()) or (
+                self.edit == 1 and self.user != self.instance.owner):
                 raise forms.ValidationError(
                     'You do not have permission to perform this action.')
             cleaned_data['debate'] = debate
@@ -640,8 +640,8 @@ class MoveForm(forms.Form):
         label='Type of container',
         error_messages={
             'required': 'You must specify the type of container post.'})
-    fid = forms.CharField(label='ID/Name of first Debate/Topic')
-    sid = forms.CharField(label='ID/Name of second Debate/Topic')
+    fid = forms.CharField(label='ID/Name of first debate/topic')
+    sid = forms.CharField(label='ID/Name of second debate/topic')
 
     def clean(self):
         cleaned_data = super().clean()

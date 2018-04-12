@@ -191,14 +191,7 @@ def donotrequire(instance, *args):
 def cleanownername(instance):
     data = instance.cleaned_data['owner_name']
     if instance.edit != 0:
-        try:
-            owner = User.objects.get(username=data)
-        except User.DoesNotExist:
-            raise forms.ValidationError(
-                'User %(owner_name)s not found.',
-                code='usernotfound',
-                params={
-                    'owner_name': data})
+        owner = chkusr(data)
         if not owner.is_active:
             raise forms.ValidationError(
                 'User %(owner_name)s can not be set as the owner.',

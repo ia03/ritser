@@ -5,12 +5,13 @@ from .models import Topic, Debate, Argument, RevisionData
 from accounts.models import User
 from django.contrib.auth import get_user_model
 from .views import index, topic, debate
-from .forms import DebateForm
+from .forms import DebateForm, ArgumentForm
 from django.http import QueryDict
 import os
 import reversion
 
 # Create your tests here.
+
 
 
 class ViewTestCase (TestCase):
@@ -89,7 +90,7 @@ class ViewTestCase (TestCase):
             self.test_argumenta)
 
 
-class DebateFormTestCase (TestCase):
+class FormTestCase (TestCase):
     def setUp(self):
         os.environ['RECAPTCHA_TESTING'] = 'True'
         self.tmod = User.objects.create_user(
@@ -114,6 +115,7 @@ class DebateFormTestCase (TestCase):
             owner=self.tuser, topic=self.test_topic, question="Test debate")
         self.test_debate.save()
 
+
     def test_debateformadd(self):
         form_data = {
             'topic_name': self.test_topic.name,
@@ -123,51 +125,46 @@ class DebateFormTestCase (TestCase):
         }
         self.test_topic.slvl = 1
         self.test_topic.save()
-        args = []
-        for i in range(10):
-            args.append(Argument(
-                owner=self.tuser,
-                topic=self.test_topic,
-                debate=self.test_debate,
-                approvalstatus=0,
-                title=str(i),
-                body='test'))
-        Argument.objects.bulk_create(args)
-        self.tuser.approvedargs = self.tuser.get_approvedargs()
-        self.tuser.save()
+        self.setaargs(n=10)
         form = DebateForm(data=form_data, user=self.tuser, edit=0)
         self.assertTrue(form.is_valid())
+        self.test_topic.slvl = 0
+        self.test_topic.save()
+        self.setaargs()
 
     def test_debateforminsaargs(self):
-        form_data = {
-            'topic_name': self.test_topic.name,
-            'question': 'testquestion1',
-            'description': 'testdescription1',
-            'g-recaptcha-response': 'PASSED',
-        }
         self.test_topic.slvl = 1
         self.test_topic.save()
-        self.tuser.approvedargs = 0
-        self.tuser.save()
-        iform = DebateForm(data=form_data, user=self.tuser, edit=0)
+        iform = self.testcreatedeb()
         # assert that user does not have the required number of approved
         # arguments to post
         self.assertFalse(iform.is_valid())
+        self.test_topic.slvl = 0
+        self.test_topic.save()
 
     def test_debateedit(self):
         form_data = {
-            'owner_name': self.tuser2.username,
+            'owner_name': self.tuser.username,
             'question': 'testquestion1',
             'description': 'testdescription1',
             'g-recaptcha-response': 'PASSED',
         }
         debate = Debate.objects.create(
-            question='test invalid debate edit',
+            question='test debate edit',
             owner=self.tuser,
             topic=self.test_topic)
-        form = DebateForm(form_data, instance=debate, user=self.tuser, edit=1)
-        print(form.errors)
+        form = DebateForm(
+            form_data,
+            instance=debate,
+            user=self.tuser, #valid
+            edit=1)
+        form2 = DebateForm(
+            form_data,
+            instance=debate,
+            user=self.tuser2, #invalid
+            edit=1)
         self.assertTrue(form.is_valid())
+        self.assertFalse(form2.is_valid())
 
     def test_debateinvedit(self):
         form_data = {
@@ -197,5 +194,70 @@ class DebateFormTestCase (TestCase):
         form = DebateForm(form_data, instance=debate, user=self.tuser, edit=2)
         self.assertFalse(form.is_valid())
 
+    def test_argumentformadd(self):
+        self.assertTrue(self.testcreatearg().is_valid())
+    
+    
+    
+    def test_argumentformdslvl(self):
+        self.test_debate.slvl = 4
+        self.test_debate.save()
+        self.assertFalse(self.testcreatearg().is_valid())
+        self.assertTrue(self.testcreatearg(user=self.tmod).is_valid())
+        self.test_debate.slvl = 2
+        self.test_debate.save()
+        self.setaargs(n=19)
+        self.assertFalse(self.testcreatearg().is_valid())
+        self.setaargs(n=20)
+        self.assertTrue(self.testcreatearg().is_valid())
+        self.setaargs()
+        self.test_debate.slvl = 0
+        self.test_debate.save()
+    
     def tearDown(self):
         os.environ['RECAPTCHA_TESTING'] = 'False'
+    
+    def setaargs(self, user=None, n=0):
+        if user is None:
+            user = self.tuser
+        user.arguments.filter(approvalstatus=0).delete()
+        if n > 0:
+            args = []
+            for i in range(n):
+                args.append(Argument(
+                    owner=user,
+                    topic=self.test_topic,
+                    debate=self.test_debate,
+                    approvalstatus=0,
+                    title=str(i),
+                    body='test'))
+            Argument.objects.bulk_create(args)
+        user.approvedargs = user.get_approvedargs()
+        user.save()
+    
+    def testcreatearg(self, user=None, debate=None):
+        if debate is None:
+            debate = self.test_debate
+        if user is None:
+            user = self.tuser
+        form_data = {
+            'debate_id': debate.id,
+            'title': 'test argument',
+            'body': 'test argument body',
+            'side': 0,
+            'g-recaptcha-response': 'PASSED',
+        }
+        return ArgumentForm(data=form_data, user=user, edit=0)
+    
+    def testcreatedeb(self, user=None, topic=None):
+        if topic is None:
+            topic = self.test_topic
+        if user is None:
+            user = self.tuser
+        form_data = {
+            'topic_name': topic.name,
+            'question': 'testquestion1',
+            'description': 'testdescription1',
+            'g-recaptcha-response': 'PASSED',
+        }
+        return DebateForm(data=form_data, user=user, edit=0)

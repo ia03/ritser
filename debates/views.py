@@ -8,7 +8,7 @@ from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
 from .forms import (DebateForm, ArgumentForm, TopicForm, BanForm,
-    UnsuspendForm, DeleteForm, MoveForm)
+    UnsuspendForm, DeleteForm, MoveForm, UpdateSlvlForm)
 from .utils import getpage, newdiff, debateslist, htmldiffs
 from accounts.utils import DeleteUser
 from accounts.models import User, ModAction
@@ -861,3 +861,18 @@ def unapproveddebs(request):
         'minjq': True,
     }
     return render(request, 'debates/mod/unapproveddebs.html', context)
+
+
+@mod_required
+def slvls(request):
+    if request.method == 'POST':
+        form = UpdateSlvlForm(request.POST)
+        if form.is_valid():
+            form.topic.debates.all()
+            
+    elif request.method == 'GET':
+        form = UpdateSlvlForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'debates/mod/slvls.html', context)

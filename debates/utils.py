@@ -2,6 +2,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.encoding import force_text
 from diff_match_patch import diff_match_patch
 from django.db.models import Q
+from django import forms
+from .models import Topic, Debate, Argument
+from accounts.models import User
+from django.utils import timezone
 
 
 def debateslist(topic):
@@ -135,3 +139,129 @@ def htmldiffs(original, new):
     diffs = dmp.diff_main(original, new)
     dmp.diff_cleanupSemantic(diffs)
     return dmp.diff_prettyHtml(diffs)
+
+
+
+# form utility functions
+
+
+def chkdeb(did):
+    try:
+        return Debate.objects.get(id=did)
+    except Debate.DoesNotExist:
+        raise forms.ValidationError(
+            'Debate %(debate_id)s not found.',
+            code='debatenotfound',
+            params={
+                'debate_id': did})
+def chktop(tname):
+    try:
+        return Topic.objects.get(name=tname)
+    except Topic.DoesNotExist:
+        raise forms.ValidationError(
+            'Topic %(tname)s not found.',
+            code='topicnotfound',
+            params={
+                'tname': tname})
+
+def chkusr(uname):
+    try:
+        return User.objects.get(username=uname)
+    except User.DoesNotExist:
+        raise forms.ValidationError(
+            'User %(uname)s not found.',
+            code='usernotfound',
+            params={
+                'uname': uname})
+
+def disablefield(instance, *args):
+    for arg in args:
+        instance.fields[arg].required = False
+        instance.fields[arg].widget = forms.HiddenInput()
+
+
+def donotrequire(instance, *args):
+    for arg in args:
+        instance.fields[arg].required = False
+
+
+def cleanownername(instance):
+    data = instance.cleaned_data['owner_name']
+    if instance.edit != 0:
+        try:
+            owner = User.objects.get(username=data)
+        except User.DoesNotExist:
+            raise forms.ValidationError(
+                'User %(owner_name)s not found.',
+                code='usernotfound',
+                params={
+                    'owner_name': data})
+        if not owner.is_active:
+            raise forms.ValidationError(
+                'User %(owner_name)s can not be set as the owner.',
+                code='userinactive',
+                params={
+                    'owner_name': data})
+    return data
+
+
+def cleanowner(instance):
+    if instance.edit == 0:
+        return instance.user
+    else:
+        return instance.cleaned_data.get('owner')
+
+
+def cleancreatedon(instance):
+    if instance.edit == 0:
+        return timezone.now()
+    else:
+        return instance.instance.created_on
+
+
+def cleanapprovalstatus(instance):
+    if instance.edit == 0:
+        return 1
+    elif instance.edit == 1:
+        return instance.instance.approvalstatus
+    elif instance.edit == 2:
+        data = instance.cleaned_data.get('approvalstatus')
+        if data not in [0, 1, 2]:
+            raise forms.ValidationError(
+                'Invalid approval status setting %(approved_status)s, must be 0, 1, or 2.',
+                code='invalidapprovalstatus',
+                params={
+                    'approved_status': data})
+        return data
+
+
+def cleaneditedon(instance):
+    return timezone.now()
+
+
+def cleanmodnote(instance):
+    if instance.edit == 0:
+        return ""
+    elif instance.edit == 1:
+        return instance.instance.modnote
+    elif instance.edit == 2:
+        return instance.cleaned_data.get('modnote')
+
+
+def setapprovedon(instance):
+    cleaned_data = instance.cleaned_data
+    if (instance.edit == 2 and instance.instance.approvalstatus ==
+            1 and cleaned_data.get('approvalstatus') != 1):
+        return timezone.now()
+    elif instance.edit == 1:
+        return instance.instance.approved_on
+    elif instance.edit == 0:
+        return None
+
+def cleandslvl(data):
+    if data not in [0, 1, 2, 3, 4]:
+        raise forms.ValidationError(
+            'Invalid security level setting %(slvl)s, must be 0, 1, 2, 3 or 4.',
+            code='invalidslvl',
+            params={
+                'slvl': data})

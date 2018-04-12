@@ -4,91 +4,9 @@ from accounts.models import User
 from django.utils import timezone
 from captcha.fields import ReCaptchaField
 from django.conf import settings
-
-
-def disablefield(instance, *args):
-    for arg in args:
-        instance.fields[arg].required = False
-        instance.fields[arg].widget = forms.HiddenInput()
-
-
-def donotrequire(instance, *args):
-    for arg in args:
-        instance.fields[arg].required = False
-
-
-def cleanownername(instance):
-    data = instance.cleaned_data['owner_name']
-    if instance.edit != 0:
-        try:
-            owner = User.objects.get(username=data)
-        except User.DoesNotExist:
-            raise forms.ValidationError(
-                'User %(owner_name)s not found.',
-                code='usernotfound',
-                params={
-                    'owner_name': data})
-        if not owner.is_active:
-            raise forms.ValidationError(
-                'User %(owner_name)s can not be set as the owner.',
-                code='userinactive',
-                params={
-                    'owner_name': data})
-    return data
-
-
-def cleanowner(instance):
-    if instance.edit == 0:
-        return instance.user
-    else:
-        return instance.cleaned_data.get('owner')
-
-
-def cleancreatedon(instance):
-    if instance.edit == 0:
-        return timezone.now()
-    else:
-        return instance.instance.created_on
-
-
-def cleanapprovalstatus(instance):
-    if instance.edit == 0:
-        return 1
-    elif instance.edit == 1:
-        return instance.instance.approvalstatus
-    elif instance.edit == 2:
-        data = instance.cleaned_data.get('approvalstatus')
-        if data not in [0, 1, 2]:
-            raise forms.ValidationError(
-                'Invalid approval status setting %(approved_status)s, must be 0, 1, or 2.',
-                code='invalidapprovalstatus',
-                params={
-                    'approved_status': data})
-        return data
-
-
-def cleaneditedon(instance):
-    return timezone.now()
-
-
-def cleanmodnote(instance):
-    if instance.edit == 0:
-        return ""
-    elif instance.edit == 1:
-        return instance.instance.modnote
-    elif instance.edit == 2:
-        return instance.cleaned_data.get('modnote')
-
-
-def setapprovedon(instance):
-    cleaned_data = instance.cleaned_data
-    if (instance.edit == 2 and instance.instance.approvalstatus ==
-            1 and cleaned_data.get('approvalstatus') != 1):
-        return timezone.now()
-    elif instance.edit == 1:
-        return instance.instance.approved_on
-    elif instance.edit == 0:
-        return None
+from .utils import (chkdeb, chktop, chkusr, disablefield, donotrequire,
+    cleanownername, cleanowner, cleancreatedon, cleanapprovalstatus,
+    cleaneditedon, cleanmodnote, setapprovedon, cleandslvl)
 
 
 class DebateForm(forms.ModelForm):
@@ -118,9 +36,8 @@ class DebateForm(forms.ModelForm):
             'created_on',
             'edited_on',
             'approved_on')
-        self.fields['approvalstatus'].label = 'Approval Status (0: Approved, 1: Unapproved, 2: Denied)'
-        self.fields['slvl'].label = 'Security Level'
-        self.fields['modnote'].label = 'Moderator Note'
+        self.fields['approvalstatus'].label = 'Approval status (0: Approved, 1: Unapproved, 2: Denied)'
+        self.fields['modnote'].label = 'Moderator note'
         self.fields['question'].error_messages = {
             'required': 'You must type in a question.'}
         if self.edit == 0:
@@ -148,15 +65,7 @@ class DebateForm(forms.ModelForm):
 
     def clean_topic_name(self):
         data = self.cleaned_data['topic_name']
-        if self.edit != 1:
-            try:
-                Topic.objects.get(name=data)
-            except Topic.DoesNotExist:
-                raise forms.ValidationError(
-                    'Topic %(topic_name)s not found.',
-                    code='topicnotfound',
-                    params={
-                        'topic_name': data})
+        chktop(data)
         return data
 
     def clean_topic(self):
@@ -188,12 +97,7 @@ class DebateForm(forms.ModelForm):
             return self.instance.slvl
         elif self.edit == 2:
             data = self.cleaned_data.get('slvl')
-            if data not in [0, 1, 2, 3, 4]:
-                raise forms.ValidationError(
-                    'Invalid security level setting %(slvl)s, must be 0, 1, 2, 3 or 4.',
-                    code='invalidslvl',
-                    params={
-                        'slvl': data})
+            cleandslvl(data)
             return data
 
     def clean(self):
@@ -281,10 +185,9 @@ class ArgumentForm(forms.ModelForm):
             'debate',
             'created_on',
             'edited_on')
-        self.fields['approvalstatus'].label = 'Approval Status'
-        self.fields['modnote'].label = 'Moderator Note (can be blank)'
+        self.fields['modnote'].label = 'Moderator note (can be blank)'
         self.fields['side'].label = 'Side (0=For, 1=Against)'
-        self.fields['approvalstatus'].label = ('Approval Status'
+        self.fields['approvalstatus'].label = ('Approval status'
                                                '(0: Approved,'
                                                '1: Unapproved, 2: Denied)')
         self.fields['order'].label = 'Order (the greater this is, the higher this argument will be ranked)'
@@ -316,14 +219,7 @@ class ArgumentForm(forms.ModelForm):
     def clean_debate_id(self):
         data = self.cleaned_data['debate_id']
         if self.edit != 1:
-            try:
-                Debate.objects.get(id=data)
-            except Debate.DoesNotExist:
-                raise forms.ValidationError(
-                    'Debate %(debate_id)s not found.',
-                    code='debatenotfound',
-                    params={
-                        'debate_id': data})
+            chkdeb(data)
         return data
 
     def clean_debate(self):
@@ -457,8 +353,6 @@ class TopicForm(forms.ModelForm):
             'created_on',
             'created_by',
             'edited_on')
-        self.fields['slvl'].label = 'Security level'
-        self.fields['debslvl'].label = 'Default debate security level'
         self.fields['name'].error_messages = {
             'required': 'You must type in a name.'}
         self.fields['description'].error_messages = {
@@ -490,14 +384,7 @@ class TopicForm(forms.ModelForm):
     def clean_owner_name(self):
         data = self.cleaned_data['owner_name']
         if self.edit != 0 and self.edit != 1:
-            try:
-                owner = User.objects.get(username=data)
-            except User.DoesNotExist:
-                raise forms.ValidationError(
-                    'User %(owner_name)s not found.',
-                    code='usernotfound',
-                    params={
-                        'owner_name': data})
+            owner = chkusr(data)
             if owner.active == 1 or owner.active == 3:
                 raise forms.ValidationError(
                     'User %(owner_name)s can not be set as the owner.',
@@ -631,7 +518,7 @@ class BanForm(forms.Form):
         widget=forms.Textarea,
         required=False,
         max_length=10000,
-        label='Ban Note (You can use markdown.)')
+        label='Ban note (You can use markdown.)')
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
@@ -639,15 +526,7 @@ class BanForm(forms.Form):
 
     def clean_username(self):
         data = self.cleaned_data['username']
-        try:
-            User.objects.get(username=data)
-        except User.DoesNotExist:
-            raise forms.ValidationError(
-                'User %(username)s not found.',
-                code='usernotfound',
-                params={
-                    'username': data})
-        user = User.objects.get(username=data)
+        user = chkusr(data)
         if not user.is_active:
             raise forms.ValidationError(
                 'User %(username)s can not be suspended/terminated.',
@@ -686,15 +565,7 @@ class UnsuspendForm(forms.Form):
 
     def clean_username(self):
         data = self.cleaned_data['username']
-        try:
-            User.objects.get(username=data)
-        except User.DoesNotExist:
-            raise forms.ValidationError(
-                'User %(username)s not found.',
-                code='usernotfound',
-                params={
-                    'username': data})
-        user = User.objects.get(username=data)
+        user = chkusr(data)
         if user.active != 2:
             raise forms.ValidationError(
                 'User %(username)s is not suspended.',
@@ -714,7 +585,7 @@ class DeleteForm(forms.Form):
     mtype = forms.ChoiceField(
         widget=forms.RadioSelect(),
         choices=pmchoices,
-        label='Type of Post',
+        label='Type of post',
         error_messages={
             'required': 'You must specify the type of post to delete.'})
     idno = forms.IntegerField(
@@ -738,14 +609,8 @@ class DeleteForm(forms.Form):
                         'aid': idno})
             self.post = argument
         elif mtype == '2':
-            try:
-                debate = Debate.objects.get(id=idno)
-            except Debate.DoesNotExist:
-                raise forms.ValidationError(
-                    'Debate with ID %(did)s not found.',
-                    code='debatenotfound',
-                    params={
-                        'did': idno})
+           
+            debate = chkdeb(idno)
             self.post = debate
         return cleaned_data
 
@@ -760,7 +625,7 @@ class MoveForm(forms.Form):
     mtype = forms.ChoiceField(
         widget=forms.RadioSelect(),
         choices=mmchoices,
-        label='Type of Container',
+        label='Type of container',
         error_messages={
             'required': 'You must specify the type of container post.'})
     fid = forms.CharField(label='ID/Name of first Debate/Topic')
@@ -772,41 +637,39 @@ class MoveForm(forms.Form):
         fid = cleaned_data['fid']
         sid = cleaned_data['sid']
         if mtype == '1':
-            try:
-                debate = Debate.objects.get(id=fid)
-            except Debate.DoesNotExist:
-                raise forms.ValidationError(
-                    'Debate with ID %(did)s not found.',
-                    code='debatenotfound',
-                    params={
-                        'did': fid})
-            try:
-                debate2 = Debate.objects.get(id=sid)
-            except Debate.DoesNotExist:
-                raise forms.ValidationError(
-                    'Debate with ID %(did)s not found.',
-                    code='debatenotfound',
-                    params={
-                        'did': sid})
+            debate = chkdeb(fid)
+            debate2 = chkdeb(sid)
             self.post = debate
             self.post2 = debate2
         elif mtype == '2':
-            try:
-                topic = Topic.objects.get(name=fid)
-            except Topic.DoesNotExist:
-                raise forms.ValidationError(
-                    'Topic with name %(tname)s not found.',
-                    code='topicnotfound',
-                    params={
-                        'tname': fid})
-            try:
-                topic2 = Topic.objects.get(name=sid)
-            except Topic.DoesNotExist:
-                raise forms.ValidationError(
-                    'Topic with name %(tname)s not found.',
-                    code='topicnotfound',
-                    params={
-                        'tname': sid})
+            topic = chktop(fid)
+            topic2 = chktop(sid)
             self.post = topic
             self.post2 = topic2
         return cleaned_data
+
+
+class UpdateSlvlForm(forms.Form):
+    tname = forms.CharField(label='Topic name')
+    slvl = forms.IntegerField(label='Security level')
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        super().__init__(*args, **kwargs)
+    
+    def clean_tname(self):
+        data = self.cleaned_data['tname']
+        topic = chktop(data)
+        if not self.user.ismodof(topic):
+            raise forms.ValidationError(
+                'You are not a moderator of topic %(tname)s.',
+                code='notmodoftopic',
+                params={
+                    'tname': data})
+        self.topic = topic
+        return data
+        
+    def clean_slvl(self):
+        data = self.cleaned_data['slvl']
+        cleandslvl(data)
+        return data

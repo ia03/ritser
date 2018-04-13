@@ -35,6 +35,8 @@
           <br>{% endifchanged%}
           {% ifchanged %}Approval Status: {% if version|field:"approvalstatus" == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif version|field:"approvalstatus" == 1 %} <span class="badge badge-secondary">Unapproved</span>{% elif version|field:"approvalstatus" == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %}
           <br>{% endifchanged %}
+          {% ifchanged version|field:"modnote" %}{% modnotes version|field:"modnote" forloop.counter %}
+          <br>{% endifchanged %}
           {% if isadmin %}
           IP: {{ version|ip }}
           <br>{% endif %}

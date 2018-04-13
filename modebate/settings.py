@@ -28,8 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    '192.168.1.4',
-    'modebatetesting.ddns.net']
+    'modebatetesting.ddns.net',
+    '52.15.201.217']
 INTERNAL_IPS = ['127.0.0.1', 'localhost', '38.110.111.153']
 
 

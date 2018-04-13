@@ -27,6 +27,7 @@ from itertools import chain
 def index(request):
     context = {
         'nbar': 'home',
+        'oendjs': True,
     }
     return render(request, 'debates/index.html', context)
 

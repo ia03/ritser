@@ -4,8 +4,31 @@
 
 {% block title %}MoDebate - A Better Way to Think{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" integrity="sha256-j+P6EZJVrbXgwSR5Mx+eCS6FvP9Wq27MBRC/ogVriY0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Morphext/2.4.4/morphext.css" integrity="sha256-iwSnUqgAndMlZnwFWAAzto9R/6Un2RBguZEITMb0Olk=" crossorigin="anonymous" />
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Morphext/2.4.4/morphext.min.js" integrity="sha256-qG3zvg7/f5CZHwV8IeaQfBY5Hm+M0KR3PMk9lAHp39s=" crossorigin="anonymous"></script>
+<script src="{% static "debates/js/index.js" %}"></script>
+{% endblock %}
+
 {% block body %}
 
-index
+<section class="jumbotron text-center">
+    <div class="container">
+      <h1 class="jumbotron-heading">Traditional debates don't work.</h1>
+      <p class="lead">If they did, people generally wouldn't disagree on <span id="topicchgr">politics, religion, history, morality, science</span>. MoDebate changes that.</p>
+      <p>
+        <a href="{% url 'account_signup' %}" class="btn btn-primary my-2">Sign Up</a>
+        <a href="{% url 'about' %}" class="btn btn-secondary my-2">Learn More</a>
+      </p>
+    </div>
+</section>
 
+{% endblock %}
+
+{% block endjs %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Morphext/2.4.4/morphext.min.js" integrity="sha256-qG3zvg7/f5CZHwV8IeaQfBY5Hm+M0KR3PMk9lAHp39s=" crossorigin="anonymous"></script>
+<script src="{% static "debates/js/index.js" %}"></script>
 {% endblock %}

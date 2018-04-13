@@ -13,6 +13,7 @@ install:
 before_script:
   - sudo -u postgres -i psql -c "ALTER USER postgres PASSWORD '$dbpass';"
   - psql -c "CREATE DATABASE modebate;" -U postgres
+  - psql -c "\c modebate; create extension citext;" -U postgres
   - python manage.py makemigrations --noinput
   - python manage.py migrate --noinput
 env:

@@ -1,6 +1,6 @@
 install apache wsgi and make it run on startup
 
-install postgresql
+install postgresql and citext extension https://stackoverflow.com/questions/15981197/postgresql-error-type-citext-does-not-exist
 
 set up postgresql database and make it run on startup
 set environment variables in readme.md

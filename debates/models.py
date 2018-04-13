@@ -9,10 +9,13 @@ from reversion.models import Revision
 
 # Create your models here.
 
+class ISlugField(models.SlugField):
+    def db_type(self, connection):
+        return 'citext'
 
 @reversion.register()
 class Topic(models.Model):
-    name = models.SlugField(
+    name = ISlugField(
         primary_key=True,
         max_length=30,
         unique=True,

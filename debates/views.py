@@ -114,11 +114,7 @@ def topic(request, tname):
             ats = False
         else:
             ats = True
-        dupvoted = user.debates_upvoted.all()
-        ddownvoted = user.debates_downvoted.all()
     else:
-        dupvoted = []
-        ddownvoted = []
         ats = False
 
     context = {
@@ -130,8 +126,6 @@ def topic(request, tname):
         'ctopicn': topic.name.capitalize(),
         'debates': debates,
         'sorta': sorta,
-        'dupvoted': dupvoted,
-        'ddownvoted': ddownvoted,
         'topicdebateslist': True,
     }
     return render(request, 'debates/topic.html', context)
@@ -278,7 +272,6 @@ def debate(request, tname, did, **kwargs):
 
 
 def argument(request, tname, did, aid):
-
     topic = get_object_or_404(Topic, name=tname)
     debate = get_object_or_404(Debate, id=did)
     argument = get_object_or_404(Argument, id=aid)
@@ -336,6 +329,8 @@ def editdebate(request, tname, did):
     oquestion = debate.question
     odescription = debate.description
     topic = get_object_or_404(Topic, name=tname)
+    if debate.topic != topic:
+        return redirect(debate.get_edit_url())
     user = request.user
 
     if request.method == 'POST':
@@ -412,10 +407,14 @@ def submitargument(request):
 @login_required
 def editargument(request, tname, did, aid):
     argument = get_object_or_404(Argument, id=aid)
+    debate = get_object_or_404(Debate, id=did)
     otitle = argument.title
     obody = argument.body
     topic = get_object_or_404(Topic, name=tname)
     user = request.user
+
+    if argument.debate != debate or argument.topic != topic:
+        return redirect(argument.get_edit_url())
 
     if request.method == 'POST':
         if user.ismodof(topic):
@@ -464,8 +463,10 @@ def editargument(request, tname, did, aid):
 
 def debateedits(request, tname, did):
     topic = get_object_or_404(Topic, name=tname)
-    debate = get_object_or_404(Debate, id=did, topic=topic)
+    debate = get_object_or_404(Debate, id=did)
     user = request.user
+    if debate.topic != topic:
+        return redirect(debate.get_edits_url())
     versionslist = Version.objects.get_for_object(debate)
     page = request.GET.get('page', 1)
 
@@ -486,9 +487,10 @@ def debateedits(request, tname, did):
 
 def argumentedits(request, tname, did, aid):
     topic = get_object_or_404(Topic, name=tname)
-    debate = get_object_or_404(Debate, id=did, topic=topic)
-    argument = get_object_or_404(Argument, id=aid, debate=debate, topic=topic)
-
+    debate = get_object_or_404(Debate, id=did)
+    argument = get_object_or_404(Argument, id=aid)
+    if argument.debate != debate or argument.topic != topic:
+        return redirect(argument.get_edits_url())
     user = request.user
     versionslist = Version.objects.get_for_object(argument)
     page = request.GET.get('page', 1)
@@ -746,37 +748,59 @@ def move(request):
     if request.method == 'POST':
         form = MoveForm(request.POST)
         if form.is_valid():
-            post = form.post
-            pid = form.cleaned_data['fid']
-            pid2 = form.cleaned_data['sid']
-            post2 = form.post2
-            S1 = ('You have successfully moved all arguments in the first '
-                  'debate to the second debate.')
-            S2 = ('You have successfully moved all debates in the first '
-                  'topic to the second topic.')
-            if isinstance(post, Debate):
-                arguments = Argument.objects.filter(debate=post)
-                if post.topic_id == post2.topic_id:
-                    arguments.update(debate=post2)
+            with reversion.create_revision():
+                post = form.post
+                pid = form.cleaned_data['fid']
+                pid2 = form.cleaned_data['sid']
+                post2 = form.post2
+                S1 = ('You have successfully moved all arguments in the first '
+                      'debate to the second debate.')
+                S2 = ('You have successfully moved all debates in the first '
+                      'topic to the second topic.')
+                L1 = '[Moved from debate %s to debate %s.]'
+                L2 = '[Moved from topic %s to topic %s.]'
+                L3 = '[Moderator Action]'
+                f = '<span class="text-secondary">%s</span>'
+                
+                if isinstance(post, Debate):
+                    arguments = Argument.objects.filter(debate=post)
+                    difft = not post.topic_id == post2.topic_id
+                    for argument in arguments:
+                        argument.debate = post2
+                        if difft:
+                            argument.topic = post2.topic
+                        argument.save()
+                    action = 5
+                    messages.success(request, S1)
+                    L = L1
                 else:
-                    arguments.update(debate=post2, topic=post2.topic)
-                action = 5
-                messages.success(request, S1)
-            else:
-                debates = Debate.objects.filter(topic=post)
-                debates.update(topic=post2)
-                arguments = Argument.objects.filter(topic=post)
-                arguments.update(topic=post2)
-                action = 6
-                messages.success(request, S2)
-            ModAction.objects.create(
-                user=post.owner,
-                mod=request.user,
-                action=action,
-                pid=pid,
-                pid2=pid2)
-            post.owner = request.user
-            post.save()
+                    debates = Debate.objects.filter(topic=post)
+                    for debate in debates:
+                        debate.topic = post2
+                        debate.save()
+                    arguments = Argument.objects.filter(topic=post)
+                    for argument in arguments:
+                        argument.topic = post2
+                        argument.save()
+                    action = 6
+                    messages.success(request, S2)
+                    L = L2
+                ModAction.objects.create(
+                    user=post.owner,
+                    mod=request.user,
+                    action=action,
+                    pid=pid,
+                    pid2=pid2)
+                L = L % (pid, pid2)
+                L = f % L
+                L3 = f % L3
+                reversion.set_user(request.user)
+                client_ip, is_routable = get_client_ip(request)
+                reversion.add_meta(
+                    RevisionData,
+                    ip=client_ip,
+                    titchg=L3,
+                    bodchg=L)
     elif request.method == 'GET':
         form = MoveForm()
     context = {
@@ -790,33 +814,45 @@ def delete(request):
     if request.method == 'POST':
         form = DeleteForm(request.POST)
         if form.is_valid():
-            post = form.post
-            versions = Version.objects.get_for_object(post)
-            versions.delete()
-            post.approvalstatus = 2
-            post.modnote = "[DELETED]"
-
-            if isinstance(post, Argument):
-                post.title = "[DELETED]"
-                post.body = "[DELETED]"
-                messages.success(
-                    request, ('You have successfully deleted the selected '
-                              'argument.'))
-                action = 3
-            else:
-                post.question = "[DELETED]"
-                post.description = "[DELETED]"
-                messages.success(
-                    request, ('You have successfully deleted the selected '
-                              'debate.'))
-                action = 4
-            ModAction.objects.create(
-                user=post.owner,
-                mod=request.user,
-                action=action,
-                pid=post.id)
-        post.owner = request.user
-        post.save()
+            with reversion.create_revision():
+                titchg = '[DELETED]'
+                bodchg = '[DELETED]'
+                f = '<span class="text-secondary">%s</span>'
+                titchg = f % titchg
+                bodchg = f % bodchg
+                post = form.post
+                versions = Version.objects.get_for_object(post)
+                versions.delete()
+                post.approvalstatus = 3
+                post.modnote = "[DELETED]"
+                if isinstance(post, Argument):
+                    post.title = "[DELETED]"
+                    post.body = "[DELETED]"
+                    messages.success(
+                        request, ('You have successfully deleted the selected '
+                                  'argument.'))
+                    action = 3
+                else:
+                    post.question = "[DELETED]"
+                    post.description = "[DELETED]"
+                    messages.success(
+                        request, ('You have successfully deleted the selected '
+                                  'debate.'))
+                    action = 4
+                ModAction.objects.create(
+                    user=post.owner,
+                    mod=request.user,
+                    action=action,
+                    pid=post.id)
+                post.owner = request.user
+                post.save()
+                reversion.set_user(request.user)
+                client_ip, is_routable = get_client_ip(request)
+                reversion.add_meta(
+                    RevisionData,
+                    ip=client_ip,
+                    titchg=titchg,
+                    bodchg=bodchg)
     elif request.method == 'GET':
         form = DeleteForm()
     context = {

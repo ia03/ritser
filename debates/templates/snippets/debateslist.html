@@ -5,9 +5,9 @@
 <div class="list-group-item list-group-item-action flex-column align-items-start container" data-debate-id="{{ debate.id }}">
   <div class="row">
     <div class="col-md-1 karmad">
-      {% if user.is_authenticated %}<div class="arrow-up{% if debate in dupvoted %}-selected{% endif %} votebtn"></div>{% endif %}
+      {% if user.is_authenticated %}<div class="arrow-up{% if debate in user.debates_upvoted.all %}-selected{% endif %} votebtn"></div>{% endif %}
       <span class="karmacount" title="karma (votes)">{{ debate.karma|intcomma }}</span>
-      {% if user.is_authenticated %}<div class="arrow-down{% if debate in ddownvoted %}-selected{% endif %} votebtn"></div>{% endif %}
+      {% if user.is_authenticated %}<div class="arrow-down{% if debate in user.debates_downvoted.all %}-selected{% endif %} votebtn"></div>{% endif %}
     </div>
     <div class="col-md-11">
       <div class="d-flex w-100 justify-content-between">

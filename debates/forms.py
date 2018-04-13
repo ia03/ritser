@@ -47,7 +47,7 @@ class DebateForm(forms.ModelForm):
             'created_on',
             'edited_on',
             'approved_on')
-        self.fields['approvalstatus'].label = 'Approval status (0: Approved, 1: Unapproved, 2: Denied)'
+        self.fields['approvalstatus'].label = 'Approval status (0: Approved, 1: Unapproved, 2: Denied, 3: Hidden)'
         self.fields['modnote'].label = 'Moderator note'
         self.fields['question'].error_messages = {
             'required': 'You must type in a question.'}
@@ -199,9 +199,10 @@ class ArgumentForm(forms.ModelForm):
             'edited_on')
         self.fields['modnote'].label = 'Moderator note (can be blank)'
         self.fields['side'].label = 'Side (0=For, 1=Against)'
-        self.fields['approvalstatus'].label = ('Approval status'
-                                               '(0: Approved,'
-                                               '1: Unapproved, 2: Denied)')
+        self.fields['approvalstatus'].label = ('Approval status '
+                                               '(0: Approved, '
+                                               '1: Unapproved, 2: Denied, '
+                                               '3: Hidden)')
         self.fields['order'].label = 'Order (the greater this is, the higher this argument will be ranked)'
         self.fields['title'].error_messages = {
             'required': 'You must type in a title.'}

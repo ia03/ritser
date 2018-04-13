@@ -53,6 +53,13 @@ class Topic(models.Model):
         return reverse(
             'edittopic',
             args=[self.name])
+    
+    def get_edits_url(self):
+        return reverse(
+            'topicedits',
+            args=[
+                self.topic_id,
+                self.id])
 
     def __str__(self):
         return self.name
@@ -113,6 +120,13 @@ class Debate(models.Model):
             args=[
                 self.topic_id,
                 self.id])
+                
+    def get_edits_url(self):
+        return reverse(
+            'debateedits',
+            args=[
+                self.topic_id,
+                self.id])
 
     def __str__(self):
         return self.question
@@ -159,6 +173,14 @@ class Argument(models.Model):
     def get_edit_url(self):
         return reverse(
             'editargument',
+            args=[
+                self.topic_id,
+                self.debate_id,
+                self.id])
+                
+    def get_edits_url(self):
+        return reverse(
+            'argumentedits',
             args=[
                 self.topic_id,
                 self.debate_id,

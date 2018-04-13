@@ -222,9 +222,9 @@ def cleanapprovalstatus(instance):
         return instance.instance.approvalstatus
     elif instance.edit == 2:
         data = instance.cleaned_data.get('approvalstatus')
-        if data not in [0, 1, 2]:
+        if data not in [0, 1, 2, 3]:
             raise forms.ValidationError(
-                'Invalid approval status setting %(approved_status)s, must be 0, 1, or 2.',
+                'Invalid approval status setting %(approved_status)s, must be 0, 1, 2, or 3.',
                 code='invalidapprovalstatus',
                 params={
                     'approved_status': data})

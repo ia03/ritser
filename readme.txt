@@ -1,4 +1,4 @@
-install apache wsgi and make it run on startup
+install apache wsgi with ssl and make it run on startup
 
 install postgresql and citext extension https://stackoverflow.com/questions/15981197/postgresql-error-type-citext-does-not-exist
 
@@ -12,6 +12,8 @@ set debug to false
 run collectstatic
 
 minify css and js files
+
+run python3 manage.py makemigrations and python3 manage.py migrate
 
 run python3 manage.py createinitialrevisions
 

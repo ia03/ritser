@@ -6,6 +6,7 @@ from django import forms
 from .models import Topic, Debate, Argument
 from accounts.models import User
 from django.utils import timezone
+import bleach
 
 
 def debateslist(topic):
@@ -22,6 +23,63 @@ def getpage(pagen, qlist, noi):
     except (EmptyPage, PageNotAnInteger):
         items = paginator.page(1)
     return items
+
+def clean(value, typ=0):
+    if typ == 0:
+        return bleach.clean(
+                            value,
+                            tags=[
+                                'p',
+                                'b',
+                                'i',
+                                'u',
+                                'em',
+                                'strong',
+                                'a',
+                                'h1',
+                                'h2',
+                                'h3',
+                                'h4',
+                                'h5',
+                                'h6',
+                                'hr',
+                                'br',
+                                'ol',
+                                'ul',
+                                'li',
+                                'code',
+                                'table',
+                                'th',
+                                'tr',
+                                'thead',
+                                'tbody',
+                                'td'],
+                            attributes=[
+                                'href',
+                                'title',
+                                'style'],
+                            styles=[
+                                'font-family',
+                                'color',
+                                'font-weight',
+                                'text-decoration',
+                                'font-variant'],
+                            strip=False)
+    elif typ == 2:
+        return bleach.clean(
+                            value,
+                            tags=[],
+                            attributes=[],
+                            strip=False)
+    else:
+        return bleach.clean(
+                            value, tags=[
+                            'b', 'i', 'u', 'em', 'strong'],
+                            attributes=['style'],
+                            styles=[
+                            'font-weight',
+                            'text-decoration',
+                            'color'], strip=True)
 
 
 class Pages:
@@ -136,7 +194,7 @@ dmp = newdiff()
 
 
 def htmldiffs(original, new):
-    diffs = dmp.diff_main(original, new)
+    diffs = dmp.diff_main(clean(original, typ=2), clean(new, typ=2))
     dmp.diff_cleanupSemantic(diffs)
     return dmp.diff_prettyHtml(diffs)
 

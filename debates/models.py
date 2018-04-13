@@ -199,3 +199,4 @@ class RevisionData(models.Model):
     ip = models.GenericIPAddressField()
     titchg = models.TextField(blank=True)
     bodchg = models.TextField(blank=True)
+    modaction = models.BooleanField(default=False)

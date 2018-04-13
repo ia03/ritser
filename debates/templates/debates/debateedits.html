@@ -20,7 +20,7 @@
       <div class="card-header" id="headingOne">
         <h5 class="mb-0">
           <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
-            <span title="{{ version.revision.date_created|date:"c" }}">{{version.revision.date_created|date:"D d M Y f A"}}</span> by {{ version.revision.user.get_username }}
+            <span title="{{ version.revision.date_created|date:"c" }}">{{version.revision.date_created|date:"D d M Y f A"}}</span> by {{ version.revision.user.get_username }}{% if version|modaction %} <span class="badge badge-warning">Moderator Action</span>{% endif %}
           </button>
         </h5>
       </div>
@@ -40,9 +40,9 @@
           <br>{% endif %}
           {% ifchanged %}Topic: <a href="{{ version|topic|url}}">{{version|field:"topic_id" }}</a>
           <br>{% endifchanged %}
-          Question: {% if forloop.last %}{{ version|field:"question" }}{% else %}{{ version|titchg }}{% endif %}
+          Question: {% if forloop.last and not version|titchg %}{{ version|field:"question" }}{% else %}{{ version|titchg }}{% endif %}
           <br>
-          Description: {% if forloop.last %}{{ version|field:"description"|markdownf }}{% else %}{{ version|bodchg }}{% endif %}
+          Description: {% if forloop.last and not version|bodchg %}{{ version|field:"description" }}{% else %}{{ version|bodchg }}{% endif %}
         </div>
       </div>
     </div>

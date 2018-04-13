@@ -9,14 +9,13 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Topic, Debate, Argument, RevisionData
 from .forms import (DebateForm, ArgumentForm, TopicForm, BanForm,
                     UnsuspendForm, DeleteForm, MoveForm, UpdateSlvlForm)
-from .utils import getpage, newdiff, debateslist, htmldiffs
+from .utils import getpage, newdiff, debateslist, htmldiffs, clean
 from accounts.utils import DeleteUser
 from accounts.models import User, ModAction
 from .decorators import mod_required, gmod_required
 from ipware import get_client_ip
 from .templatetags.markdown import markdownf
 import reversion
-import bleach
 from reversion.models import Version
 from haystack.query import SearchQuerySet
 from allauth.account.decorators import verified_email_required
@@ -341,11 +340,11 @@ def editdebate(request, tname, did):
         if form.is_valid():
             with reversion.create_revision():
                 titchg = htmldiffs(
-                    bleach.clean(oquestion), bleach.clean(
-                        form.cleaned_data['question']))
+                                   oquestion, 
+                                   form.cleaned_data['question'])
                 bodchg = htmldiffs(
-                    markdownf(odescription), markdownf(
-                        form.cleaned_data['description']))
+                                   odescription,
+                                   form.cleaned_data['description'])
                 debate = form.save()
                 reversion.set_user(request.user)
                 client_ip, is_routable = get_client_ip(request)
@@ -433,11 +432,11 @@ def editargument(request, tname, did, aid):
 
             with reversion.create_revision():
                 titchg = htmldiffs(
-                    bleach.clean(otitle), bleach.clean(
-                        form.cleaned_data['title']))
+                                   otitle, 
+                                   form.cleaned_data['title'])
                 bodchg = htmldiffs(
-                    markdownf(obody), markdownf(
-                        form.cleaned_data['body']))
+                                   obody, 
+                                   form.cleaned_data['body'])
                 argument = form.save()
                 reversion.set_user(request.user)
                 client_ip, is_routable = get_client_ip(request)
@@ -559,11 +558,11 @@ def edittopic(request, tname):
         if form.is_valid():
             with reversion.create_revision():
                 titchg = htmldiffs(
-                    bleach.clean(otitle), bleach.clean(
-                        form.cleaned_data['title']))
+                                   otitle, 
+                                   form.cleaned_data['title'])
                 bodchg = htmldiffs(
-                    markdownf(obody), markdownf(
-                        form.cleaned_data['description']))
+                                   obody, 
+                                   form.cleaned_data['description'])
                 topic = form.save(commit=False)
                 if isowner:
                     topic.moderators.set(form.modsl)
@@ -765,8 +764,8 @@ def move(request):
                 if isinstance(post, Debate):
                     arguments = Argument.objects.filter(debate=post)
                     difft = not post.topic_id == post2.topic_id
+                    arguments.update(debate=post2)
                     for argument in arguments:
-                        argument.debate = post2
                         if difft:
                             argument.topic = post2.topic
                         argument.save()
@@ -775,12 +774,12 @@ def move(request):
                     L = L1
                 else:
                     debates = Debate.objects.filter(topic=post)
+                    debates.update(topic=post2)
                     for debate in debates:
-                        debate.topic = post2
                         debate.save()
                     arguments = Argument.objects.filter(topic=post)
+                    arguments.update(topic=post2)
                     for argument in arguments:
-                        argument.topic = post2
                         argument.save()
                     action = 6
                     messages.success(request, S2)
@@ -800,7 +799,8 @@ def move(request):
                     RevisionData,
                     ip=client_ip,
                     titchg=L3,
-                    bodchg=L)
+                    bodchg=L,
+                    modaction=True)
     elif request.method == 'GET':
         form = MoveForm()
     context = {
@@ -852,7 +852,8 @@ def delete(request):
                     RevisionData,
                     ip=client_ip,
                     titchg=titchg,
-                    bodchg=bodchg)
+                    bodchg=bodchg,
+                    modaction=True)
     elif request.method == 'GET':
         form = DeleteForm()
     context = {
@@ -913,11 +914,28 @@ def slvls(request):
     if request.method == 'POST':
         form = UpdateSlvlForm(request.POST, user=request.user)
         if form.is_valid():
-            debates = form.topic.debates.all()
-            debates.update(slvl=form.cleaned_data['slvl'])
-            messages.success(
-                request, ('You have successfully changed the security levels '
-                          ' of all debates in the selected topic.'))
+            with reversion.create_revision():
+                T = '[Moderator Action]'
+                f = '<span class="text-secondary">%s</span>'
+                L = '[Changed security level of debates in %s to %d.]'
+                T = f % T
+                L = L % (form.cleaned_data['tname'], form.cleaned_data['slvl'])
+                L = f % L
+                debates = form.topic.debates.all()
+                debates.update(slvl=form.cleaned_data['slvl'])
+                for debate in debates:
+                    debate.save()
+                messages.success(
+                    request, ('You have successfully changed the security levels '
+                              ' of all debates in the selected topic.'))
+                reversion.set_user(request.user)
+                client_ip, is_routable = get_client_ip(request)
+                reversion.add_meta(
+                    RevisionData,
+                    ip=client_ip,
+                    titchg=T,
+                    bodchg=L,
+                    modaction=True)
     elif request.method == 'GET':
         form = UpdateSlvlForm(user=request.user)
     context = {

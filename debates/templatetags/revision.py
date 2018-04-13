@@ -22,20 +22,21 @@ def moderators(version):
 @register.filter(name='titchg')
 def titchg(version):
     return mark_safe(
-        RevisionData.objects.get(
-            revision=version.revision).titchg)
+        RevisionData.objects.get(revision=version.revision).titchg)
 
 
 @register.filter(name='bodchg')
 def bodchg(version):
     return mark_safe(
-        RevisionData.objects.get(
-            revision=version.revision).bodchg)
+        RevisionData.objects.get(revision=version.revision).bodchg)
 
+@register.filter(name='modaction')
+def modaction(version):
+    return RevisionData.objects.get(revision=version.revision).modaction
 
 @register.filter(name='ip')
 def ip(version):
-    return mark_safe(RevisionData.objects.get(revision=version.revision).ip)
+    return RevisionData.objects.get(revision=version.revision).ip
 
 
 @register.filter(name='owner')

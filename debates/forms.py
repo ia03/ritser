@@ -610,7 +610,6 @@ class DeleteForm(forms.Form):
         cleaned_data = super().clean()
         mtype = cleaned_data['mtype']
         idno = cleaned_data['idno']
-        print(mtype)
         if mtype == '1':
             try:
                 argument = Argument.objects.get(id=idno)

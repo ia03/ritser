@@ -1,11 +1,11 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from django.urls import reverse
 from .models import User, ModAction
-from .forms import ProfileForm, DeleteUserForm
+from .forms import ProfileForm, DeleteUserForm, SetStaffForm
 from .utils import DeleteUser
+from .decorators import admin_required
 from debates.utils import getpage
 from django.conf import settings
 
@@ -67,7 +67,7 @@ def profile(request):
             request.user = form.save(commit=False)
             request.user.stopics.set(form.stopicsl)
             request.user.save()
-            return HttpResponseRedirect(reverse('profile'))
+            return redirect('profile')
     elif request.method == 'GET':
         form = ProfileForm(instance=request.user)
 
@@ -94,7 +94,7 @@ def delete(request):
         form = DeleteUserForm(request.POST, user=request.user)
         if form.is_valid():
             DeleteUser(request.user, 1)
-            return HttpResponseRedirect(settings.ACCOUNT_LOGOUT_REDIRECT_URL)
+            return redirect(settings.ACCOUNT_LOGOUT_REDIRECT_URL)
     elif request.method == 'GET':
         form = DeleteUserForm(user=request.user)
     context = {
@@ -112,3 +112,24 @@ def usermodlogs(request):
         'modactions': modactions,
     }
     return render(request, 'accounts/usermodlogs.html', context)
+
+
+@admin_required
+def modstatus(request, uname):
+    user = get_object_or_404(User, username=uname)
+    if request.method == 'POST':
+        form = SetStaffForm(request.POST, instance=user, user=request.user)
+        if form.is_valid():
+            user = form.save()
+            messages.success(
+                request,
+                ('You have successfully changed '
+                + uname + '\'s mod status.'))
+            return redirect(user)
+    elif request.method == 'GET':
+        form = SetStaffForm(instance=user, user=request.user)
+    context = {
+        'form': form,
+        'puser': user,
+    }
+    return render(request, 'accounts/modstatus.html', context)

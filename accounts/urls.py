@@ -9,6 +9,7 @@ urlpatterns = [
         views.userarguments,
         name='userarguments'),
     path('u/<slug:uname>/debates', views.userdebates, name='userdebates'),
+    path('u/<slug:uname>/modstatus', views.modstatus, name='usermodstatus'),
     path('accounts/profile/', views.profile, name='profile'),
     path(
         'accounts/inactive/',

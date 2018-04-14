@@ -137,7 +137,7 @@ class DeleteUserForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
-        super(DeleteUserForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def clean_password(self):
         data = self.cleaned_data['password']
@@ -146,41 +146,26 @@ class DeleteUserForm(forms.Form):
         return data
 
 
-'''
-class UserCreationForm(forms.ModelForm):
-    """
-    A form that creates a user, with no privileges, from the given username and
-    password.
-    """
-    error_messages = {
-        'password_mismatch': "The two password fields didn't match.",
-    }
-    email = forms.EmailField()
-    password1 = forms.CharField(label="Password",
-        widget=forms.PasswordInput)
-    password2 = forms.CharField(label="Password confirmation",
-        widget=forms.PasswordInput,
-        help_text="Enter the same password as above, for verification.")
 
+class SetStaffForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+    
+    def clean_modstatus(self):
+        data = self.cleaned_data['modstatus']
+        ums = self.user.modstatus #editing user's mod status
+        oms = self.instance.modstatus #original mod status
+        em1 = 'You are not allowed to set this person\'s mod status that high.'
+        em2 = 'This person\'s mod status level is too high for you to change.'
+        if ums == User.modschoices.admin:
+            if data != User.modschoices.gmod:
+                raise forms.ValidationError(em1)
+            if oms == User.modschoices.admin or (
+                oms == User.modschoices.owner):
+                    raise forms.ValidationError(em2)
+        return data
     class Meta:
         model = User
-        fields = ['username', 'email',]
-
-    def clean_password2(self):
-        password1 = self.cleaned_data.get("password1")
-        password2 = self.cleaned_data.get("password2")
-        if password1 and password2 and password1 != password2:
-            raise forms.ValidationError(
-                self.error_messages['password_mismatch'],
-                code='password_mismatch',
-            )
-        return password2
-
-    def save(self, commit=True):
-        user = super(UserCreationForm, self).save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
-        if commit:
-            user.save()
-
-        return user
-'''
+        fields = [
+            'modstatus']

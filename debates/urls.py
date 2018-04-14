@@ -41,6 +41,7 @@ urlpatterns = [
     path('mod/move', views.move, name='move'),
     path('mod/delete', views.delete, name='delete'),
     path('mod/logs', views.modlogs, name='modlogs'),
+    path('mod/staff', views.staff, name='staff'),
     path(
         'mod/unapproved/arguments',
         views.unapprovedargs,

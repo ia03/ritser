@@ -5,14 +5,22 @@ from django.urls import reverse
 from django.apps import apps
 from timezone_field import TimeZoneField
 from django.db.models import Q
+from model_utils import Choices
 import django
 # Create your models here.
 
-
 class User(AbstractUser):
+    modschoices = Choices(
+    (0, 'normal', 'Normal'),
+    (1, 'gmod', 'Global Moderator'),
+    (2, 'admin', 'Admin'),
+    (3, 'owner', 'Owner'))
     approvedargs = models.IntegerField(default=0)
     # 0: regular user #1: global moderator #2: admin #3: owner
-    modstatus = models.IntegerField(default=0)
+    modstatus = models.IntegerField(
+        default=modschoices.normal,
+        choices=modschoices,
+        verbose_name='moderator status')
     # 0: not banned 1: account deleted 2: temporarily banned 3: permanently
     # banned
     active = models.IntegerField(default=0)
@@ -30,6 +38,9 @@ class User(AbstractUser):
             return reverse('user', args=[self.username])
         else:
             return '#'
+            
+    def get_modstatus_url(self):
+        return reverse('usermodstatus', args=[self.get_username()])
 
     def get_username(self):  # modlogs bypasses this
         if self.active == 0 or self.active == 2:

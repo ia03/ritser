@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% block title %}Change {{ puser.username }}'s mod status - MoDebate{% endblock %}
+
+{% block body %}
+    <main role="main" class="container">
+    <h1>Change {{ puser.username }}'s mod status</h1>
+    {% include 'snippets/formerrors.html' %}
+    {% if user.modstatus == 2 %}<p>Admins can only remove/add global moderators. Please contact someone with owner privileges if you need to do something that requires more authority.</p>{% endif %}
+    <form method="POST" action="{{ puser.get_modstatus_url }}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="{{ form.modstatus.id_for_label }}">{{ form.modstatus.label_tag }}</label>
+          {% render_field form.modstatus class="form-control" %}
+        </div>
+        <input class="btn btn-primary" type="submit" name="action" value="Change Mod Status"/>
+    </form>
+    </main>
+{% endblock %}

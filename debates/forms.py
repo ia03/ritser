@@ -19,6 +19,7 @@ from .utils import (
     setapprovedon,
     cleandslvl)
 
+USERNAMEMAXLEN = 150
 
 class DebateForm(forms.ModelForm):
     topic_name = forms.CharField(
@@ -514,7 +515,7 @@ class TopicForm(forms.ModelForm):
 
 class BanForm(forms.Form):
     username = forms.CharField(
-        max_length=150,
+        max_length=USERNAMEMAXLEN,
         error_messages={
             'required': 'You must input the chosen user\'s username.'})
     terminate = forms.BooleanField(required=False, label='Terminate')
@@ -566,7 +567,7 @@ class BanForm(forms.Form):
 
 class UnsuspendForm(forms.Form):
     username = forms.CharField(
-        max_length=150,
+        max_length=USERNAMEMAXLEN,
         error_messages={
             'required': 'You must input the username of the chosen user.'})
 
@@ -679,3 +680,4 @@ class UpdateSlvlForm(forms.Form):
         data = self.cleaned_data['slvl']
         cleandslvl(data)
         return data
+

@@ -12,8 +12,10 @@
     <h1>{{ puser.username }}'s profile</h1>
     {% if puser.modstatus == 1 %}
     <span class="badge badge-secondary">Global Moderator</span>
+    <br>
     {% elif puser.modstatus == 2 %}
     <span class="badge badge-danger">Admin</span>
+    <br>
     {% elif puser.modstatus == 3 %}
     <span class="badge badge-dark">Owner</span>
     <br>
@@ -24,6 +26,10 @@
     </div>
     {% elif user.isgmod %}
     <a href="{% url 'ban' %}?user={{ puser.username }}" class="text-danger">Suspend/Terminate</a>
+    <br>
+    {% endif %}
+    {% if user.isadmin and not puser.isadmin or user.isowner %}
+    <a href="{{ puser.get_modstatus_url }}">Change mod status</a>
     <br>
     {% endif %}
     <a href="{{ puser.get_debates }}">View Debates</a>

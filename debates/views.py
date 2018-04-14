@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.http import HttpResponse
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -12,7 +11,7 @@ from .forms import (DebateForm, ArgumentForm, TopicForm, BanForm,
 from .utils import getpage, newdiff, debateslist, htmldiffs, clean
 from accounts.utils import DeleteUser
 from accounts.models import User, ModAction
-from .decorators import mod_required, gmod_required
+from accounts.decorators import mod_required, gmod_required
 from ipware import get_client_ip
 from .templatetags.markdown import markdownf
 import reversion
@@ -293,19 +292,18 @@ def submitdebate(request):
         form = DebateForm(request.POST, user=user, edit=0)
         if form.is_valid():
             with reversion.create_revision():
-                obj = form.save(commit=False)
-                obj.karma = 1
-                obj.save()
-                obj.users_upvoting.add(user)
+                debate = form.save(commit=False)
+                debate.karma = 1
+                debate.save()
+                debate.users_upvoting.add(user)
                 reversion.set_user(user)
                 client_ip, is_routable = get_client_ip(request)
                 reversion.add_meta(RevisionData, ip=client_ip)
-            return HttpResponseRedirect(
-                reverse(
-                    'debate',
-                    args=[
-                        form.cleaned_data['topic_name'],
-                        obj.id]))
+            messages.success(
+                    request,
+                    ('You have successfully submitted debate '
+                     + debate.question))
+            return redirect(debate)
     else:
         tname = request.GET.get('topic', '')
         question = request.GET.get('question', '')
@@ -354,7 +352,11 @@ def editdebate(request, tname, did):
                     ip=client_ip,
                     titchg=titchg,
                     bodchg=bodchg)
-            return HttpResponseRedirect(reverse('debate', args=[tname, did]))
+                messages.success(
+                    request,
+                    ('You have successfully edited debate '
+                     + debate.question))
+            return redirect(debate)
     else:
         if user.ismodof(topic):
             form = DebateForm(instance=debate, user=user, edit=2)
@@ -375,17 +377,15 @@ def submitargument(request):
         if form.is_valid():
 
             with reversion.create_revision():
-                obj = form.save()
+                argument = form.save()
                 reversion.set_user(user)
                 client_ip, is_routable = get_client_ip(request)
                 reversion.add_meta(RevisionData, ip=client_ip)
-            return HttpResponseRedirect(
-                reverse(
-                    'argument',
-                    args=[
-                        obj.topic.name,
-                        obj.debate.id,
-                        obj.id]))
+            messages.success(
+                request,
+                ('You have successfully submitted argument '
+                     + argument.title))
+            return redirect(argument)
 
     else:
         did = request.GET.get('debate', '')
@@ -446,8 +446,10 @@ def editargument(request, tname, did, aid):
                     ip=client_ip,
                     titchg=titchg,
                     bodchg=bodchg)
-            return HttpResponseRedirect(
-                reverse('argument', args=[tname, did, aid]))
+                messages.success(
+                    request,
+                    'You have successfully edited argument ' + argument.title)
+            return redirect(argument)
 
     else:
         if user.ismodof(topic):
@@ -518,13 +520,17 @@ def submittopic(request):
         form = TopicForm(request.POST, user=user, edit=0)
         if form.is_valid():
             with reversion.create_revision():
-                obj = form.save(commit=False)
-                obj.moderators.set(form.modsl)
-                obj.save()
+                topic = form.save(commit=False)
+                topic.moderators.set(form.modsl)
+                topic.save()
                 reversion.set_user(user)
                 client_ip, is_routable = get_client_ip(request)
                 reversion.add_meta(RevisionData, ip=client_ip)
-            return HttpResponseRedirect(reverse('topic', args=[obj.name]))
+                messages.success(
+                    request,
+                    ('You have successfully submitted topic '
+                     + topic.name))
+            return redirect(topic)
 
     else:
         name = request.GET.get('name', '')
@@ -575,7 +581,10 @@ def edittopic(request, tname):
                     ip=client_ip,
                     titchg=titchg,
                     bodchg=bodchg)
-            return HttpResponseRedirect(reverse('topic', args=[tname]))
+                messages.success(
+                    request,
+                    'You have successfully edited topic ' + tname)
+            return redirect(topic)
 
     elif request.method == 'GET':
         if user.isowner(topic):
@@ -881,6 +890,11 @@ def modlogs(request):
         'usercol': True,
     }
     return render(request, 'debates/mod/modlogs.html', context)
+
+
+@gmod_required
+def staff(request):
+    pass
 
 
 @mod_required

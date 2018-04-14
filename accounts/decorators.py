@@ -33,7 +33,7 @@ def gmod_required(function):
             return function(request, *args, **kwargs)
         else:
             raise PermissionDenied
-    return wrap
+    return login_required(wrap)
 
 
 def admin_required(function):
@@ -43,4 +43,4 @@ def admin_required(function):
             return function(request, *args, **kwargs)
         else:
             raise PermissionDenied
-    return wrap
+    return login_required(wrap)

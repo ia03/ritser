@@ -1,0 +1,52 @@
+{% extends "debates/mod/base.html" %}
+
+{% block title %}Staff - MoDebate{% endblock %}
+
+{% block body %}
+<main role="main" class="container">
+    <h1>Staff</h1>
+    <br>
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link{% if typ == 0 %} active{% endif %}" href="{% url 'staff' %}">All <span class="badge badge-primary badge-pill">{{ allcount }}</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link{% if typ == 1 %} active{% endif %}" href="{% url 'staffgmods' %}">Global Mods <span class="badge badge-primary badge-pill">{{ gmodcount }}</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link{% if typ == 2 %} active{% endif %}" href="{% url 'staffadmins' %}">Admins <span class="badge badge-primary badge-pill">{{ admincount }}</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link{% if typ == 3 %} active{% endif %}" href="{% url 'staffowners' %}">Owners <span class="badge badge-primary badge-pill">{{ ownercount }}</span></a>
+      </li>
+    </ul>
+    <br>
+ 
+  <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Username</th>
+          <th scope="col">Type</th>
+          <th scope="col">Date Joined (MM/DD/YYYY HH:MM:SS)</th>
+          <th scope="col">No. of Mod Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mod in staff %}
+        <tr>
+          <td><a href="{{ mod.get_abs_url_mod }}">{{ mod.username }}</a></td>
+          <td>{% if mod.modstatus == 1 %}<span class="badge badge-secondary">Global Moderator</span>{% elif mod.modstatus == 2 %}<span class="badge badge-danger">Admin</span>{% elif mod.modstatus == 3 %}<span class="badge badge-dark">Owner</span>{% endif %}</td>
+          <td>{{mod.date_joined|date:"SHORT_DATETIME_FORMAT"}}</td>
+          <td>{{ mod.modactions.all.count }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+  </table>
+  {% if modactions.has_other_pages %}
+  {% load paginator %}
+  {% load link_name %}
+  {% paginator modactions request %}
+  {% endif %}
+</main>
+
+{% endblock %}

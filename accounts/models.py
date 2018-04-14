@@ -38,7 +38,10 @@ class User(AbstractUser):
             return reverse('user', args=[self.username])
         else:
             return '#'
-            
+    
+    def get_abs_url_mod(self):
+        return reverse('user', args=[self.username])
+    
     def get_modstatus_url(self):
         return reverse('usermodstatus', args=[self.get_username()])
 

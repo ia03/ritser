@@ -875,17 +875,19 @@ def delete(request):
 @gmod_required
 def modlogs(request):
     username = request.GET.get('user', '')
-    mod = request.GET.get('mod', '')
+    modname = request.GET.get('mod', '')
     modactions_list = ModAction.objects.all()
     if username != '':
-        modactions_list = modactions_list.filter(user__username=username)
-    if mod != '':
-        modactions_list = modactions_list.filter(mod__username=mod)
+        user = get_object_or_404(User, username=username)
+        modactions_list = modactions_list.filter(user=user)
+    if modname != '':
+        mod = get_object_or_404(User, username=modname)
+        modactions_list = modactions_list.filter(mod=mod)
     page = request.GET.get('page', 1)
     modactions = getpage(page, modactions_list, 50)
     context = {
         'username': username,
-        'mod': mod,
+        'mod': modname,
         'modactions': modactions,
         'usercol': True,
     }
@@ -893,9 +895,29 @@ def modlogs(request):
 
 
 @gmod_required
-def staff(request):
-    pass
-
+def staff(request, **kwargs):
+    typ = kwargs['typ']
+    if typ == 0:
+        q = ~Q(modstatus=0)
+    elif typ == 1:
+        q = Q(modstatus=1)
+    elif typ == 2:
+        q = Q(modstatus=2)
+    elif typ == 3:
+        q = Q(modstatus=3)
+    staff_list = User.objects.filter(q)
+    staff_list = staff_list.order_by('-modstatus', 'date_joined')
+    page = request.GET.get('page', 1)
+    staff = getpage(page, staff_list, 50)
+    context = {
+        'staff': staff,
+        'typ': typ,
+        'allcount': User.objects.filter(~Q(modstatus=0)).count(),
+        'gmodcount': User.objects.filter(Q(modstatus=1)).count(),
+        'admincount': User.objects.filter(Q(modstatus=2)).count(),
+        'ownercount': User.objects.filter(Q(modstatus=3)).count(),
+    }
+    return render(request, 'debates/mod/staff.html', context)
 
 @mod_required
 def unapprovedargs(request):

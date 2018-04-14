@@ -14,8 +14,8 @@
   <tbody>
     {% for modaction in modactions %}
     <tr>
-      {% if usercol %}<td><a href="{% url 'user' uname=modaction.user.username %}">{{ modaction.user.username }}</a></td>{% endif %}
-      <td><a href="{% url 'user' uname=modaction.mod.username %}">{{ modaction.mod.username }}</a></td>
+      {% if usercol %}<td><a href="{{ modaction.user.get_abs_url_mod }}">{{ modaction.user.username }}</a></td>{% endif %}
+      <td><a href="{{ modaction.mod.get_abs_url_mod }}">{{ modaction.mod.username }}</a></td>
       <td>{% if modaction.action == 0 %}Suspended{% elif modaction.action == 1 %}Unsuspended{% elif modaction.action == 2 %}Terminated{% elif modaction.action == 3 %}Del. Arg. {{ modaction.pid }}{% elif modaction.action == 4 %}Del. Debate {{ modaction.pid }}{% elif modaction.action == 5 %}Mov. D. {{ modaction.pid }} to {{modaction.pid2 }}{% elif modaction.action == 6 %}Mov. T. {{ modaction.pid }} to {{ modaction.pid2 }}{% endif %}</td>
       <td>{{modaction.date|date:"m/d/Y H:i:s"}}</td>
       <td>{% if modaction.action == 0 %}{{ modaction.until|date:"m/d/Y" }}{% else %}N/A{% endif %}</td>

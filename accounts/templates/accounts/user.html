@@ -10,6 +10,14 @@
 
 <main role="main" class="container">
     <h1>{{ puser.username }}'s profile</h1>
+    {% if puser.modstatus == 1 %}
+    <span class="badge badge-secondary">Global Moderator</span>
+    {% elif puser.modstatus == 2 %}
+    <span class="badge badge-danger">Admin</span>
+    {% elif puser.modstatus == 3 %}
+    <span class="badge badge-dark">Owner</span>
+    <br>
+    {% endif %}
     {% if puser.active == 2 %}
     <div class="alert alert-danger">
     This user's account is currently suspended. {% if user.isgmod %}<a href="{% url 'unsuspend'%}?user={{ puser.username }}" class="alert-link">Unsuspend</a>{% endif %}

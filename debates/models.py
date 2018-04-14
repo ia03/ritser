@@ -5,6 +5,7 @@ from django.urls import reverse
 from accounts.models import User
 import reversion
 from reversion.models import Revision
+from model_utils import Choices
 
 
 # Create your models here.
@@ -12,6 +13,16 @@ from reversion.models import Revision
 class ISlugField(models.SlugField):
     def db_type(self, connection):
         return 'citext'
+
+
+apprsc = Choices(
+    (0, 'approved', 'Approved'),
+    (1, 'unapproved', 'Unapproved'),
+    (2, 'denied', 'Denied'),
+    (3, 'hidden', 'Hidden'))
+sides = Choices(
+    (0, 'fo', 'For'),
+    (1, 'ag', 'Against'))
 
 @reversion.register()
 class Topic(models.Model):
@@ -84,7 +95,10 @@ class Debate(models.Model):
     # means mod submissions only
     slvl = models.IntegerField(default=1, verbose_name='security level')
     # 0: approved 1: unapproved 2: denied 3: deleted
-    approvalstatus = models.IntegerField(default=1)
+    approvalstatus = models.IntegerField(
+        default=apprsc.unapproved,
+        choices=apprsc,
+        verbose_name='approval status')
     karma = models.IntegerField(default=0, db_index=True)
     users_upvoting = models.ManyToManyField(
         User, related_name='debates_upvoted', blank=True)
@@ -150,10 +164,17 @@ class Argument(models.Model):
         on_delete=models.CASCADE,
         related_name='arguments')
     # 0: approved 1: unapproved 2: denied 3: deleted
-    approvalstatus = models.IntegerField(default=1, db_index=True)
+    approvalstatus = models.IntegerField(
+        default=apprsc.unapproved,
+        choices=apprsc, 
+        db_index=True,
+        verbose_name='approval status')
     order = models.IntegerField(
-        default=0, db_index=True)  # owner.approvedargs?
-    side = models.IntegerField(default=0)  # 0: for 1: against
+        default=0,
+        db_index=True)  # owner.approvedargs?
+    side = models.IntegerField(
+        default=sides.fo,
+        choices=sides)  # 0: for 1: against
     active = models.BooleanField(default=True)
     title = models.CharField(max_length=300)
     body = models.TextField(max_length=200000)

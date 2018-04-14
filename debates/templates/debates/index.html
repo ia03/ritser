@@ -5,27 +5,47 @@
 {% block title %}MoDebate - A Better Way to Think{% endblock %}
 
 {% block head %}
+<link rel="stylesheet" href="{% static 'debates/css/index.css' %}" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" integrity="sha256-j+P6EZJVrbXgwSR5Mx+eCS6FvP9Wq27MBRC/ogVriY0=" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Morphext/2.4.4/morphext.css" integrity="sha256-iwSnUqgAndMlZnwFWAAzto9R/6Un2RBguZEITMb0Olk=" crossorigin="anonymous" />
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Morphext/2.4.4/morphext.min.js" integrity="sha256-qG3zvg7/f5CZHwV8IeaQfBY5Hm+M0KR3PMk9lAHp39s=" crossorigin="anonymous"></script>
-<script src="{% static "debates/js/index.js" %}"></script>
+<script src="{% static 'debates/js/index.js' %}"></script>
 {% endblock %}
 
 {% block body %}
-
-<section class="jumbotron text-center">
+<main role="main">
+  <section class="jumbotron text-center">
     <div class="container">
       <h1 class="jumbotron-heading">Traditional debates don't work.</h1>
-      <p class="lead">If they did, people generally wouldn't disagree on <span id="topicchgr">politics, religion, history, morality, science</span>. MoDebate changes that.</p>
+      <p class="lead">If they did, people generally wouldn't disagree on <span id="topicchgr">politics, religion, history, morality, science</span>. MoDebate changes that by encouraging users to think differently and giving them the tools to do so.</p>
       <p>
-        <a href="{% url 'account_signup' %}" class="btn btn-primary my-2">Sign Up</a>
-        <a href="{% url 'about' %}" class="btn btn-secondary my-2">Learn More</a>
+        <a href="{% url 'account_signup' %}" class="btn btn-outline-primary my-2">Sign Up</a>
+        <a href="{% url 'about' %}" class="btn btn-outline-secondary my-2">Learn More</a>
       </p>
     </div>
-</section>
-
+  </section>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4">
+        <img class="rounded-circle" src="{% static 'debates/img/magnifyingglass.svg' %}" alt="Magnifying Glass" width="140" height="140">
+        <h2>Transparent</h2>
+        <p>Edits are publicly visible and our ordering algorithm is listed on our <a href="{% url 'rules' %}#order">rules page.</a> We don't use unethical practices such as censorship to manipulate you, instead we change minds by exposing you to all viewpoints.</p>
+      </div><!-- /.col-lg-4 -->
+      <div class="col-lg-4">
+        <img class="rounded-circle" src="{% static 'debates/img/checkmark.png' %}" alt="Checkmark" width="140" height="140">
+        <h2>Fact-checked</h2>
+        <p>Our moderators mark arguments that aren't backed up by reliable evidence as denied. Of course, this doesn't mean you shouldn't still check sources yourself, but this generally improves the quality of content on our site.</p>
+      </div><!-- /.col-lg-4 -->
+      <div class="col-lg-4">
+        <img class="rounded-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
+        <h2>Heading</h2>
+        <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+      </div><!-- /.col-lg-4 -->
+    </div><!-- /.row -->
+  </div>
+</main>
 {% endblock %}
 
 {% block endjs %}

@@ -36,7 +36,7 @@
         <tr>
           <td><a href="{{ mod.get_abs_url_mod }}">{{ mod.username }}</a></td>
           <td>{% if mod.modstatus == 1 %}<span class="badge badge-secondary">Global Moderator</span>{% elif mod.modstatus == 2 %}<span class="badge badge-danger">Admin</span>{% elif mod.modstatus == 3 %}<span class="badge badge-dark">Owner</span>{% endif %}</td>
-          <td>{{mod.date_joined|date:"SHORT_DATETIME_FORMAT"}}</td>
+          <td>{{mod.date_joined|date:"m/d/Y H:i:s"}}</td>
           <td>{{ mod.modactions.all.count }}</td>
         </tr>
         {% endfor %}

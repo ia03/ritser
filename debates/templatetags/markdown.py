@@ -3,7 +3,6 @@ from django.utils.safestring import mark_safe
 from django.template.defaultfilters import stringfilter
 from debates.utils import clean
 import markdown
-import bleach
 
 register = template.Library()
 
@@ -13,6 +12,6 @@ register = template.Library()
 def markdownf(value, arg="0"):
     typ = int(arg)
     result = clean(markdown.markdown(
-                   value,
+                   clean(value, typ=2),
                    extensions=['markdown.extensions.tables']), typ=typ)
     return mark_safe(result)

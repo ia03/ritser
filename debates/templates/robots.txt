@@ -1,1 +1,11 @@
+User-agent: *
+Disallow: */edit
+Disallow: */edits
+
+# to protect the anonymity of those who delete their accounts
+
+User-agent: ia_archiver
+Disallow: /
+
+
 Sitemap: https://{{ request.get_host }}{% url 'sitemapindex' %}

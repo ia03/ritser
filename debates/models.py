@@ -63,6 +63,9 @@ class Topic(models.Model):
     def get_absolute_url(self):
         return reverse('topic', args=[self.name])
 
+    def get_info_url(self):
+        return reverse('topicinfo', args=[self.name])
+
     def get_edit_url(self):
         return reverse(
             'edittopic',
@@ -72,8 +75,7 @@ class Topic(models.Model):
         return reverse(
             'topicedits',
             args=[
-                self.topic_id,
-                self.id])
+                self.name])
 
     def __str__(self):
         return self.name
@@ -144,6 +146,10 @@ class Debate(models.Model):
             args=[
                 self.topic_id,
                 self.id])
+
+    def get_submit_url(self):
+        return reverse(
+            'submitargument') + '?debate=' + str(self.id)
 
     def __str__(self):
         return self.question

@@ -196,14 +196,17 @@ def topicinfo(request, tname):
 
 # use same template for different approval statuses, but change int that
 # says what type it is
-def debate(request, tname, did, **kwargs):
+def debate(request, tname, did):
     topic = get_object_or_404(Topic, name=tname)
     debate = get_object_or_404(Debate, id=did)
     if debate.topic != topic:
         return redirect(debate)
     user = request.user
-
-    if (kwargs['apprs'] == -1):
+    try:
+        apprs = int(request.GET.get('apprs', '-1'))
+    except ValueError:
+        return redirect(debate)
+    if (apprs == -1):
         if (debate.slvl == 0):
             cquery = Q(
                 approvalstatus=0) | Q(
@@ -213,16 +216,18 @@ def debate(request, tname, did, **kwargs):
             cquery = Q(approvalstatus=0) | Q(approvalstatus=1)
         else:
             cquery = Q(approvalstatus=0)
-    elif (kwargs['apprs'] == 0):
+    elif (apprs == 0):
         cquery = Q(approvalstatus=0)
-    elif (kwargs['apprs'] == 1):
+    elif (apprs == 1):
         cquery = Q(approvalstatus=1)
-    elif (kwargs['apprs'] == 2):
+    elif (apprs == 2):
         cquery = Q(approvalstatus=2)
+    else:
+        return redirect(debate)
     querysetf = debate.arguments.filter(Q(side=0) & cquery)
     queryseta = debate.arguments.filter(Q(side=1) & cquery)
 
-    if (kwargs['apprs'] == -1):
+    if (apprs == -1):
         # filter by no. of approved arguments by user and approvalstatus
         argumentslistf = querysetf.order_by(
             'approvalstatus', 'order', '-owner__approvedargs')
@@ -234,7 +239,7 @@ def debate(request, tname, did, **kwargs):
 
     argumentsf = getpage(pagef, argumentslistf, 10)
 
-    if (kwargs['apprs'] == -1):
+    if (apprs == -1):
         # filter by no. of approved arguments by user and approvalstatus
         argumentslista = queryseta.order_by(
             'approvalstatus', 'order', '-owner__approvedargs')
@@ -264,7 +269,7 @@ def debate(request, tname, did, **kwargs):
         'argumentsa': argumentsa,
         'pagef': pagef,
         'pagea': pagea,
-        'apprs': kwargs['apprs'],
+        'apprs': apprs,
         'vote': vote,
     }
     return render(request, 'debates/debate.html', context)

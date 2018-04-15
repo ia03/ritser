@@ -12,7 +12,9 @@
     <link rel="stylesheet" href="{% static "debates/css/base.css" %}">
 
     <link rel="icon" href="{% static 'debates/img/favicon.ico' %}">
-
+    
+    <link rel="canonical" href="https://{{ request.get_host }}{{ request.get_full_path }}">
+    
     <title>{% block title %}{% endblock %}</title>
     {% block head %}{% endblock %}
   </head>

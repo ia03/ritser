@@ -17,7 +17,7 @@ run python3 manage.py makemigrations and python3 manage.py migrate
 
 run python3 manage.py createinitialrevisions
 
-change SITE_ID in settings.py
+add a site in admin page and change SITE_ID in settings.py
 
 register api on reddit https://www.reddit.com/wiki/api
 

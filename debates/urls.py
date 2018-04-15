@@ -1,4 +1,5 @@
 from django.urls import path, re_path
+from django.contrib.sitemaps.views import sitemap
 from . import views
 
 
@@ -9,6 +10,7 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('rules/', views.rules, name='rules'),
     path('cookies/', views.cookies, name='cookies'),
+    #Static pages above listed in sitemap
     path('feed/', views.feed, name='feed'),
     path('t/<slug:tname>/', views.topic, name='topic'),
     path('t/<slug:tname>/info', views.topicinfo, name='topicinfo'),

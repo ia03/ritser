@@ -16,8 +16,21 @@ Including another URLconf
 from django.contrib import admin
 from django.conf import settings
 from django.urls import include, path, re_path
+from django.views.generic import TemplateView
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.views.generic.base import RedirectView
+from django.contrib.sitemaps import views as smapviews
+from debates.sitemaps import StaticViewSitemap, TopicSitemap, DebateSitemap, ArgumentSitemap
+from accounts.sitemaps import UserSitemap
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'topic': TopicSitemap,
+    'debate': DebateSitemap,
+    'argument': ArgumentSitemap,
+    'user': UserSitemap,
+}
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +44,18 @@ urlpatterns = [
     re_path(r'^accounts/', include('allauth.urls')),
     # path('signup', accounts.views.signup, name='signup'),
     re_path(r'^', include('debates.urls')),
+    # sitemaps
+    path('sitemap.xml',
+         smapviews.index,
+         {'sitemaps': sitemaps},
+         name='sitemapindex'),
+    path('sitemap-<section>.xml', smapviews.sitemap, {'sitemaps': sitemaps},
+         name='django.contrib.sitemaps.views.sitemap'),
+    re_path(
+        r'^robots.txt$',
+        TemplateView.as_view(template_name="robots.txt",
+                             content_type="text/plain"),
+        name="robots_file")
 ]
 
 

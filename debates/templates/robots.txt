@@ -1,0 +1,1 @@
+Sitemap: https://{{ request.get_host }}{% url 'sitemapindex' %}

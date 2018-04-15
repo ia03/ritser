@@ -41,8 +41,6 @@
 .dtit {
   color: black;
   text-decoration: none;
-  word-break: break-word;
-  word-wrap: break-word;
 }
 .dtit:hover {
   color: black;

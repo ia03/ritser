@@ -41,8 +41,6 @@
 .atit {
   color: black;
   text-decoration: none;
-  word-break: break-word;
-  word-wrap: break-word;
 }
 .atit:hover {
   color: black;

@@ -9,6 +9,8 @@
 html {
   position: relative;
   min-height: 100%;
+  word-break: break-word;
+  word-wrap: break-word;
 }
 body {
   margin-bottom: 60px; /* Margin bottom by footer height */

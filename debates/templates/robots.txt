@@ -1,6 +1,10 @@
 User-agent: *
 Disallow: */edit/
 Disallow: */edits/
+Disallow: /*?*apprs=
+Disallow: /*?*sort=
+Disallow: /*?*pagef=
+Disallow: /*?*pagea=
 
 # to protect the anonymity of those who delete their accounts
 

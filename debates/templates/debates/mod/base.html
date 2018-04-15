@@ -35,8 +35,11 @@
         <a class="nav-link" href="{{ delete }}">Delete{% if request.path == delete %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
       {% url 'staff' as staff %}
-      <li class="nav-item{% if request.path == staff %} active{% endif %}">
-        <a class="nav-link" href="{{ staff }}">Staff{% if request.path == staff %} <span class="sr-only">(current)</span>{% endif %}</a>
+      {% url 'staffgmods' as staffgmods %}
+      {% url 'staffadmins' as staffadmins %}
+      {% url 'staffowners' as staffowners %}
+      <li class="nav-item{% if request.path == staff or request.path == staffgmods or request.path == staffadmins or request.path == staffowners %} active{% endif %}">
+        <a class="nav-link" href="{{ staff }}">Staff{% if request.path == staff or request.path == staffgmods or request.path == staffadmins or request.path == staffowners %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
       {% url 'modlogs' as modlogs %}
       <li class="nav-item{% if request.path == modlogs %} active{% endif %}">

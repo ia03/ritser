@@ -19,7 +19,7 @@ This user's account is currently suspended. {% if user.isgmod %}<a href="{% url 
 <a href="{% url 'ban' %}?user={{ puser.username }}" class="text-danger">Suspend/Terminate</a>
 <br>
 {% endif %}
-{% if user.isadmin and not puser.isadmin or user.isowner %}
+{% if user.isowner or user.isadmin and user.modstatus > puser.modstatus %}
 <a href="{{ puser.get_modstatus_url }}">Change mod status</a>
 <br>
 {% endif %}

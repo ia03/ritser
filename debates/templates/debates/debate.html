@@ -51,7 +51,7 @@
             {% for argument in argumentsf %}
             <div class="list-group-item list-group-item-action flex-column align-items-start" data-debate-id="{{ debate.id }}">
               <div class="d-flex w-100 justify-content-between">
-                <a href="{{ argument.get_absolute_url }}" class="atit"><h5 class="mb-1">{{ argument.title }}</h5></a>
+                <h5 class="mb-1"><a href="{{ argument.get_absolute_url }}" class="atit">{{ argument.title }}</a></h5>
               </div>
                 <p class="mb-0 argdesc">{{ argument.body|markdownf }}</p>
                 <small class="sinfo"><a href="{{ argument.owner.get_absolute_url}}">{{argument.owner.get_username }}</a> - <span title="{{ argument.created_on|date:"c" }}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
@@ -119,7 +119,7 @@
             {% for argument in argumentsa %}
             <div class="list-group-item list-group-item-action flex-column align-items-start" data-debate-id="{{ debate.id }}">
               <div class="d-flex w-100 justify-content-between">
-                <a href="{{ argument.get_absolute_url }}" class="atit"><h5 class="mb-1">{{ argument.title }}</h5></a>
+                <h5 class="mb-1"><a href="{{ argument.get_absolute_url }}" class="atit">{{ argument.title }}</a></h5>
               </div>
                 <p class="mb-0">{{ argument.body|markdownf }}</p>
                 <small class="sinfo"><a href="{{ argument.owner.get_absolute_url}}">{{argument.owner.get_username }}</a> - <span title="{{ argument.created_on|date:"c" }}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Danger</span>{% endif %}</small>

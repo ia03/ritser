@@ -75,16 +75,16 @@ class ViewTestCase (TestCase):
         self.assertEqual(found.func, debate)
 
     def test_debatepassed(self):
-        response = self.client.get('/t/test/%s/' % self.test_debate.id)
+        response = self.client.get('/t/test/%s,%s/' % (self.test_debate.id, self.test_debate.slugify()))
         print(vars(response.context))
         self.assertEqual(response.context['debate'], self.test_debate)
 
     def test_argumentslist(self):
-        response = self.client.get('/t/test/%s/' % self.test_debate.id)
+        response = self.client.get('/t/test/%s,%s/' % (self.test_debate.id, self.test_debate.slugify()))
         self.assertEqual(response.context['argumentsf'][0], self.test_argument)
 
     def test_argumentslista(self):
-        response = self.client.get('/t/test/%s/' % self.test_debate.id)
+        response = self.client.get('/t/test/%s,%s/' % (self.test_debate.id, self.test_debate.slugify()))
         self.assertEqual(
             response.context['argumentsa'][0],
             self.test_argumenta)

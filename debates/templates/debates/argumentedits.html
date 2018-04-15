@@ -8,7 +8,7 @@
     Owner: <a href="{{ argument.owner.get_absolute_url}}">{{argument.owner.get_username }}</a>
     Status: {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
     Topic: <a href="{{ topic.get_absolute_url}}">{{topic.name }}</a>
-    Debate: <a href="{{ debate.get_absolute_url}}">{{debate.question }}</a> - <a href="{% url 'editargument' tname=topic.name did=debate.id aid=argument.id %}">Edit/View source</a> - <a href="{{ argument.get_absolute_url }}">Link</a>
+    Debate: <a href="{{ debate.get_absolute_url}}">{{debate.question }}</a> - <a href="{{ argument.get_edit_url }}">Edit/View source</a> - <a href="{{ argument.get_absolute_url }}">Link</a>
     {% if argument.modnote %}
     {% load modnotes %}
     {% modnotes argument.modnote|markdownf %}

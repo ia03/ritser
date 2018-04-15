@@ -194,12 +194,10 @@ def topicinfo(request, tname):
     return render(request, 'debates/topicinfo.html', context)
 
 
-# use same template for different approval statuses, but change int that
-# says what type it is
-def debate(request, tname, did):
+def debate(request, tname, did, ds=None):
     topic = get_object_or_404(Topic, name=tname)
     debate = get_object_or_404(Debate, id=did)
-    if debate.topic != topic:
+    if debate.topic != topic or ds != debate.slugify():
         return redirect(debate)
     user = request.user
     try:
@@ -275,11 +273,12 @@ def debate(request, tname, did):
     return render(request, 'debates/debate.html', context)
 
 
-def argument(request, tname, did, aid):
+def argument(request, tname, did, aid, ds=None, ars=None):
     topic = get_object_or_404(Topic, name=tname)
     debate = get_object_or_404(Debate, id=did)
     argument = get_object_or_404(Argument, id=aid)
-    if argument.debate != debate or argument.topic != topic:
+    if argument.debate != debate or argument.topic != topic or (
+        debate.slugify() != ds or argument.slugify() != ars):
         return redirect(argument)
 
     context = {
@@ -327,12 +326,12 @@ def submitdebate(request):
 
 
 @login_required
-def editdebate(request, tname, did):
+def editdebate(request, tname, did, ds=None):
     debate = get_object_or_404(Debate, id=did)
     oquestion = debate.question
     odescription = debate.description
     topic = get_object_or_404(Topic, name=tname)
-    if debate.topic != topic:
+    if debate.topic != topic or ds != debate.slugify():
         return redirect(debate.get_edit_url())
     user = request.user
 
@@ -410,7 +409,7 @@ def submitargument(request):
 
 
 @login_required
-def editargument(request, tname, did, aid):
+def editargument(request, tname, did, aid, ds=None, ars=None):
     argument = get_object_or_404(Argument, id=aid)
     debate = get_object_or_404(Debate, id=did)
     otitle = argument.title
@@ -418,7 +417,8 @@ def editargument(request, tname, did, aid):
     topic = get_object_or_404(Topic, name=tname)
     user = request.user
 
-    if argument.debate != debate or argument.topic != topic:
+    if argument.debate != debate or argument.topic != topic or (
+        debate.slugify() != ds or argument.slugify() != ars):
         return redirect(argument.get_edit_url())
 
     if request.method == 'POST':
@@ -468,11 +468,11 @@ def editargument(request, tname, did, aid):
     return render(request, 'debates/edit_argument.html', context)
 
 
-def debateedits(request, tname, did):
+def debateedits(request, tname, did, ds=None):
     topic = get_object_or_404(Topic, name=tname)
     debate = get_object_or_404(Debate, id=did)
     user = request.user
-    if debate.topic != topic:
+    if debate.topic != topic or ds != debate.slugify():
         return redirect(debate.get_edits_url())
     versionslist = Version.objects.get_for_object(debate)
     page = request.GET.get('page', 1)
@@ -492,11 +492,12 @@ def debateedits(request, tname, did):
     return render(request, 'debates/debateedits.html', context)
 
 
-def argumentedits(request, tname, did, aid):
+def argumentedits(request, tname, did, aid, ds=None, ars=None):
     topic = get_object_or_404(Topic, name=tname)
     debate = get_object_or_404(Debate, id=did)
     argument = get_object_or_404(Argument, id=aid)
-    if argument.debate != debate or argument.topic != topic:
+    if argument.debate != debate or argument.topic != topic or (
+        debate.slugify() != ds or argument.slugify() != ars):
         return redirect(argument.get_edits_url())
     user = request.user
     versionslist = Version.objects.get_for_object(argument)

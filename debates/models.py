@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django.utils.text import slugify
 from django.utils import timezone
 from django.urls import reverse
 from accounts.models import User
@@ -77,6 +78,10 @@ class Topic(models.Model):
             args=[
                 self.name])
 
+    def get_submit_url(self):
+        return reverse(
+            'submitdebate') + '?topic=' + str(self.name)
+
     def __str__(self):
         return self.name
 
@@ -131,25 +136,33 @@ class Debate(models.Model):
         return self.arguments.filter(approvalstatus=2).count()
 
     def get_absolute_url(self):
-        return reverse('debate', args=[self.topic.name, self.id])
+        return reverse('debate', args=[
+            self.topic.name,
+            self.id,
+            self.slugify()])
 
     def get_edit_url(self):
         return reverse(
             'editdebate',
             args=[
                 self.topic_id,
-                self.id])
+                self.id,
+                self.slugify()])
                 
     def get_edits_url(self):
         return reverse(
             'debateedits',
             args=[
                 self.topic_id,
-                self.id])
+                self.id,
+                self.slugify()])
 
     def get_submit_url(self):
         return reverse(
             'submitargument') + '?debate=' + str(self.id)
+
+    def slugify(self):
+        return slugify(self.question)
 
     def __str__(self):
         return self.question
@@ -198,7 +211,9 @@ class Argument(models.Model):
             args=[
                 self.topic_id,
                 self.debate_id,
-                self.id])
+                self.debate.slugify(),
+                self.id,
+                self.slugify()])
 
     def get_edit_url(self):
         return reverse(
@@ -206,7 +221,9 @@ class Argument(models.Model):
             args=[
                 self.topic_id,
                 self.debate_id,
-                self.id])
+                self.debate.slugify(),
+                self.id,
+                self.slugify()])
                 
     def get_edits_url(self):
         return reverse(
@@ -214,7 +231,12 @@ class Argument(models.Model):
             args=[
                 self.topic_id,
                 self.debate_id,
-                self.id])
+                self.debate.slugify(),
+                self.id,
+                self.slugify()])
+
+    def slugify(self):
+        return slugify(self.title)
 
     def __str__(self):
         return self.title

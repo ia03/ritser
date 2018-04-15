@@ -5,7 +5,7 @@ from django.db.models import Q
 
 
 class StaticViewSitemap(Sitemap):
-    priority = 0.5
+    priority = 1.0
     changefreq = 'daily'
 
     def items(self):
@@ -17,7 +17,7 @@ class StaticViewSitemap(Sitemap):
 
 class TopicSitemap(Sitemap):
     changefreq = "daily"
-    priority = 0.7
+    priority = 0.9
     
     def items(self):
         return Topic.objects.all()
@@ -28,7 +28,7 @@ class TopicSitemap(Sitemap):
 
 class DebateSitemap(Sitemap):
     changefreq = "hourly"
-    priority = 0.4
+    priority = 0.8
     
     def items(self):
         return Debate.objects.filter(~Q(approvalstatus=3))
@@ -39,7 +39,7 @@ class DebateSitemap(Sitemap):
 
 class ArgumentSitemap(Sitemap):
     changefreq = "hourly"
-    priority = 0.3
+    priority = 0.7
     
     def items(self):
         return Argument.objects.filter(~Q(approvalstatus=3))

@@ -8,7 +8,7 @@
   Topic: <a href="{{ topic.get_absolute_url}}">{{topic.name }}</a> -
   Owner:
   <a href="{{ debate.owner.get_absolute_url}}">{{debate.owner.get_username }}</a> -
-  Security Level: {{ debate.slvl }}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %} - <a href="{% url 'editdebate' tname=debate.topic.name did=debate.id %}">Edit/View source</a> - <a href="{{ debate.get_absolute_url }}">Link</a>
+  Security Level: {{ debate.slvl }}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %} - <a href="{{ debate.get_edits_url }}">Edit/View source</a> - <a href="{{ debate.get_absolute_url }}">Link</a>
   {% if debate.modnote %}
   {% load modnotes %}
   {% modnotes debate.modnote|markdownf %}

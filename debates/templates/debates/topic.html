@@ -4,7 +4,6 @@
 {% block title %}{% if topic.title != "" %}{{ topic.title }}{% else %}t/{{ topic.name }}{% endif %} - MoDebate{% endblock %}
 
 {% block head %}<link rel="stylesheet" href="{% static "debates/css/topic.css" %}">
-<link rel="stylesheet" href="{% static "debates/css/debateslist.css" %}">
 {% if topic.description %}<meta name="description" content="{{ topic.description|markdownf|striptags|truncatechars:300 }}">{% endif %}
 {% endblock %}
 
@@ -48,7 +47,4 @@
 
 {% endblock %}
 
-{% block endjs %}
-<script src="https://cdn.jsdelivr.net/npm/js-cookie@2.2.0/src/js.cookie.min.js"></script>
-<script src="{% static "debates/js/topic.js" %}"></script>
-<script src="{% static "debates/js/debatevote.js" %}"></script>{% endblock %}
+{% block endjs %}<script src="{% static "debates/js/topic.js" %}"></script>{% endblock %}

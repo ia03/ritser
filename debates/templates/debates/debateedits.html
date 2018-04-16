@@ -8,7 +8,7 @@
   Topic: <a href="{{ topic.get_absolute_url}}">{{topic.name }}</a> -
   Owner:
   <a href="{{ debate.owner.get_absolute_url}}">{{debate.owner.get_username }}</a> -
-  Security Level: {{ debate.slvl }}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %} - <a href="{{ debate.get_edits_url }}">Edit/View source</a> - <a href="{{ debate.get_absolute_url }}">Link</a>
+  Security Level: {{ debate.slvl }}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% elif debate.approvalstatus == 3 %} <span class="badge badge-pill badge-dark">Hidden</span>{% endif %} - <a href="{{ debate.get_edits_url }}">Edit/View source</a> - <a href="{{ debate.get_absolute_url }}">Link</a>
   {% if debate.modnote %}
   {% load modnotes %}
   {% modnotes debate.modnote|markdownf %}
@@ -33,7 +33,7 @@
           Owner: <a href="{{ version|owner|url}}">{{version|owner|username }}</a> <br>{% endifchanged %}
           {% ifchanged %}Security level: {{ version|field:"slvl" }}
           <br>{% endifchanged%}
-          {% ifchanged %}Approval Status: {% if version|field:"approvalstatus" == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif version|field:"approvalstatus" == 1 %} <span class="badge badge-secondary">Unapproved</span>{% elif version|field:"approvalstatus" == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %}
+          {% ifchanged %}Approval Status: {% if version|field:"approvalstatus" == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif version|field:"approvalstatus" == 1 %} <span class="badge badge-secondary">Unapproved</span>{% elif version|field:"approvalstatus" == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% elif version|field:"approvalstatus" == 3 %} <span class="badge badge-pill badge-dark">Hidden</span>{% endif %}
           <br>{% endifchanged %}
           {% ifchanged version|field:"modnote" %}{% modnotes version|field:"modnote" forloop.counter %}
           <br>{% endifchanged %}

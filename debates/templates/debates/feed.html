@@ -3,8 +3,6 @@
 
 {% block title %}Feed - MoDebate{% endblock %}
 
-{% block head %}<link rel="stylesheet" href="{% static "debates/css/debateslist.css" %}">{% endblock %}
-
 {% block body %}
     <main role="main" class="container">
       <h1 class="mt-5">Feed</h1>
@@ -23,7 +21,3 @@
     </main>
 
 {% endblock %}
-
-{% block endjs %}
-<script src="https://cdn.jsdelivr.net/npm/js-cookie@2.2.0/src/js.cookie.min.js"></script>
-<script src="{% static "debates/js/debatevote.js" %}"></script>{% endblock %}

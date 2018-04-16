@@ -12,6 +12,10 @@
       <li class="nav-item{% if request.path == profile %} active{% endif %}">
         <a class="nav-link" href="{{ profile }}">Profile{% if request.path == profile %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
+      {% url 'saveddebates' as saved %}
+      <li class="nav-item{% if request.path == saved %} active{% endif %}">
+        <a class="nav-link" href="{{ saved }}">Saved{% if request.path == saved %} <span class="sr-only">(current)</span>{% endif %}</a>
+      </li>
       {% url 'account_change_password' as chgpwd %}
       {% url 'account_set_password' as setpwd %}
       <li class="nav-item{% if request.path == chgpwd or request.path == setpwd %} active{% endif %}">

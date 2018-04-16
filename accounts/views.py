@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.db.models import Q
 from .models import User, ModAction
 from .forms import ProfileForm, DeleteUserForm, SetStaffForm
 from .utils import DeleteUser
@@ -21,7 +22,7 @@ def userarguments(request, uname):
             request.user.is_authenticated and request.user.isgmod()):
         return render(request, 'accounts/userinactive.html', {'puser': user})
 
-    queryset = user.arguments.all()
+    queryset = user.arguments.filter(~Q(approvalstatus=3))
 
     argumentslist = queryset.order_by('-created_on')
 
@@ -44,7 +45,7 @@ def userdebates(request, uname):
             request.user.is_authenticated and request.user.isgmod()):
         return render(request, 'accounts/userinactive.html', {'puser': user})
 
-    queryset = user.debates.all()
+    queryset = user.debates.filter(~Q(approvalstatus=3))
 
     debateslist = queryset.order_by('-created_on')
 
@@ -76,6 +77,28 @@ def profile(request):
     }
     return render(request, 'accounts/profile.html', context)
 
+@login_required
+def saveddebates(request):
+    user = request.user
+    debates_list = user.savedd.all()
+    page = request.GET.get('page', 1)
+    debates = getpage(page, debates_list, 30)
+    context = {
+        'debates': debates,
+    }
+    return render(request, 'accounts/saveddebates.html', context)
+
+@login_required
+def savedarguments(request):
+    user = request.user
+    arguments_list = user.saveda.all()
+    page = request.GET.get('page', 1)
+    arguments = getpage(page, arguments_list, 25)
+    context = {
+        'arguments': arguments,
+        'usercol': True,
+    }
+    return render(request, 'accounts/savedarguments.html', context)
 
 def inactive(request):
     useriaid = request.session.pop('useriaid', -1)

@@ -2,26 +2,25 @@
 
 {% block body %}
 <main role="main" class="container">
-        
-        {% block htitle %}{% endblock %}
-        <div class="row">
-        <div class="col-md-3">
-            <div class="list-group">
-            {% url 'unapprovedargs' as unapprovedargs %}
-              <a href="{{ unapprovedargs }}" class="list-group-item list-group-item-action{% if request.path == unapprovedargs %} active{% endif %}">
-                Arguments
-                <span class="badge badge-{% if request.path == unapprovedargs %}light{% else %}primary{% endif %} badge-pill">{{ user.unapprovedargslist.count }}</a>
-              </a>
-            {% url 'unapproveddebs' as unapproveddebs %}
-              <a href="{{ unapproveddebs }}" class="list-group-item list-group-item-action{% if request.path == unapproveddebs %} active{% endif %}">
-                Debates
-                <span class="badge badge-{% if request.path == unapproveddebs %}light{% else %}primary{%endif %} badge-pill">{{ user.unapproveddebslist.count }}</a>
-              </a>
-            </div>
-        </div>
-        <div class="col-md-9">
-            {% block subbody %}{% endblock %}
-        </div>
+    {% block htitle %}{% endblock %}
+    <div class="row">
+    <div class="col-md-3">
+      <div class="list-group">
+      {% url 'unapprovedargs' as unapprovedargs %}
+        <a href="{{ unapprovedargs }}" class="list-group-item list-group-item-action{% if request.path == unapprovedargs %} active{% endif %}">
+          Arguments
+          <span class="badge badge-{% if request.path == unapprovedargs %}light{% else %}primary{% endif %}">{{ user.unapprovedargslist.count }}</a>
+        </a>
+      {% url 'unapproveddebs' as unapproveddebs %}
+        <a href="{{ unapproveddebs }}" class="list-group-item list-group-item-action{% if request.path == unapproveddebs %} active{% endif %}">
+          Debates
+          <span class="badge badge-{% if request.path == unapproveddebs %}light{% else %}primary{% endif %}">{{ user.unapproveddebslist.count }}</a>
+        </a>
+      </div>
     </div>
+    <div class="col-md-9">
+        {% block subbody %}{% endblock %}
+    </div>
+  </div>
 </main>
 {% endblock %}

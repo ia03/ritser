@@ -11,6 +11,8 @@ urlpatterns = [
     path('u/<slug:uname>/debates', views.userdebates, name='userdebates'),
     path('u/<slug:uname>/modstatus', views.modstatus, name='usermodstatus'),
     path('accounts/profile/', views.profile, name='profile'),
+    path('accounts/saved/debates/', views.saveddebates, name='saveddebates'),
+    path('accounts/saved/arguments/', views.savedarguments, name='savedarguments'),
     path(
         'accounts/inactive/',
         views.inactive,

@@ -37,12 +37,12 @@ Bio:
 <ul class="nav nav-tabs">
   <li class="nav-item">
     {% with puser.get_arguments as args %}
-    <a class="nav-link{% if request.path == args or request.path == puser.get_absolute_url %} active{% endif %}" href="{{ args }}">Arguments <span class="badge badge-primary badge-pill">{{ puser.arguments.count }}</span></a>
+    <a class="nav-link{% if request.path == args or request.path == puser.get_absolute_url %} active{% endif %}" href="{{ args }}">Arguments <span class="badge badge-primary">{{ puser.acount }}</span></a>
     {% endwith %}
   </li>
   <li class="nav-item">
     {% with puser.get_debates as debs %}
-    <a class="nav-link{% if request.path == debs %} active{% endif %}" href="{{ debs }}">Debates <span class="badge badge-primary badge-pill">{{ puser.debates.count }}</span></a>
+    <a class="nav-link{% if request.path == debs %} active{% endif %}" href="{{ debs }}">Debates <span class="badge badge-primary">{{ puser.dcount }}</span></a>
     {% endwith %}
   </li>
 </ul>

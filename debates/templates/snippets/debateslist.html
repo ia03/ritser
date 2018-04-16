@@ -1,13 +1,13 @@
 {% if debates %}
 {% load humanize markdown %}
-<div class="list-group" data-vote-url="{% url 'votedebate' %}">
+<div class="list-group">
 {% for debate in debates %}
-<div class="list-group-item list-group-item-action flex-column align-items-start container" data-debate-id="{{ debate.id }}">
+<div class="list-group-item list-group-item-action flex-column align-items-start container">
   <div class="row">
-    <div class="col-md-1 karmad">
-      {% if user.is_authenticated %}<div class="arrow-up{% if debate in user.debates_upvoted.all %}-selected{% endif %} votebtn"></div>{% endif %}
+    <div class="col-md-1 karmad" data-vote-url="{% url 'votedebate' %}" data-debate-id="{{ debate.id }}">
+      {% if user.hasperm %}<div class="arrow-up{% if debate in user.debates_upvoted.all %}-selected{% endif %} votebtn"></div>{% endif %}
       <span class="karmacount" title="karma (votes)">{{ debate.karma|intcomma }}</span>
-      {% if user.is_authenticated %}<div class="arrow-down{% if debate in user.debates_downvoted.all %}-selected{% endif %} votebtn"></div>{% endif %}
+      {% if user.hasperm %}<div class="arrow-down{% if debate in user.debates_downvoted.all %}-selected{% endif %} votebtn"></div>{% endif %}
     </div>
     <div class="col-md-11">
       <div class="d-flex w-100 justify-content-between">
@@ -17,7 +17,7 @@
 
       <p class="mb-1">{{ debate.description|markdownf:"1"|truncatewords_html:50|truncatechars_html:500 }}</p>
 
-      {% if topicdebateslist %}<small><a href="{{ debate.owner.get_absolute_url}}">{{debate.owner.get_username }}</a> - {% if topic.slvl > 1 %}<span title="{{ debate.approved_on|date:"c" }}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{ debate.created_on|date:"c" }}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% endif %}</small>{% else %}<small><a href="{{ debate.owner.get_absolute_url}}">{{debate.owner.get_username }}</a> in <a href="{{ debate.topic.get_absolute_url}}">{{debate.topic.name }}</a> - <span title="{{ debate.created_on|date:"c" }}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% endif %}</small>{% endif %}
+      <small>{% if topicdebateslist %}<a href="{{ debate.owner.get_absolute_url}}">{{debate.owner.get_username }}</a> - {% if topic.slvl > 1 %}<span title="{{ debate.approved_on|date:"c" }}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{ debate.created_on|date:"c" }}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}{% else %}<a href="{{ debate.owner.get_absolute_url}}">{{debate.owner.get_username }}</a> in <a href="{{ debate.topic.get_absolute_url}}">{{debate.topic.name }}</a> - <span title="{{ debate.created_on|date:"c" }}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}{% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% endif %}{% if user.is_authenticated %} {% include 'snippets/dsavelink.html' %}{% endif %}</span></small>
       <div class="arglinks">
         <a href="{{ debate.get_absolute_url }}?apprs=0" class="badge badge-primary">Approved: {{ debate.numapproved }}</a>
         <a href="{{ debate.get_absolute_url }}?apprs=1" class="badge badge-secondary">Unapproved: {{ debate.numunapproved }}</a>

@@ -1,0 +1,27 @@
+{% extends "account/base.html" %}
+
+{% block body %}
+<main role="main" class="container">
+    {% block htitle %}{% endblock %}
+    
+    <div class="row">
+        <div class="col-md-3">
+          <div class="list-group">
+          {% url 'saveddebates' as saveddebates %}
+            <a href="{{ saveddebates }}" class="list-group-item list-group-item-action{% if request.path == saveddebates %} active{% endif %}">
+              Saved Debates
+              <span class="badge badge-{% if request.path == saveddebates %}light{% else %}primary{% endif %}">{{ user.savedd.count }}</a>
+            </a>
+          {% url 'savedarguments' as savedarguments %}
+            <a href="{{ savedarguments }}" class="list-group-item list-group-item-action{% if request.path == savedarguments %} active{% endif %}">
+              Saved Arguments
+              <span class="badge badge-{% if request.path == savedarguments %}light{% else %}primary{% endif %}">{{ user.saveda.count }}</a>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-9">
+            {% block subbody %}{% endblock %}
+        </div>
+      </div>
+</main>
+{% endblock %}

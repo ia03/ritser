@@ -5,7 +5,7 @@
 {% block title %}Your Profile - MoDebate{% endblock %}
 
 {% block body %}
-    <main role="main" class="container">
+<main role="main" class="container">
     <h1>Your Profile</h1>
     <p>View the rules <a href="{% url 'rules' %}">here.</a> To delete your account, visit <a href="{% url 'account_delete' %}">this</a> link. <a href="{{ user.get_absolute_url }}">Public Profile</a></p>
     {% include 'snippets/formerrors.html' %}
@@ -21,5 +21,5 @@
         </div>
         <input class="btn btn-primary" type="submit" name="action" value="Edit Profile"/>
     </form>
-    </main>
+</main>
 {% endblock %}

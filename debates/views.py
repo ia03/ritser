@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -10,7 +10,7 @@ from .forms import (DebateForm, ArgumentForm, TopicForm, BanForm,
                     UnsuspendForm, DeleteForm, MoveForm, UpdateSlvlForm)
 from .utils import getpage, newdiff, debateslist, htmldiffs, clean
 from accounts.utils import DeleteUser
-from accounts.models import User, ModAction
+from accounts.models import User, ModAction, SavedDebate, SavedArgument
 from accounts.decorators import mod_required, gmod_required
 from ipware import get_client_ip
 from .templatetags.markdown import markdownf
@@ -118,7 +118,6 @@ def topic(request, tname):
 
     context = {
         'fmods': fmods,
-        'minjq': True,
         'ats': ats,
         'mods': mods,
         'topic': topic,
@@ -128,55 +127,6 @@ def topic(request, tname):
         'topicdebateslist': True,
     }
     return render(request, 'debates/topic.html', context)
-
-
-def votedebate(request):
-    debate_id = int(request.POST.get('id'))
-    vote = int(request.POST.get('vote'))
-    if not (request.user.is_authenticated and request.user.hasperm()):
-        return HttpResponse(
-            'error - you do not have permission to perform that action')
-    debate = get_object_or_404(Debate, id=debate_id)
-    user = request.user
-    if (debate.users_upvoting.filter(id=user.id).count() == 1):
-        ovote = 1
-    elif (debate.users_downvoting.filter(id=user.id).count() == 1):
-        ovote = -1
-    else:
-        ovote = 0
-
-    if (vote == 1):
-        if (ovote == 1):
-            return HttpResponse('error - already upvoted')
-        if (ovote == 0):
-            debate.karma += 1
-            debate.users_upvoting.add(user)
-        if (ovote == -1):
-            debate.karma += 2
-            debate.users_upvoting.add(user)
-            debate.users_downvoting.remove(user)
-    elif (vote == 0):
-        if (ovote == 1):
-            debate.karma -= 1
-            debate.users_upvoting.remove(user)
-        if (ovote == 0):
-            return HttpResponse(debate.karma)
-        if (ovote == -1):
-            debate.karma += 1
-            debate.users_downvoting.remove(user)
-    elif (vote == -1):
-        if (ovote == 1):
-            debate.karma -= 2
-            debate.users_downvoting.add(user)
-            debate.users_upvoting.remove(user)
-        if (ovote == 0):
-            debate.karma -= 1
-            debate.users_downvoting.add(user)
-        if (ovote == -1):
-            return HttpResponse('error - already downvoted')
-
-    debate.save()
-    return HttpResponse(debate.karma)
 
 
 def topicinfo(request, tname):
@@ -263,7 +213,6 @@ def debate(request, tname, did, ds=None):
     
     context = {
         'debate': debate,
-        'minjq': True,
         'topic': topic,
         'argumentsf': argumentsf,
         'argumentsa': argumentsa,
@@ -271,6 +220,8 @@ def debate(request, tname, did, ds=None):
         'pagea': pagea,
         'apprs': apprs,
         'vote': vote,
+        'debv': True,
+        'usercol': True,
     }
     return render(request, 'debates/debate.html', context)
 
@@ -625,6 +576,93 @@ def topicedits(request, tname):
     }
     return render(request, 'debates/topicedits.html', context)
 
+'''
+      AJAX VIEWS
+'''
+def votedebate(request):
+    if request.method == 'POST':
+        debate_id = int(request.POST.get('id'))
+        vote = int(request.POST.get('vote'))
+        user = request.user
+        if not (user.is_authenticated and user.hasperm()):
+            return HttpResponseBadRequest(
+                'error - you do not have permission to perform that action')
+        debate = get_object_or_404(Debate, id=debate_id)
+        if (debate.users_upvoting.filter(id=user.id).count() == 1):
+            ovote = 1
+        elif (debate.users_downvoting.filter(id=user.id).count() == 1):
+            ovote = -1
+        else:
+            ovote = 0
+    
+        if (vote == 1):
+            if (ovote == 1):
+                return HttpResponseBadRequest('error - already upvoted')
+            if (ovote == 0):
+                debate.karma += 1
+                debate.users_upvoting.add(user)
+            if (ovote == -1):
+                debate.karma += 2
+                debate.users_upvoting.add(user)
+                debate.users_downvoting.remove(user)
+        elif (vote == 0):
+            if (ovote == 1):
+                debate.karma -= 1
+                debate.users_upvoting.remove(user)
+            if (ovote == 0):
+                return HttpResponse(debate.karma)
+            if (ovote == -1):
+                debate.karma += 1
+                debate.users_downvoting.remove(user)
+        elif (vote == -1):
+            if (ovote == 1):
+                debate.karma -= 2
+                debate.users_downvoting.add(user)
+                debate.users_upvoting.remove(user)
+            if (ovote == 0):
+                debate.karma -= 1
+                debate.users_downvoting.add(user)
+            if (ovote == -1):
+                return HttpResponseBadRequest('error - already downvoted')
+    
+        debate.save()
+        return HttpResponse(debate.karma)
+    raise Http404()
+    
+def save(request):
+    if request.method == 'POST':
+        pid = int(request.POST.get('id'))
+        typ = int(request.POST.get('typ'))
+        save = int(request.POST.get('save'))
+        user = request.user
+        if not user.is_authenticated:
+            return HttpResponseBadRequest(
+                'you must be logged in to perform that action')
+        if typ == 0:
+            debate = get_object_or_404(Debate, id=pid)
+            if save == 0:
+                if not SavedDebate.objects.filter(
+                    user=user, debate=debate).exists():
+                    SavedDebate.objects.create(user=user, debate=debate)
+                else:
+                    return HttpResponseBadRequest('error - already saved')
+            else:
+                SavedDebate.objects.filter(user=user, debate=debate).delete()
+            
+        else:
+            argument = get_object_or_404(Argument, id=pid)
+            if save == 0:
+                if not SavedArgument.objects.filter(
+                    user=user, argument=argument).exists():
+                    SavedArgument.objects.create(user=user, argument=argument)
+                else:
+                    return HttpResponseBadRequest('error - already saved')
+            else:
+                SavedArgument.objects.filter(
+                    user=user, argument=argument).delete()
+        return HttpResponse('')
+    raise Http404()
+
 
 '''
 		MISC PAGES
@@ -652,7 +690,6 @@ def feed(request):
     context = {
         'topics': topics,
         'debates': debates,
-        'minjq': True,
         'dupvoted': dupvoted,
         'ddownvoted': ddownvoted,
     }
@@ -685,7 +722,6 @@ def search(request):
         'debates': debates,
         'query': query,
         'tname': tname,
-        'minjq': True,
         'dupvoted': dupvoted,
         'ddownvoted': ddownvoted,
     }
@@ -949,7 +985,6 @@ def unapproveddebs(request):
     unapproveddebs = getpage(page, unapproveddebs_list, 30)
     context = {
         'debates': unapproveddebs,
-        'minjq': True,
     }
     return render(request, 'debates/mod/unapproveddebs.html', context)
 

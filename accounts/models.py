@@ -31,6 +31,16 @@ class User(AbstractUser):
         'debates.Topic',
         related_name='susers',
         blank=True)
+    savedd = models.ManyToManyField(
+        'debates.Debate',
+        related_name='usaved',
+        blank=True,
+        through='SavedDebate')
+    saveda = models.ManyToManyField(
+        'debates.Argument',
+        related_name='usaved',
+        blank=True,
+        through='SavedArgument')
     timezone = TimeZoneField(default='Europe/London')
 
     def get_absolute_url(self):  # modlogs bypasses this
@@ -117,9 +127,14 @@ class User(AbstractUser):
         return (self.unapproveddebslist()
                 .order_by('-owner__approvedargs', '-created_on'))
 
+    def dcount(self):
+        return self.debates.filter(~Q(approvalstatus=3)).count()
+    
+    def acount(self):
+        return self.arguments.filter(~Q(approvalstatus=3)).count()
+
     def __str__(self):
         return self.username
-
 
 class ModAction(models.Model):
     user = models.ForeignKey(
@@ -141,3 +156,19 @@ class ModAction(models.Model):
 
     class Meta:
         ordering = ['-date']
+
+class SavedDebate(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    debate = models.ForeignKey('debates.Debate', on_delete=models.CASCADE)
+    added_on = models.DateTimeField(default=timezone.now)
+    
+    class Meta:
+        ordering = ['-added_on']
+    
+class SavedArgument(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    argument = models.ForeignKey('debates.Argument', on_delete=models.CASCADE)
+    added_on = models.DateTimeField(default=timezone.now)
+    
+    class Meta:
+        ordering = ['-added_on']

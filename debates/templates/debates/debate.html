@@ -13,7 +13,7 @@
     <main role="main" class="container">
       <div class="row">
         <div class="col-md-1 align-middle" id="karmad">
-          <div class="align-middle" id="voting" data-debate-id="{{ debate.id }}" data-vote-url="{% url 'votedebate' %}">
+          <div class="align-middle" id="voting" data-vote-url="{% url 'votedebate' %}" data-debate-id="{{ debate.id }}">
             {% if user.hasperm %}<div class="arrow-up{% if vote == 1 %}-selected{% endif %} votebtn"></div>{% endif %}
             <span class="karmacount" title="karma (votes)">{{ debate.karma|intcomma }}</span>
             {% if user.hasperm %}<div class="arrow-down{% if vote == -1 %}-selected{% endif %} votebtn"></div>{% endif %}
@@ -24,7 +24,7 @@
           Topic: <a href="{{ topic.get_absolute_url}}">{{topic.name }}</a> -
           Owner:
           <a href="{{ debate.owner.get_absolute_url}}">{{debate.owner.get_username }}</a> -
-          Security Level : {{ debate.slvl }}(<a href="{% url 'rules' %}#securitylevels">?</a>){% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% endif %} - <a href="{{ debate.get_edit_url }}">Edit/View source</a> - <a href="{{ debate.get_edits_url }}">Edits</a> - {% if topic.slvl > 1 %}<span title="{{ debate.approved_on|date:"c" }}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{ debate.created_on|date:"c" }}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}
+          Security Level : {{ debate.slvl }}(<a href="{% url 'rules' %}#securitylevels">?</a>){% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% elif debate.approvalstatus == 3 %} <span class="badge badge-pill badge-dark">Hidden</span>{% endif %} - <a href="{{ debate.get_edit_url }}">Edit/View source</a> - <a href="{{ debate.get_edits_url }}">Edits</a> - {% if topic.slvl > 1 %}<span title="{{ debate.approved_on|date:"c" }}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{ debate.created_on|date:"c" }}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}
           {% if debate.modnote %}
           {% load modnotes %}
           {% modnotes debate.modnote|markdownf %}
@@ -33,6 +33,7 @@
           {{ debate.description|markdownf }}
         </div>
       </div>
+      {% if user.is_authenticated %}{% include 'snippets/dsavelink.html' %}{% endif %}
       <a href="{{ debate.get_submit_url }}" class="btn btn-primary btn-sm">Submit Argument</a>
       <a href="{{ debate.get_absolute_url }}">Default Arguments</a> -
       <a href="{{ debate.get_absolute_url }}?apprs=0">Approved Arguments</a> -
@@ -41,10 +42,10 @@
       <h1>{% if apprs == 0 %}Approved {% elif apprs == 1 %}Unapproved {% elif apprs == 2 %}Denied {% endif %}Arguments</h1>
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="for-tab" data-toggle="tab" href="#for" role="tab" aria-controls="for" aria-selected="true">For</a>
+          <a class="nav-link active" id="for-tab" data-toggle="tab" href="#for" role="tab" aria-controls="for" aria-selected="true">For <span class="badge badge-primary">{{ argumentsf|length }}</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="against-tab" data-toggle="tab" href="#against" role="tab" aria-controls="against" aria-selected="false">Against</a>
+          <a class="nav-link" id="against-tab" data-toggle="tab" href="#against" role="tab" aria-controls="against" aria-selected="false">Against <span class="badge badge-primary">{{ argumentsa|length }}</span></a>
         </li>
       </ul>
       <br>
@@ -53,16 +54,7 @@
           {% if argumentsf %}
           <div class="list-group" data-vote-url="{% url 'votedebate' %}">
             {% for argument in argumentsf %}
-            <div class="list-group-item list-group-item-action flex-column align-items-start" data-debate-id="{{ debate.id }}">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1"><a href="{{ argument.get_absolute_url }}" class="atit">{{ argument.title }}</a></h5>
-              </div>
-                <p class="mb-0 argdesc">{{ argument.body|markdownf }}</p>
-                <small class="sinfo"><a href="{{ argument.owner.get_absolute_url}}">{{argument.owner.get_username }}</a> - <span title="{{ argument.created_on|date:"c" }}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}</small>
-
-
-
-            </div>
+            {% include 'snippets/argument.html' %}
             {% endfor %}
           </div>
 
@@ -121,14 +113,7 @@
           {% if argumentsa %}
           <div class="list-group" data-vote-url="{% url 'votedebate' %}">
             {% for argument in argumentsa %}
-            <div class="list-group-item list-group-item-action flex-column align-items-start" data-debate-id="{{ debate.id }}">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1"><a href="{{ argument.get_absolute_url }}" class="atit">{{ argument.title }}</a></h5>
-              </div>
-                <p class="mb-0">{{ argument.body|markdownf }}</p>
-                <small class="sinfo"><a href="{{ argument.owner.get_absolute_url}}">{{argument.owner.get_username }}</a> - <span title="{{ argument.created_on|date:"c" }}">{{argument.created_on|date:"D d M Y f A"}}</span> - {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Danger</span>{% endif %}</small>
-
-            </div>
+            {% include 'snippets/argument.html' %}
             {% endfor %}
           </div>
 

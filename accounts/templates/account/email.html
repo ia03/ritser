@@ -65,7 +65,7 @@
         <button class="btn btn-outline-primary" name="action_add" type="submit">Add E-mail</button>
     </form>
     {% if user.emailaddress_set.all %}
-    A raw list of this account's e-mails (this is for <a href="https://en.wikipedia.org/wiki/General_Data_Protection_Regulation">GDPR</a> compliance):
+    A raw list of this account's e-mails:
     <br>
     <textarea class="form-control" rows="3">{% for emailaddress in user.emailaddress_set.all %}{{ emailaddress.email }}
 {% endfor %}</textarea>

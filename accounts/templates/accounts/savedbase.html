@@ -10,12 +10,12 @@
           {% url 'saveddebates' as saveddebates %}
             <a href="{{ saveddebates }}" class="list-group-item list-group-item-action{% if request.path == saveddebates %} active{% endif %}">
               Saved Debates
-              <span class="badge badge-{% if request.path == saveddebates %}light{% else %}primary{% endif %}">{{ user.savedd.count }}</a>
+              <span class="badge badge-{% if request.path == saveddebates %}light{% else %}primary{% endif %}">{{ user.savedd.count }}</span>
             </a>
           {% url 'savedarguments' as savedarguments %}
             <a href="{{ savedarguments }}" class="list-group-item list-group-item-action{% if request.path == savedarguments %} active{% endif %}">
               Saved Arguments
-              <span class="badge badge-{% if request.path == savedarguments %}light{% else %}primary{% endif %}">{{ user.saveda.count }}</a>
+              <span class="badge badge-{% if request.path == savedarguments %}light{% else %}primary{% endif %}">{{ user.saveda.count }}</span>
             </a>
           </div>
         </div>

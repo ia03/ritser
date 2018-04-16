@@ -9,12 +9,12 @@
       {% url 'unapprovedargs' as unapprovedargs %}
         <a href="{{ unapprovedargs }}" class="list-group-item list-group-item-action{% if request.path == unapprovedargs %} active{% endif %}">
           Arguments
-          <span class="badge badge-{% if request.path == unapprovedargs %}light{% else %}primary{% endif %}">{{ user.unapprovedargslist.count }}</a>
+          <span class="badge badge-{% if request.path == unapprovedargs %}light{% else %}primary{% endif %}">{{ user.unapprovedargslist.count }}</span>
         </a>
       {% url 'unapproveddebs' as unapproveddebs %}
         <a href="{{ unapproveddebs }}" class="list-group-item list-group-item-action{% if request.path == unapproveddebs %} active{% endif %}">
           Debates
-          <span class="badge badge-{% if request.path == unapproveddebs %}light{% else %}primary{% endif %}">{{ user.unapproveddebslist.count }}</a>
+          <span class="badge badge-{% if request.path == unapproveddebs %}light{% else %}primary{% endif %}">{{ user.unapproveddebslist.count }}</span>
         </a>
       </div>
     </div>

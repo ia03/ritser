@@ -985,6 +985,8 @@ def unapproveddebs(request):
     unapproveddebs = getpage(page, unapproveddebs_list, 30)
     context = {
         'debates': unapproveddebs,
+        'editdlist': True,
+        
     }
     return render(request, 'debates/mod/unapproveddebs.html', context)
 

@@ -3,6 +3,9 @@
 {% load static markdown %}
 
 {% block title %}{{ puser.username }}'s profile - MoDebate{% endblock %}
+{% block head %}
+<meta name="description" content="See arguments and debates from {{puser.username}} on MoDebate">
+{% endblock %}
 
 {% block head %}<link rel="stylesheet" href="{% static "debates/css/debateslist.css" %}">{% endblock %}
 

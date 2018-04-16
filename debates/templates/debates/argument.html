@@ -4,6 +4,10 @@
 
 {% block title %}{{ argument.title }} - MoDebate{% endblock %}
 
+{% block head %}
+<meta name="description" content="{{ argument.body|markdownf|striptags|truncatechars:300 }}">
+{% endblock %}
+
 {% block body %}
     <main role="main" class="container">
       <h1 class="mt-5">{{ argument.title }}</h1>

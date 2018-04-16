@@ -135,7 +135,7 @@ def votedebate(request):
     vote = int(request.POST.get('vote'))
     if not (request.user.is_authenticated and request.user.hasperm()):
         return HttpResponse(
-            'error - you do not have permission to perform that')
+            'error - you do not have permission to perform that action')
     debate = get_object_or_404(Debate, id=debate_id)
     user = request.user
     if (debate.users_upvoting.filter(id=user.id).count() == 1):
@@ -258,7 +258,9 @@ def debate(request, tname, did, ds=None):
             vote = 0
     else:
         vote = 0
-
+    
+    
+    
     context = {
         'debate': debate,
         'minjq': True,

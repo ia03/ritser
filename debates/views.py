@@ -13,7 +13,6 @@ from accounts.utils import DeleteUser
 from accounts.models import User, ModAction, SavedDebate, SavedArgument
 from accounts.decorators import mod_required, gmod_required
 from ipware import get_client_ip
-from .templatetags.markdown import markdownf
 import reversion
 from reversion.models import Version
 from haystack.query import SearchQuerySet

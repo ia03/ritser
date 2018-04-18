@@ -48,6 +48,7 @@ def clean(value, typ=0):
                                 'ul',
                                 'li',
                                 'code',
+                                'pre',
                                 'table',
                                 'th',
                                 'tr',

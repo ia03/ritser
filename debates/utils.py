@@ -49,6 +49,7 @@ def clean(value, typ=0):
                                 'li',
                                 'code',
                                 'pre',
+                                'blockquote',
                                 'table',
                                 'th',
                                 'tr',

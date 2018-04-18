@@ -12,7 +12,13 @@ register = template.Library()
 def markdownf(value, arg="0"):
     typ = int(arg)
     result = clean(markdown.markdown(
-                   clean(value, typ=2),
-                   extensions=['markdown.extensions.tables']),
-                   typ=typ).replace('<table>', '<table class="table">')
+                   clean(value, typ=2).replace('&gt;', '>'),
+                   extensions=[
+                       'markdown.extensions.tables',
+                       'markdown.extensions.fenced_code']),
+                   typ=typ).replace(
+                       '<table>',
+                       '<table class="table">').replace(
+                           '<blockquote>',
+                           '<blockquote class="blockquote"')
     return mark_safe(result)

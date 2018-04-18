@@ -239,5 +239,69 @@
     <p>To own a topic on MoDebate, you must have at least 20 approved arguments and you can also only own a maximum of 5 topics. You can, however, be the moderator of as many topics as you'd like. Please make sure to follow the User Policy and Content Policy as using your moderator powers inappropriately may result in consequences. Please don't forget to include a method for users to contact your moderator team in the topic description in case any user needs more information regarding your topic or its moderator team.</p>
     <h2 id="markdown">Markdown</h2>
     <p>Feel free to use markdown on MoDebate. Keep in mind, however, that we do not support direct image linking for security purposes.</p>
+    <table class="table">
+        <tr>
+            <th scope="col">Syntax</th>
+            <th scope="col">Alternative Syntax</th>
+            <th scope="col">Result</th>
+        </tr>
+        <tr>
+            <td>*Italics*</td>
+            <td>_italics_</td>
+            <td><i>Italics</i></td>
+        </tr>
+        <tr>
+            <td>**Bold**</td>
+            <td>__bold__</td>
+            <td><strong>Bold</strong></td>
+        </tr>
+        <tr>
+            <td>#Heading</td>
+            <td>
+                Heading
+                <br>
+                ======
+            </td>
+        </tr>
+        <tr>
+            <td>##Heading 2</td>
+            <td>
+                Heading 2
+                <br>
+                ------------
+            </td>
+            <td><h2>Heading 2</h2></td>
+        </tr>
+        <tr>
+            <td>[Link](https://google.com)</td>
+            <td>
+                [Link][2]
+                <br>
+                [2]: https://google.com
+            </td>
+            <td><a href="https://google.com">Link</a></td>
+        </tr>
+        <tr>
+            <td>> Blockquote</td>
+            <td></td>
+            <td><blockquote class="blockquote">Blockquote</blockquote></td>
+        </tr>
+        <tr>
+            <td>
+                * List
+                <br>
+                * List
+                <br>
+                * List
+            </td>
+            <td>
+                - List
+                <br>
+                - List
+                <br>
+                - List
+            </td>
+        </tr>
+    </table>
   </main>
 {% endblock %}

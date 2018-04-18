@@ -238,7 +238,7 @@
     <h2 id="topic">Owning/Moderating a Topic</h2>
     <p>To own a topic on MoDebate, you must have at least 20 approved arguments and you can also only own a maximum of 5 topics. You can, however, be the moderator of as many topics as you'd like. Please make sure to follow the User Policy and Content Policy as using your moderator powers inappropriately may result in consequences. Please don't forget to include a method for users to contact your moderator team in the topic description in case any user needs more information regarding your topic or its moderator team.</p>
     <h2 id="markdown">Markdown</h2>
-    <p>Feel free to use markdown on MoDebate. Keep in mind, however, that we do not support direct image linking for security purposes.</p>
+    <p>We use a modified version of markdown on MoDebate. Keep in mind, however, that we do not support direct image linking for security purposes.</p>
     <table class="table">
         <tr>
             <th scope="col">Syntax</th>
@@ -247,13 +247,23 @@
         </tr>
         <tr>
             <td>*Italics*</td>
-            <td>_italics_</td>
+            <td>_Italics_</td>
             <td><i>Italics</i></td>
         </tr>
         <tr>
             <td>**Bold**</td>
-            <td>__bold__</td>
+            <td>__Bold__</td>
             <td><strong>Bold</strong></td>
+        </tr>
+        <tr>
+            <td>~~Strikethrough~~</td>
+            <td></td>
+            <td><del>Strikethrough</del></td>
+        </tr>
+        <tr>
+            <td>^^Underline^^</td>
+            <td></td>
+            <td><ins>Underline</ins></td>
         </tr>
         <tr>
             <td>#Heading</td>
@@ -262,6 +272,7 @@
                 <br>
                 ======
             </td>
+            <td><h1>Heading</h1></td>
         </tr>
         <tr>
             <td>##Heading 2</td>
@@ -276,6 +287,8 @@
             <td>[Link](https://google.com)</td>
             <td>
                 [Link][2]
+                <br>
+                ...
                 <br>
                 [2]: https://google.com
             </td>
@@ -293,6 +306,8 @@
                 * List
                 <br>
                 * List
+                <br>
+                <strong>Note:</strong> *, -, and + can all be used to make a list.
             </td>
             <td>
                 - List
@@ -300,6 +315,159 @@
                 - List
                 <br>
                 - List
+            </td>
+            <td>
+                <ul>
+                    <li>List</li>
+                    <li>List</li>
+                    <li>List</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                1. One
+                <br>
+                2. Two
+                <br>
+                3. Three
+            </td>
+            <td>
+                1) One
+                <br>
+                2) Two
+                <br>
+                3) Three
+            </td>
+            <td>
+                <ol>
+                    <li>One</li>
+                    <li>Two</li>
+                    <li>Three</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Horizontal Rule
+                <br>
+                ---
+            </td>
+            <td>
+                Horizontal Rule
+                <br>
+                ***
+            </td>
+            <td>
+                Horizontal Rule
+                <br>
+                <hr>
+            </td>
+        </tr>
+        <tr>
+            <td>Inline `code`</td>
+            <td></td>
+            <td>Inline <code>code</code></td>
+        </tr>
+        <tr>
+            <td>
+                ```alert("fenced code block");
+                <br>
+                <br>
+                alert("this can take up multiple lines");```
+            </td>
+            <td></td>
+            <td>
+                <code>
+                    alert("code block");
+                    <br>
+                    alert("this can take up multiple lines");
+                </code>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                &nbsp;&nbsp;&nbsp;&nbsp;alert("indented code block");
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;alert("this can take up multiple lines");
+            </td>
+            <td></td>
+            <td>
+                <pre><code>alert("code block");
+alert("this can take up multiple lines");</code></pre>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                | This   | is         | a     |<br>
+                |--------|------------|-------|<br>
+                | sample | 3x3        | table |<br>
+                | for    | displaying | info  |<br>
+                <strong>Note:</strong> To make things easier, there are online <br>markdown table generators available that you<br> can use.
+            </td>
+            <td></td>
+            <td>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>This</th>
+                            <th>is</th>
+                            <th>a</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>sample</td>
+                            <td>3x3</td>
+                            <td>table</td>
+                        </tr>
+                        <tr>
+                            <td>for</td>
+                            <td>displaying</td>
+                            <td>info</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>H~2~O</td>
+            <td></td>
+            <td>H<sub>2</sub>O</td>
+        </tr>
+        <tr>
+            <td>19^th^</td>
+            <td></td>
+            <td>19<sup>th</sup></td>
+        </tr>
+        <tr>
+            <td>
+                Footnote 1 link[^first].<br>
+                Footnote 2 link[^second].<br>
+                Another Footnote 2 link[^second].<br>
+                [^first]: Footnotes **can have markup**<br>
+                <br>
+                and multiple paragraphs.<br>
+                [^second]: Footnote text.
+            </td>
+            <td></td>
+            <td>
+                <p>Footnote 1 link<sup id="fnref:first"><a href="#fn:first">1</a></sup>.</p>
+                <p>Footnote 2 link<sup id="fnref:second"><a href="#fn:second">2</a></sup>.</p>
+                <p>Duplicated footnote reference<sup id="fnref2:second"><a href="#fn:second">2</a></sup>.</p>
+                <br>[at the end of the text]<br>
+                <div>
+                <hr>
+                <ol>
+                <li id="fn:first">
+                <p>Footnote <strong>can have markup</strong></p>
+                <p>and multiple paragraphs.&#160;<a href="#fnref:first" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+                </li>
+                <li id="fn:second">
+                <p>Footnote text.&#160;<a href="#fnref:second" title="Jump back to footnote 2 in the text">&#8617;</a><a href="#fnref2:second" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+                </li>
+                </ol>
+                </div>
             </td>
         </tr>
     </table>

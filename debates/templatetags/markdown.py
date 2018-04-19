@@ -16,7 +16,6 @@ def markdownf(value, arg=0):
                    extensions=[
                        'markdown.extensions.tables',
                        'markdown.extensions.fenced_code',
-                       'markdown.extensions.footnotes',
                        'pymdownx.betterem',
                        'pymdownx.tilde',
                        'pymdownx.caret']),

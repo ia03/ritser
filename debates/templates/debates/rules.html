@@ -332,13 +332,7 @@
                 <br>
                 3. Three
             </td>
-            <td>
-                1) One
-                <br>
-                2) Two
-                <br>
-                3) Three
-            </td>
+            <td></td>
             <td>
                 <ol>
                     <li>One</li>
@@ -362,38 +356,6 @@
                 Horizontal Rule
                 <br>
                 <hr>
-            </td>
-        </tr>
-        <tr>
-            <td>Inline `code`</td>
-            <td></td>
-            <td>Inline <code>code</code></td>
-        </tr>
-        <tr>
-            <td>
-                ```<br>alert("fenced code block");
-                <br>
-                alert("this can take up multiple lines");<br>```
-            </td>
-            <td></td>
-            <td>
-                <code>
-                    alert("code block");
-                    <br>
-                    alert("this can take up multiple lines");
-                </code>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                &nbsp;&nbsp;&nbsp;&nbsp;alert("indented code block");
-                <br>
-                &nbsp;&nbsp;&nbsp;&nbsp;alert("this can take up multiple lines");
-            </td>
-            <td></td>
-            <td>
-                <pre><code>alert("code block");
-alert("this can take up multiple lines");</code></pre>
             </td>
         </tr>
         <tr>
@@ -440,33 +402,35 @@ alert("this can take up multiple lines");</code></pre>
             <td>19<sup>th</sup></td>
         </tr>
         <tr>
+            <td>Inline `code`</td>
+            <td></td>
+            <td>Inline <code>code</code></td>
+        </tr>
+        <tr>
             <td>
-                Footnote 1 link[^first].<br>
-                Footnote 2 link[^second].<br>
-                Another Footnote 2 link[^second].<br>
-                [^first]: Footnotes **can have markup**<br>
+                ```<br>alert("fenced code block");
                 <br>
-                and multiple paragraphs.<br>
-                [^second]: Footnote text.
+                alert("this can take up multiple lines");<br>```
             </td>
             <td></td>
             <td>
-                <p>Footnote 1 link<sup id="fnref:first"><a href="#fn:first">1</a></sup>.</p>
-                <p>Footnote 2 link<sup id="fnref:second"><a href="#fn:second">2</a></sup>.</p>
-                <p>Duplicated footnote reference<sup id="fnref2:second"><a href="#fn:second">2</a></sup>.</p>
-                <br>[at the end of the text]<br>
-                <div>
-                <hr>
-                <ol>
-                <li id="fn:first">
-                <p>Footnote <strong>can have markup</strong></p>
-                <p>and multiple paragraphs.&#160;<a href="#fnref:first" title="Jump back to footnote 1 in the text">&#8617;</a></p>
-                </li>
-                <li id="fn:second">
-                <p>Footnote text.&#160;<a href="#fnref:second" title="Jump back to footnote 2 in the text">&#8617;</a><a href="#fnref2:second" title="Jump back to footnote 2 in the text">&#8617;</a></p>
-                </li>
-                </ol>
-                </div>
+                <code>
+                    alert("code block");
+                    <br>
+                    alert("this can take up multiple lines");
+                </code>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                &nbsp;&nbsp;&nbsp;&nbsp;alert("indented code block");
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;alert("this can take up multiple lines");
+            </td>
+            <td></td>
+            <td>
+                <pre><code>alert("code block");
+alert("this can take up multiple lines");</code></pre>
             </td>
         </tr>
     </table>

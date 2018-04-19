@@ -9,8 +9,8 @@ register = template.Library()
 
 @register.filter
 @stringfilter
-def markdownf(value, arg="0"):
-    typ = int(arg)
+def markdownf(value, arg=0):
+    typ = arg
     result = clean(markdown.markdown(
                    clean(value, typ=2).replace('&gt;', '>'),
                    extensions=[

@@ -68,17 +68,27 @@ class Report(models.Model):
     rule = models.IntegerField(
         default=rules.other,
         choices=rules,
-        verbose_name='rule_broken',
+        verbose_name='rule broken',
         )
     ip = models.GenericIPAddressField()
+    description = description = models.TextField(
+        max_length=50000,
+        blank=True)
     date = models.DateTimeField()
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='reports',
         )
+    limit = models.Q(app_label='debates', model='topic') | models.Q(
+        app_label='debates', model='debate') | models.Q(
+            app_label='debates', model='argument') | models.Q(
+                app_label='accounts', model='user')
     # mandatory fields for generic relation
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        limit_choices_to=limit)
     object_id = models.CharField(max_length=30)
     content_object = GenericForeignKey()
 

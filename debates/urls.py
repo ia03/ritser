@@ -59,6 +59,7 @@ urlpatterns = [
     path('submit_argument/', views.submitargument, name='submitargument'),
     path('submit_debate/', views.submitdebate, name='submitdebate'),
     path('submit_topic/', views.submittopic, name='submittopic'),
+    path('report/', views.report, name='report'),
     path('ajax/votedebate/', views.votedebate, name='votedebate'),
     path('ajax/save/', views.save, name='save'),
     

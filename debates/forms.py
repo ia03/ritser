@@ -1,10 +1,11 @@
 from django import forms
-from .models import Topic, Debate, Argument
+from .models import Topic, Debate, Argument, Report
 from accounts.models import User
 from django.utils import timezone
 from captcha.fields import ReCaptchaField
 from django.conf import settings
 from .utils import (
+    chkarg,
     chkdeb,
     chktop,
     chkusr,
@@ -606,14 +607,7 @@ class DeleteForm(forms.Form):
         mtype = cleaned_data['mtype']
         idno = cleaned_data['idno']
         if mtype == '1':
-            try:
-                argument = Argument.objects.get(id=idno)
-            except Argument.DoesNotExist:
-                raise forms.ValidationError(
-                    'Argument with ID %(aid)s not found.',
-                    code='argumentnotfound',
-                    params={
-                        'aid': idno})
+            argument = chkarg(idno)
             self.post = argument
         elif mtype == '2':
 
@@ -681,3 +675,39 @@ class UpdateSlvlForm(forms.Form):
         cleandslvl(data)
         return data
 
+class ReportForm(forms.ModelForm):
+    captcha = ReCaptchaField(
+        private_key=settings.GR_REPORTFORM,
+        public_key='6LdevVQUAAAAACcOkHk3YbR_LWqZ_iur8vfUxHhW',
+        error_messages={
+            'required': 'Invalid ReCAPTCHA. Please try again.'})
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['content_type'].label = 'Type of thing reported'
+        self.fields['object_id'].label = 'ID'
+        self.fields['content_type'].choices = [
+            (choice[0], choice[1].capitalize()) for choice in
+            self.fields['content_type'].choices]
+        
+    def clean(self):
+        cleaned_data = super().clean()
+        ctype = cleaned_data['content_type'].model
+        objid = cleaned_data['object_id']
+        if(ctype == 'argument'):
+            self.obj = chkarg(objid)
+        elif(ctype == 'debate'):
+            self.obj = chkdeb(objid)
+        elif(ctype == 'topic'):
+            self.obj = chktop(objid)
+        elif(ctype == 'user'):
+            self.obj = chkusr(objid)
+        return cleaned_data
+    
+    class Meta:
+        model = Report
+        fields = [
+            'rule',
+            'description',
+            'content_type',
+            'object_id',
+            ]

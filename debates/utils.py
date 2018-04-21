@@ -210,6 +210,16 @@ def htmldiffs(original, new):
 # form utility functions
 
 
+def chkarg(aid):
+    try:
+        return Argument.objects.get(id=aid)
+    except Argument.DoesNotExist:
+        raise forms.ValidationError(
+            'Argument with ID %(aid)s not found.',
+            code='argumentnotfound',
+            params={
+                'aid': aid})
+
 def chkdeb(did):
     try:
         return Debate.objects.get(id=did)

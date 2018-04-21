@@ -5,9 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Topic, Debate, Argument, RevisionData
+from .models import Topic, Debate, Argument, Report, RevisionData
 from .forms import (DebateForm, ArgumentForm, TopicForm, BanForm,
-                    UnsuspendForm, DeleteForm, MoveForm, UpdateSlvlForm)
+                    UnsuspendForm, DeleteForm, MoveForm, UpdateSlvlForm,
+                    ReportForm,)
 from .utils import getpage, newdiff, debateslist, htmldiffs, clean
 from accounts.utils import DeleteUser
 from accounts.models import User, ModAction, SavedDebate, SavedArgument
@@ -575,6 +576,30 @@ def topicedits(request, tname):
     }
     return render(request, 'debates/topicedits.html', context)
 
+@login_required
+def report(request):
+    user = request.user
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.user = user
+            client_ip, is_routable = get_client_ip(request)
+            report.ip = client_ip
+            report.content_object = form.obj
+            report.save()
+            messages.success(
+                request,
+                'You have successfully submitted a report.')
+    else:
+        data = {
+            
+        }
+        form = ReportForm(initial=data)
+    context = {
+        'form': form,
+    }
+    return render(request, 'debates/report.html', context)
 '''
       AJAX VIEWS
 '''

@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.contenttypes.fields import (
+    GenericForeignKey, GenericRelation)
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
 from django.utils.text import slugify
 from django.utils import timezone
@@ -20,18 +23,72 @@ apprsc = Choices(
     (0, 'approved', 'Approved'),
     (1, 'unapproved', 'Unapproved'),
     (2, 'denied', 'Denied'),
-    (3, 'hidden', 'Hidden'))
+    (3, 'hidden', 'Hidden'),
+    )
 sides = Choices(
     (0, 'fo', 'For'),
-    (1, 'ag', 'Against'))
+    (1, 'ag', 'Against'),
+    )
+rules = Choices(
+    (0, 'other', 'Other'),
+    (1, 'cillegal', 'Content Policy - 1.1 - Illegal Content'),
+    (2, 'cofftopic', 'Content Policy - 1.2 - Off-Topic Content'),
+    (3, 'cspam', 'Content Policy - 1.3 - Spam'),
+    (4, 'cpinfo', 'Content Policy - 1.4 - Personal Information'),
+    (5, 'charassment', 'Content Policy - 1.5 - Harassment'),
+    (6, 'cemomani', 'Content Policy - 1.6 - Manipulates Emotions'),
+    (7, 'cbiamani', 'Content Policy - 1.7 - Manipulates Biases Excl. Emotions'),
+    (8, 'cduplicate', 'Content Policy - 1.8 - Duplicates Other Content'),
+    (9, 'caievidence', 'Content Policy - 2.1 - Argument Does Not Have Sufficient Evidence'),
+    (10, 'cacontrib', 'Content Policy - 2.2 - Argument Does Not Contribute to Debate'),
+    (11, 'caunnecessary', 'Content Policy - 2.3 - Argument Includes Unnecessary Details'),
+    (12, 'cdbiased', 'Content Policy - 3.1 - Debate Is Biased'),
+    (13, 'cduselessdes', 'Content Policy - 3.2 - Debate Does Not Have Useful Description'),
+    (14, 'cdpersprefs', 'Content Policy - 3.3 - Debate About Personal Preferences'),
+    (15, 'ctbiased', 'Content Policy - 4.1 - Topic Is Biased'),
+    (16, 'ctinactive', 'Content Policy - 4.2 - Topic Has Inactive Mod Team'),
+    (17, 'ctuselessdes', 'Content Policy - 4.3 - Topic Does Not Have Useful Description'),
+    (18, 'ctnopubch', 'Content Policy - 4.4 - Topic Does Not Have Public Channel'),
+    (19, 'uuimpersonates', 'User Policy - 1.1 - User Is an Imposter'),
+    (20, 'uuabusevote', 'User Policy - 1.2 - User Abuses Debate Voting System'),
+    (21, 'uuremovecont', 'User Policy - 1.3 - User Removes Useful Content'),
+    (22, 'uuabuse', 'User Policy - 1.4 - User Abuses or Hacks Website'),
+    (23, 'uuevade', 'User Policy - 1.5 - User Evades Ban'),
+    (24, 'uubribe', 'User Policy - 1.6 - User Offers Bribe'),
+    (25, 'uufreport', 'User Policy - 1.7 - User Submits False Reports'),
+    (26, 'umipunish', 'User Policy - 2.2 - Moderator Uses Punishment Not In Rules'),
+    (27, 'umaccbribe', 'User Policy - 2.3 - Moderator Accepts Bribes'),
+    (28, 'umiaction', 'User Policy - 2.7 - Moderator Improperly Uses Powers'),
+    (29, 'uminote', 'User Policy - 2.8 - Moderator Does Not Leave Detailed Mod Notes'),
+    (30, 'uglongsusp', 'User Policy - 3.4 - Global Moderator Issues Unreasonably Long Suspension'),
+    )
+    
+    
+class Report(models.Model):
+    rule = models.IntegerField(
+        default=rules.other,
+        choices=rules,
+        verbose_name='rule_broken',
+        )
+    ip = models.GenericIPAddressField()
+    date = models.DateTimeField()
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reports',
+        )
+    # mandatory fields for generic relation
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.CharField(max_length=30)
+    content_object = GenericForeignKey()
+
 
 @reversion.register()
 class Topic(models.Model):
     name = ISlugField(
         primary_key=True,
         max_length=30,
-        unique=True,
-        db_index=True)
+        unique=True)
     # to be displayed in the HTML title of the topic
     title = models.CharField(max_length=30, blank=True)
     private = models.BooleanField(default=False)
@@ -60,6 +117,7 @@ class Topic(models.Model):
         on_delete=models.CASCADE,
         related_name='topics_created')
     edited_on = models.DateTimeField(default=timezone.now)
+    reports = GenericRelation(Report)
 
     def get_absolute_url(self):
         return reverse('topic', args=[self.name])
@@ -106,7 +164,7 @@ class Debate(models.Model):
         default=apprsc.unapproved,
         choices=apprsc,
         verbose_name='approval status')
-    karma = models.IntegerField(default=0, db_index=True)
+    karma = models.IntegerField(default=0)
     users_upvoting = models.ManyToManyField(
         User, related_name='debates_upvoted', blank=True)
     users_downvoting = models.ManyToManyField(
@@ -118,13 +176,13 @@ class Debate(models.Model):
     active = models.BooleanField(default=True)
     question = models.CharField(max_length=300)
     description = models.TextField(max_length=200000, blank=True)
-    created_on = models.DateTimeField(default=timezone.now, db_index=True)
+    created_on = models.DateTimeField(default=timezone.now)
     edited_on = models.DateTimeField(default=timezone.now)
     approved_on = models.DateTimeField(
         default=timezone.now,
-        db_index=True,
         blank=True,
         null=True)
+    reports = GenericRelation(Report)
 
     def numapproved(self):
         return self.arguments.filter(approvalstatus=0).count()
@@ -186,11 +244,9 @@ class Argument(models.Model):
     approvalstatus = models.IntegerField(
         default=apprsc.unapproved,
         choices=apprsc, 
-        db_index=True,
         verbose_name='approval status')
     order = models.IntegerField(
-        default=0,
-        db_index=True)  # owner.approvedargs?
+        default=0)  # owner.approvedargs?
     side = models.IntegerField(
         default=sides.fo,
         choices=sides)  # 0: for 1: against
@@ -200,6 +256,7 @@ class Argument(models.Model):
     modnote = models.TextField(max_length=200000, blank=True)
     created_on = models.DateTimeField(default=timezone.now)
     edited_on = models.DateTimeField(default=timezone.now)
+    reports = GenericRelation(Report)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -240,6 +297,8 @@ class Argument(models.Model):
 
     def __str__(self):
         return self.title
+
+
 
 # Revisions:
 

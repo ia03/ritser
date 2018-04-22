@@ -592,8 +592,11 @@ def report(request):
                 request,
                 'You have successfully submitted a report.')
     else:
+        content_type = request.GET.get('type', '')
+        object_id = request.GET.get('id', '')
         data = {
-            
+            'content_type': content_type,
+            'object_id': object_id,
         }
         form = ReportForm(initial=data)
     context = {

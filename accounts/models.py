@@ -55,6 +55,13 @@ class User(AbstractUser):
     def get_modstatus_url(self):
         return reverse('usermodstatus', args=[self.get_username()])
 
+    def get_report_url(self):
+        if not self.is_active:
+            return '#'
+        else:
+            return reverse(
+                'report') + '?type=5&id=' + self.get_username()
+
     def get_username(self):  # modlogs bypasses this
         if self.active == 0 or self.active == 2:
             return self.username

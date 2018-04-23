@@ -16,7 +16,8 @@
       Topic: <a href="{{ topic.get_absolute_url}}">{{ topic.name }}</a>
       Debate: <a href="{{ debate.get_absolute_url}}">{{ debate.question }}</a> - <a href="{{ argument.get_edit_url }}">Edit/View source</a> - <a href="{{ argument.get_edits_url }}">Edits</a> - 
       <span title="{{ argument.created_on|date:"c" }}">{{ argument.created_on|date:"D d M Y f A"}}</span>
-      {% if user.is_authenticated %} {% include 'snippets/asavelink.html' %}{% endif %}
+      {% include 'snippets/asavelink.html' %}
+      <a href="{{ argument.get_report_url }}">Report</a>
       {% if argument.modnote %}
       {% load modnotes %}
       {% modnotes argument.modnote|markdownf %}

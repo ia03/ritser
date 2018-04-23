@@ -9,7 +9,7 @@ from .models import Topic, Debate, Argument, Report, RevisionData
 from .forms import (DebateForm, ArgumentForm, TopicForm, BanForm,
                     UnsuspendForm, DeleteForm, MoveForm, UpdateSlvlForm,
                     ReportForm,)
-from .utils import getpage, newdiff, debateslist, htmldiffs, clean
+from .utils import getpage, newdiff, debateslist, htmldiffs, clean, ats
 from accounts.utils import DeleteUser
 from accounts.models import User, ModAction, SavedDebate, SavedArgument
 from accounts.decorators import mod_required, gmod_required
@@ -107,18 +107,9 @@ def topic(request, tname):
 
     debates = getpage(page, debates_list, 30)
 
-    if (user.is_authenticated):
-        if ((topic.slvl == 1 or topic.slvl == 2) and (user.approvedargs < 10 and not user.ismodof(
-                topic))) or ((topic.slvl == 3) and not user.ismodof(topic)):
-            ats = False
-        else:
-            ats = True
-    else:
-        ats = False
-
     context = {
         'fmods': fmods,
-        'ats': ats,
+        'ats': ats(user, topic),
         'mods': mods,
         'topic': topic,
         'ctopicn': topic.name.capitalize(),
@@ -137,6 +128,7 @@ def topicinfo(request, tname):
     debates = topic.debates.all()
     context = {
         'mods': mods,
+        'ats': ats(request.user, topic),
         'topic': topic,
         'ctopicn': topic.name.capitalize(),
         'debates': debates,

@@ -148,7 +148,11 @@ class Topic(models.Model):
 
     def get_submit_url(self):
         return reverse(
-            'submitdebate') + '?topic=' + str(self.name)
+            'submitdebate') + '?topic=' + self.name
+
+    def get_report_url(self):
+        return reverse(
+            'report') + '?type=4&id=' + self.name
 
     def __str__(self):
         return self.name
@@ -229,6 +233,10 @@ class Debate(models.Model):
         return reverse(
             'submitargument') + '?debate=' + str(self.id)
 
+    def get_report_url(self):
+        return reverse(
+            'report') + '?type=2&id=' + str(self.id)
+
     def slugify(self):
         return slugify(self.question)
 
@@ -301,6 +309,10 @@ class Argument(models.Model):
                 self.debate.slugify(),
                 self.id,
                 self.slugify()])
+
+    def get_report_url(self):
+        return reverse(
+            'report') + '?type=1&id=' + str(self.id)
 
     def slugify(self):
         return slugify(self.title)

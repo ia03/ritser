@@ -75,6 +75,8 @@ class Report(models.Model):
         max_length=50000,
         blank=True)
     date = models.DateTimeField()
+    closed_on = models.DateTimeField(default=timezone.now)
+    closed = models.BooleanField(default=False)
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

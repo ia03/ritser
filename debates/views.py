@@ -1043,3 +1043,25 @@ def slvls(request):
         'form': form,
     }
     return render(request, 'debates/mod/slvls.html', context)
+
+@mod_required
+def argreports(request):
+    user = request.user
+    argreports_list = user.argreports()
+    page = request.GET.get('page', 1)
+    argreports = getpage(page, argreports_list, 25)
+    context = {
+        'reports': argreports,
+    }
+    return render(request, 'debates/mod/argreports.html', context)
+
+@mod_required
+def debreports(request):
+    user = request.user
+    debreports_list = user.debreports()
+    page = request.GET.get('page', 1)
+    debreports = getpage(page, debreports_list, 25)
+    context = {
+        'reports': debreports,
+    }
+    return render(request, 'debates/mod/debreports.html', context)

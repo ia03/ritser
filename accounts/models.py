@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.urls import reverse
 from django.apps import apps
 from timezone_field import TimeZoneField
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from model_utils import Choices
 import django
@@ -95,21 +96,31 @@ class User(AbstractUser):
     def hasperm(self):
         return self.is_authenticated and self.active != 2
 
+    def intopics(self):
+        queries = Q()
+        for topic in self.topics_owned.all():
+            queries = queries | Q(topic=topic)
+        for topic in self.moderator_of.all():
+            queries = queries | Q(topic=topic)
+        return queries
+    
+    def cintopics(self):
+        queries = Q()
+        for topic in self.topics_owned.all():
+            queries = queries | Q(content_object__topic=topic)
+        for topic in self.moderator_of.all():
+            queries = queries | Q(content_object__topic=topic)
+        return queries
+
     def get_approvedargs(self):
         return self.arguments.filter(approvalstatus=0).count()
 
     def unapprovedargslist(self):
         Argument = apps.get_model('debates.Argument')
-        if self.isgmod():
-            query = Argument.objects.filter(approvalstatus=1)
-        else:
-            query = Argument.objects.none()
-            queries = Q()
-            for topic in self.topics_owned.all():
-                queries = queries | Q(topic=topic)
-            for topic in self.moderator_of.all():
-                queries = queries | Q(topic=topic)
-            query = Argument.objects.filter(queries & Q(approvalstatus=1))
+        
+        query = Argument.objects.filter(approvalstatus=1)
+        if not self.isgmod():
+            query = query.filter(self.intopics())
         return query
 
     def unapprovedarguments(self):
@@ -118,21 +129,46 @@ class User(AbstractUser):
 
     def unapproveddebslist(self):
         Debate = apps.get_model('debates.Debate')
-        if self.isgmod():
-            query = Debate.objects.filter(approvalstatus=1)
-        else:
-            query = Debate.objects.none()
-            queries = Q()
-            for topic in self.topics_owned.all():
-                queries = queries | Q(topic=topic)
-            for topic in self.moderator_of.all():
-                queries = queries | Q(topic=topic)
-            query = Debate.objects.filter(queries & Q(approvalstatus=1))
+        query = Debate.objects.filter(approvalstatus=1)
+        if not self.isgmod():
+            query = query.filter(self.intopics())
         return query
 
     def unapproveddebates(self):
         return (self.unapproveddebslist()
                 .order_by('-owner__approvedargs', '-created_on'))
+
+    def argreportslist(self):
+        Report = apps.get_model('debates.Report')
+        ct = ContentType.objects.get_for_model(
+            apps.get_model('debates.Argument'))
+        
+        query = Report.objects.filter(
+            closed=False,
+            content_type=ct,)
+        if not self.isgmod():
+            query = query.filter(self.cintopics())
+        return query
+        
+    def argreports(self):
+        return (self.argreportslist().order_by(
+            'date'))
+    
+    def debreportslist(self):
+        Report = apps.get_model('debates.Report')
+        ct = ContentType.objects.get_for_model(
+            apps.get_model('debates.Debate'))
+        
+        query = Report.objects.filter(
+            closed=False,
+            content_type=ct,)
+        if not self.isgmod():
+            query = query.filter(self.cintopics())
+        return query
+
+    def debreports(self):
+        return (self.debreportslist().order_by(
+            'date'))
 
     def dcount(self):
         return self.debates.filter(~Q(approvalstatus=3)).count()

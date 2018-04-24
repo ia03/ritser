@@ -54,6 +54,14 @@ urlpatterns = [
         'mod/unapproved/debates/',
         views.unapproveddebs,
         name='unapproveddebs'),
+    path(
+        'mod/reports/arguments/',
+        views.argreports,
+        name='argreports'),
+    path(
+        'mod/reports/debates',
+        views.debreports,
+        name='debreports'),
     path('mod/slvls/', views.slvls, name='slvls'),
     path('search/', views.search, name='search'),
     path('submit_argument/', views.submitargument, name='submitargument'),

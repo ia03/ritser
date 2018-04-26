@@ -144,7 +144,7 @@ class User(AbstractUser):
             apps.get_model('debates.Argument'))
         
         query = Report.objects.filter(
-            closed=False,
+            status=0,
             content_type=ct,)
         if not self.isgmod():
             query = query.filter(self.cintopics())
@@ -160,7 +160,7 @@ class User(AbstractUser):
             apps.get_model('debates.Debate'))
         
         query = Report.objects.filter(
-            closed=False,
+            status=0,
             content_type=ct,)
         if not self.isgmod():
             query = query.filter(self.cintopics())

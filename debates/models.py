@@ -76,7 +76,7 @@ class Report(models.Model):
         blank=True)
     date = models.DateTimeField()
     closed_on = models.DateTimeField(default=timezone.now)
-    closed = models.BooleanField(default=False)
+    status = models.IntegerField(default=0)
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -93,7 +93,12 @@ class Report(models.Model):
         limit_choices_to=limit)
     object_id = models.CharField(max_length=30)
     content_object = GenericForeignKey()
-
+    
+    def get_absolute_url(self):
+        return '#'
+    
+    def __str__(self):
+        return str(self.content_object)
 
 @reversion.register()
 class Topic(models.Model):

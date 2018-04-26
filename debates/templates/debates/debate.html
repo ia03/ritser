@@ -4,7 +4,6 @@
 {% block title %}{{ debate.question }} - {{ topic.name }} - MoDebate{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" href="{% static "debates/css/debate.css" %}">
 {% if debate.description %}<meta name="description" content="{{ debate.description|markdownf|striptags|truncatechars:300 }}">
 {% elif topic.description %}<meta name="description" content="{{ topic.description|markdownf|striptags|truncatechars:300 }}">{% endif %}
 {% endblock %}

@@ -71,7 +71,7 @@ class Report(models.Model):
         verbose_name='rule broken',
         )
     ip = models.GenericIPAddressField()
-    description = description = models.TextField(
+    description = models.TextField(
         max_length=50000,
         blank=True)
     date = models.DateTimeField()

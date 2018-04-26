@@ -74,23 +74,15 @@ body {
 /* for lists of arguments and debates */
 
 
-.atit {
+.itit {
   color: black;
   text-decoration: none;
 }
-.atit:hover {
+.itit:hover {
   color: black;
   text-decoration: none;
 }
 
-.dtit {
-  color: black;
-  text-decoration: none;
-}
-.dtit:hover {
-  color: black;
-  text-decoration: none;
-}
 
 .arglinks {
   float: right;

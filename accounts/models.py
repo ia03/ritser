@@ -10,6 +10,23 @@ from model_utils import Choices
 import django
 # Create your models here.
 
+modrules = [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    ]
+
 class User(AbstractUser):
     modschoices = Choices(
     (0, 'normal', 'Normal'),
@@ -62,6 +79,9 @@ class User(AbstractUser):
         else:
             return reverse(
                 'report') + '?type=5&id=' + self.get_username()
+
+    def get_ban_url(self):
+        return reverse('ban') + '?user=' + self.username
 
     def get_username(self):  # modlogs bypasses this
         if self.active == 0 or self.active == 2:
@@ -147,7 +167,9 @@ class User(AbstractUser):
             status=0,
             content_type=ct,)
         if not self.isgmod():
-            query = query.filter(self.cintopics())
+            query = query.filter(
+                self.cintopics(),
+                rule__in=modrules,)
         return query
         
     def argreports(self):
@@ -163,7 +185,9 @@ class User(AbstractUser):
             status=0,
             content_type=ct,)
         if not self.isgmod():
-            query = query.filter(self.cintopics())
+            query = query.filter(
+                self.cintopics(),
+                rule__in=modrules,)
         return query
 
     def debreports(self):

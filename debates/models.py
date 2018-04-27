@@ -74,7 +74,7 @@ class Report(models.Model):
     description = models.TextField(
         max_length=50000,
         blank=True)
-    date = models.DateTimeField()
+    date = models.DateTimeField(default=timezone.now)
     closed_on = models.DateTimeField(default=timezone.now)
     status = models.IntegerField(default=0)
     user = models.ForeignKey(

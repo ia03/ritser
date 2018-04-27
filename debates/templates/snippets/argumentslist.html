@@ -1,5 +1,5 @@
 {% if arguments %}
-  <div class="list-group" data-vote-url="{% url 'votedebate' %}">
+  <div class="list-group">
     {% for argument in arguments %}
     {% include 'snippets/argument.html' %}
     {% endfor %}

@@ -1052,6 +1052,9 @@ def argreports(request):
     argreports = getpage(page, argreports_list, 25)
     context = {
         'reports': argreports,
+        'rulecol': True,
+        'typcol': True,
+        'usercol': True,
     }
     return render(request, 'debates/mod/argreports.html', context)
 
@@ -1063,5 +1066,8 @@ def debreports(request):
     debreports = getpage(page, debreports_list, 25)
     context = {
         'reports': debreports,
+        'rulecol': True,
+        'typcol': True,
+        'usercol': True,
     }
     return render(request, 'debates/mod/debreports.html', context)

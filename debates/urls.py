@@ -1,5 +1,6 @@
 from django.urls import path, re_path
 from django.contrib.sitemaps.views import sitemap
+from django.views.generic.base import RedirectView
 from . import views
 
 
@@ -33,6 +34,10 @@ urlpatterns = [
     path('t/<slug:tname>/<int:did>,<slug:ds>/argument/<int:aid>,<slug:ars>/edits/',
          views.argumentedits, name='argumentedits'),
     # TODO: add reports link to base.html moderate link
+    path('mod/', RedirectView.as_view(
+        url='unapproved/arguments/',
+        permanent=True),
+        name='modbase'),
     path('mod/ban/', views.ban, name='ban'),
     path('mod/unsuspend/', views.unsuspend, name='unsuspend'),
     path('mod/move/', views.move, name='move'),
@@ -59,7 +64,7 @@ urlpatterns = [
         views.argreports,
         name='argreports'),
     path(
-        'mod/reports/debates',
+        'mod/reports/debates/',
         views.debreports,
         name='debreports'),
     path('mod/slvls/', views.slvls, name='slvls'),

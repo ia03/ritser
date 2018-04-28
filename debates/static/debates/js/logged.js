@@ -4,8 +4,8 @@
 $(document).ready(function() {
 
     $('.votebtn').click(function() {
-      var id = $(this).parent().attr('data-debate-id');
-      var durl = $(this).parent().attr('data-vote-url');
+      var id = $(this).parent().data('debate-id');
+      var durl = $(this).parent().data('vote-url');
       if ($(this).hasClass('arrow-up'))
       {
         var vote = 1;
@@ -40,9 +40,9 @@ $(document).ready(function() {
       });
     });
     $('.savebtn').click(function() {
-      var surl = $(this).attr('data-save-url');
-      var id = $(this).attr('data-id');
-      var typ = $(this).attr('data-typ');
+      var surl = $(this).data('save-url');
+      var id = $(this).data('id');
+      var typ = $(this).data('typ');
       if ($(this).html() == 'Save')
       {
         var save = 0;

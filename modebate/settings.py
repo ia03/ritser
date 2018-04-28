@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -156,10 +156,14 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 if not DEBUG:
+    AWS_DEFAULT_ACL = 'public-read'
     AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
     AWS_STORAGE_BUCKET_NAME = 'modebate'
-    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+    CLOUDFRONT_DOMAIN = ''
+    CLOUDFRONT_ID = 'E230MDW3NEFU7S'
+    CLOUDFRONT_DOMAIN = 'd10vz1of75uuwi.cloudfront.net'
+    AWS_S3_CUSTOM_DOMAIN = CLOUDFRONT_DOMAIN
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',
     }

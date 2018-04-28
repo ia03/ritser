@@ -67,6 +67,14 @@ urlpatterns = [
         'mod/reports/debates/',
         views.debreports,
         name='debreports'),
+    path(
+        'mod/reports/topics/',
+        views.topicreports,
+        name='topicreports'),
+    path(
+        'mod/reports/users/',
+        views.userreports,
+        name='userreports'),
     path('mod/slvls/', views.slvls, name='slvls'),
     path('search/', views.search, name='search'),
     path('submit_argument/', views.submitargument, name='submitargument'),

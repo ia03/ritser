@@ -104,8 +104,12 @@ class User(AbstractUser):
     def ismod(self):
         return self.moderator_of.all().exists() or self.topics_owned.all().exists() or self.modstatus > 0
 
-    def isowner(self, topic):
-        return self.modstatus > 0 or topic.owner == self
+    def isowner(self, *args):
+        if len(args) > 0:
+            topic = args[0]
+            return self.modstatus > 0 or topic.owner == self
+        else:
+            return (self.modstatus > 2)
 
     def isgmod(self):
         return (self.modstatus > 0)
@@ -170,6 +174,7 @@ class User(AbstractUser):
             query = query.filter(
                 self.cintopics(),
                 rule__in=modrules,)
+        
         return query
         
     def argreports(self):
@@ -187,11 +192,52 @@ class User(AbstractUser):
         if not self.isgmod():
             query = query.filter(
                 self.cintopics(),
-                rule__in=modrules,)
+                rule__in=modrules)
+        
         return query
 
     def debreports(self):
         return (self.debreportslist().order_by(
+            'date'))
+    
+    def topicreportslist(self):
+        Report = apps.get_model('debates.Report')
+        if not self.isgmod():
+            return Report.objects.none()
+        ct = ContentType.objects.get_for_model(
+            apps.get_model('debates.Topic'))
+            
+        query = Report.objects.filter(
+            status=0,
+            content_type=ct)
+        
+        return query
+    
+    def topicreports(self):
+        return (self.topicreportslist().order_by(
+            'date'))
+    
+    def userreportslist(self):
+        Report = apps.get_model('debates.Report')
+        if not self.isgmod():
+            return Report.objects.none()
+        ct = ContentType.objects.get_for_model(
+            apps.get_model('accounts.User'))
+        
+        query = Report.objects.filter(
+            status=0,
+            content_type=ct)
+        
+        if not self.isadmin():
+            query = query.filter(
+                content_object__modstatus=0)
+        elif not self.isowner():
+            query = query.filter(
+                ~Q(content_object=self))
+        return query
+    
+    def userreports(self):
+        return (self.userreportslist().order_by(
             'date'))
 
     def dcount(self):

@@ -1,0 +1,18 @@
+{% extends "debates/mod/reportsbase.html" %}
+
+{% load static %}
+
+{% block title %}Topic Reports - MoDebate{% endblock %}
+
+{% block htitle %}
+<h1 class="text-center">Topic Reports</h1>
+{% endblock %}
+
+{% block subbody %}
+    {% include 'snippets/reportslist.html' %}
+    {% if reports.has_other_pages %}
+    {% load paginator %}
+    {% load link_name %}
+    {% paginator reports request %}
+    {% endif %}
+{% endblock %}

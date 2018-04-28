@@ -16,6 +16,18 @@
           Debates
           <span class="badge badge-{% if request.path == debreports %}light{% else %}primary{% endif %}">{{ user.debreportslist.count }}</span>
         </a>
+        {% if user.isgmod %}
+      {% url 'topicreports' as topicreports %}
+        <a href="{{ topicreports }}" class="list-group-item list-group-item-action{% if request.path == topicreports %} active{% endif %}">
+          Topics
+          <span class="badge badge-{% if request.path == debretopicreportsports %}light{% else %}primary{% endif %}">{{ user.topicreportslist.count }}</span>
+        </a>
+      {% url 'userreports' as userreports %}
+        <a href="{{ userreports }}" class="list-group-item list-group-item-action{% if request.path == userreports %} active{% endif %}">
+          Users
+          <span class="badge badge-{% if request.path == userreports %}light{% else %}primary{% endif %}">{{ user.userreportslist.count }}</span>
+        </a>
+        {% endif %}
       </div>
     </div>
     <div class="col-md-9">

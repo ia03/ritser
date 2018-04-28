@@ -1049,11 +1049,10 @@ def argreports(request):
     user = request.user
     argreports_list = user.argreports()
     page = request.GET.get('page', 1)
-    argreports = getpage(page, argreports_list, 25)
+    argreports = getpage(page, argreports_list, 30)
     context = {
         'reports': argreports,
         'rulecol': True,
-        'typcol': True,
         'usercol': True,
     }
     return render(request, 'debates/mod/argreports.html', context)
@@ -1063,11 +1062,36 @@ def debreports(request):
     user = request.user
     debreports_list = user.debreports()
     page = request.GET.get('page', 1)
-    debreports = getpage(page, debreports_list, 25)
+    debreports = getpage(page, debreports_list, 30)
     context = {
         'reports': debreports,
         'rulecol': True,
-        'typcol': True,
         'usercol': True,
     }
     return render(request, 'debates/mod/debreports.html', context)
+
+@gmod_required
+def topicreports(request):
+    user = request.user
+    topicreports_list = user.topicreports()
+    page = request.GET.get('page', 1)
+    topicreports = getpage(page, topicreports_list, 30)
+    context = {
+        'reports': topicreports,
+        'rulecol': True,
+        'usercol': True,
+    }
+    return render(request, 'debates/mod/topicreports.html', context)
+
+@gmod_required
+def userreports(request):
+    user = request.user
+    userreports_list = user.userreports()
+    page = request.GET.get('page', 1)
+    userreports = getpage(page, userreports_list, 30)
+    context = {
+        'reports': userreports,
+        'rulecol': True,
+        'usercol': True,
+    }
+    return render(request, 'debates/mod/userreports.html', context)

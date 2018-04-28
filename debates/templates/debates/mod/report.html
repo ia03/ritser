@@ -1,1 +1,44 @@
-hey
+{% extends "base.html" %}
+
+{% load markdown modnotes %}
+
+{% block title %}Report against {{ ctype }} "{{ reported|stringformat:"s" }}"{% endblock %}
+
+
+{% block body %}
+
+<main role="main" class="container">
+    <h1>Report against {{ ctype }} "{{ reported|stringformat:"s" }}"</h1>
+    {% if report.modnote %}
+    {% modnotes report.modnote %}
+    <br>
+    {% endif %}
+    Status: {% if report.status == 0 %}<span class="badge badge-secondary">Open</span>{% elif report.status == 1 %}<span class="badge badge-success">Action Taken</span>{% elif report.status == 2 %}<span class="badge badge-dark">No Action Taken</span>{% endif %}
+    <br>
+    Rule: {{ report.get_rule_display }}
+    <br>
+    {% if user.isgmod %}
+    User: <a href="{{ report.user.get_abs_link_mod }}">{{ report.user.username }}</a>
+    {% else %}
+    User: <a href="{{ report.user.get_absolute_link }}">{{ report.user.get_username }}</a>
+    {% endif %}
+    <br>
+    {% if user.isadmin %}
+    IP: {{ report.ip }}
+    <br>
+    {% endif %}
+    {% if ctype == 'argument' %}
+    Debate: <a href="{{ reported.debate.get_absolute_url}} ">{{ reported.debate.question }}</a>
+    <br>
+    {% endif %}
+    {% if ctype == 'argument' or ctype == 'debate' %}
+    Topic: <a href="{{ reported.topic.get_absolute_url }}">{{ reported.topic.name }}</a>
+    <br>
+    {% endif %}
+    Date: {{ report.date|date }}
+    <br>
+    <hr />
+    {{ report.description|markdownf }}
+</main>
+
+{% endblock %}

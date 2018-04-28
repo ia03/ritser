@@ -76,12 +76,17 @@ class Report(models.Model):
         blank=True)
     date = models.DateTimeField(default=timezone.now)
     closed_on = models.DateTimeField(default=timezone.now)
+    # 0: open, 1: closed; action taken, 2: closed; no action taken
     status = models.IntegerField(default=0)
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='reports',
         )
+    modnote = models.TextField(
+        max_length=200000,
+        blank=True,
+        verbose_name='moderator note')
     limit = models.Q(app_label='debates', model='topic') | models.Q(
         app_label='debates', model='debate') | models.Q(
             app_label='debates', model='argument') | models.Q(

@@ -4,7 +4,7 @@
     {% for report in reports %}
     <div class="list-group-item list-group-item-action flex-column align-items-start itemlisting">
       <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1"><a href="{{ report.get_absolute_url }}" class="itit">{% if rulecol %}{{ report.get_rule_display }}: {% endif %}{% if typcol %}{{ report.content_type.model|capfirst }} - {% endif %}{{ report.content_object|stringformat:"s" }}</a></h5>
+        <h5 class="mb-1"><a href="{{ report.get_absolute_url }}" class="itit">{% if typcol %}{{ report.content_type.model|capfirst }} - {% endif %}{{ report.content_object|stringformat:"s" }}{% if rulecol %} - {{ report.get_rule_display }}{% endif %}</a></h5>
       </div>
         <p class="mb-0 argdesc">{{ report.description|markdownf|truncatewords_html:50|truncatechars_html:500 }}</p>
         <small class="sinfo">{% if usercol %}{% if user.isgmod %}<a href="{{ report.user.get_abs_url_mod }}">{{ report.user.username }}</a>{% else %}<a href="{{ report.user.get_absolute_url }}">{{ report.user.get_username }}</a>{% endif %} - {% endif %}

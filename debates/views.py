@@ -1124,5 +1124,7 @@ def report(request, rid):
     
     context = {
         'report': report,
+        'reported': reported,
+        'ctype': ctype,
     }
     return render(request, 'debates/mod/report.html', context)

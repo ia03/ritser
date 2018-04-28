@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.exceptions import PermissionDenied
 from .models import Topic, Debate, Argument, Report, RevisionData
 from .forms import (DebateForm, ArgumentForm, TopicForm, BanForm,
                     UnsuspendForm, DeleteForm, MoveForm, UpdateSlvlForm,
@@ -569,7 +570,7 @@ def topicedits(request, tname):
     return render(request, 'debates/topicedits.html', context)
 
 @login_required
-def report(request):
+def submitreport(request):
     user = request.user
     if request.method == 'POST':
         form = ReportForm(request.POST)
@@ -594,7 +595,7 @@ def report(request):
     context = {
         'form': form,
     }
-    return render(request, 'debates/report.html', context)
+    return render(request, 'debates/submitreport.html', context)
 '''
       AJAX VIEWS
 '''
@@ -604,8 +605,7 @@ def votedebate(request):
         vote = int(request.POST.get('vote'))
         user = request.user
         if not (user.is_authenticated and user.hasperm()):
-            return HttpResponseBadRequest(
-                'error - you do not have permission to perform that action')
+            raise PermissionDenied
         debate = get_object_or_404(Debate, id=debate_id)
         if (debate.users_upvoting.filter(id=user.id).count() == 1):
             ovote = 1
@@ -1095,3 +1095,34 @@ def userreports(request):
         'usercol': True,
     }
     return render(request, 'debates/mod/userreports.html', context)
+
+@mod_required
+def report(request, rid):
+    user = request.user
+    notfoundmsg = 'Report not found or you do not have permission to view it.'
+    notfoundex = Http404(notfoundmsg)
+    try:
+        report = Report.objects.get(id=rid)
+    except Report.DoesNotExist:
+        raise notfoundex
+    reported = report.content_object
+    ctype = report.content_type.model
+    if not user.isgmod():
+        # If user is not a gmod and report is not arg/deb or
+        # report is not in a topic moderated by them, raise 404
+        if (not (ctype == 'argument' or ctype == 'debate')) or (
+            reported.topic not in user.moderator_of.all() and
+            reported.topic not in user.owner_of.all()):
+                raise notfoundex
+    else:
+        if ctype == 'user' and not user.isowner():
+            if user.isadmin() and reported == user:
+                raise notfoundex
+            elif reported.isgmod():
+                raise notfoundex
+            
+    
+    context = {
+        'report': report,
+    }
+    return render(request, 'debates/mod/report.html', context)

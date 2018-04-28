@@ -9,7 +9,7 @@
 <main role="main" class="container">
   <h1>Report</h1>
   <p>View the rules <a href="{% url 'rules' %}">here.</a></p>
-  <form action="{% url 'report' %}" method="post">
+  <form action="{% url 'submitreport' %}" method="post">
     {% csrf_token %}
     {% include 'snippets/formerrors.html' %}
     {# Include the visible fields #}

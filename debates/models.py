@@ -95,7 +95,7 @@ class Report(models.Model):
     content_object = GenericForeignKey()
     
     def get_absolute_url(self):
-        return '#'
+        return reverse('report', args=[self.id])
     
     def __str__(self):
         return str(self.content_object)
@@ -159,7 +159,7 @@ class Topic(models.Model):
 
     def get_report_url(self):
         return reverse(
-            'report') + '?type=4&id=' + self.name
+            'submitreport') + '?type=4&id=' + self.name
 
     def __str__(self):
         return self.name
@@ -242,7 +242,7 @@ class Debate(models.Model):
 
     def get_report_url(self):
         return reverse(
-            'report') + '?type=2&id=' + str(self.id)
+            'submitreport') + '?type=2&id=' + str(self.id)
 
     def slugify(self):
         return slugify(self.question)
@@ -319,7 +319,7 @@ class Argument(models.Model):
 
     def get_report_url(self):
         return reverse(
-            'report') + '?type=1&id=' + str(self.id)
+            'submitreport') + '?type=1&id=' + str(self.id)
 
     def slugify(self):
         return slugify(self.title)

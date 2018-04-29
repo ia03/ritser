@@ -1,6 +1,6 @@
 {% extends "debates/mod/base.html" %}
 
-{% load widget_tweaks static %}
+{% load widget_tweaks static compress %}
 
 {% block title %}Suspend/Terminate - MoDebate{% endblock %}
 
@@ -43,4 +43,4 @@
 
 {% block endjs %}<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.0/moment.min.js" integrity="sha256-DELCOgoVsZqjT78lDC7zcX+YFp+PEjh1k23mBMoDBwo=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js" integrity="sha256-nzvGziG948yQHPWFJCynD1AmNPBwYWY2nVZYaDCpq4E=" crossorigin="anonymous"></script>
-<script src="{% static "debates/js/mod/ban.js" %}"></script>{% endblock %}
+{% compress js %}<script src="{% static "debates/js/mod/ban.js" %}"></script>{% endcompress %}{% endblock %}

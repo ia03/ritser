@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.reddit',
     'timezone_field',
+    'compressor',
 ]
 
 MIDDLEWARE = [
@@ -164,6 +165,7 @@ if not DEBUG:
     CLOUDFRONT_ID = 'E230MDW3NEFU7S'
     CLOUDFRONT_DOMAIN = 'd10vz1of75uuwi.cloudfront.net'
     AWS_S3_CUSTOM_DOMAIN = CLOUDFRONT_DOMAIN
+    AWS_IS_GZIPPED = True
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',
     }
@@ -172,9 +174,24 @@ if not DEBUG:
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'debates/static'),
     ]
-
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATICFILES_STORAGE = 'debates.storage.CachedS3Boto3Storage'
     STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+    # Compressor settings
+    COMPRESS_STORAGE = STATICFILES_STORAGE
+    COMPRESS_URL = STATIC_URL
+    COMPRESS_OFFLINE = True
+    STATICFILES_FINDERS = (
+        'django.contrib.staticfiles.finders.FileSystemFinder',
+        'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+        'compressor.finders.CompressorFinder',
+        )
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    COMPRESS_ROOT = STATIC_ROOT
+    COMPRESS_URL = STATIC_URL
+    COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',  'compressor.filters.cssmin.CSSMinFilter']
+
+        
+
 
 
 # Google recaptcha settings
@@ -238,6 +255,14 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
+
+# cache settings
+CACHES = {
+    'default': {
+        'BACKEND':'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION':'127.0.0.1:11211',
+    }
+}
 
 # Debug toolbar settings
 DEBUG_TOOLBAR_PANELS = [

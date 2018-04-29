@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load markdown humanize static %}
+{% load markdown humanize static compress %}
 
 {% block title %}{{ debate.question }} - {{ topic.name }} - MoDebate{% endblock %}
 
@@ -176,4 +176,4 @@
 
 {% block endjs %}
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2.2.0/src/js.cookie.min.js"></script>
-<script src="{% static "debates/js/debate.js" %}"></script>{% endblock %}
+{% compress js %}<script src="{% static "debates/js/debate.js" %}"></script>{% endcompress %}{% endblock %}

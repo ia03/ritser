@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load markdown humanize static %}
+{% load markdown humanize static compress %}
 
 {% block title %}{% if topic.title != "" %}{{ topic.title }}{% else %}t/{{ topic.name }}{% endif %} - MoDebate{% endblock %}
 
@@ -42,7 +42,6 @@
       {% paginator debates request %}
       {% endif %}
     </main>
-
 {% endblock %}
 
-{% block endjs %}<script src="{% static "debates/js/topic.js" %}"></script>{% endblock %}
+{% block endjs %}{% compress js %}<script src="{% static "debates/js/topic.js" %}"></script>{% endcompress %}{% endblock %}

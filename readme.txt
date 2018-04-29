@@ -1,8 +1,11 @@
-install apache wsgi with ssl and make it run on startup
+install nginx and gunicorn with ssl and make it run on startup
 
 install postgresql and citext extension https://stackoverflow.com/questions/15981197/postgresql-error-type-citext-does-not-exist
 
 set up postgresql database and make it run on startup
+
+install memcached and make it run on startup
+
 set environment variables in readme.md
 
 install whatever is in requirements.txt
@@ -10,6 +13,8 @@ install whatever is in requirements.txt
 set debug to false
 
 run collectstatic
+
+run compress
 
 minify css and js files
 

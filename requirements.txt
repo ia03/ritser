@@ -16,3 +16,5 @@ django-haystack
 django-timezone-field
 django-model-utils
 pymdown-extensions
+django_compressor
+python-memcached

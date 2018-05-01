@@ -139,7 +139,7 @@ class Topic(models.Model):
         on_delete=models.CASCADE,
         related_name='topics_created')
     edited_on = models.DateTimeField(default=timezone.now)
-    reports = GenericRelation(Report)
+    reports = GenericRelation(Report, related_query_name='topic')
 
     def get_absolute_url(self):
         return reverse('topic', args=[self.name])
@@ -208,7 +208,7 @@ class Debate(models.Model):
         default=timezone.now,
         blank=True,
         null=True)
-    reports = GenericRelation(Report)
+    reports = GenericRelation(Report, related_query_name='debate')
 
     def numapproved(self):
         return self.arguments.filter(approvalstatus=0).count()
@@ -286,7 +286,7 @@ class Argument(models.Model):
     modnote = models.TextField(max_length=200000, blank=True)
     created_on = models.DateTimeField(default=timezone.now)
     edited_on = models.DateTimeField(default=timezone.now)
-    reports = GenericRelation(Report)
+    reports = GenericRelation(Report, related_query_name='argument')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

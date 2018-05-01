@@ -3,8 +3,10 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.urls import reverse
 from django.apps import apps
+from django.http import Http404
 from timezone_field import TimeZoneField
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db.models import Q
 from model_utils import Choices
 import django
@@ -60,6 +62,7 @@ class User(AbstractUser):
         blank=True,
         through='SavedArgument')
     timezone = TimeZoneField(default='Europe/London')
+    reports = GenericRelation('debates.Report', related_query_name='ruser')
 
     def get_absolute_url(self):  # modlogs bypasses this
         if self.is_active:
@@ -128,12 +131,20 @@ class User(AbstractUser):
             queries = queries | Q(topic=topic)
         return queries
     
-    def cintopics(self):
+    def dintopics(self):
         queries = Q()
         for topic in self.topics_owned.all():
-            queries = queries | Q(content_object__topic=topic)
+            queries = queries | Q(debate__topic=topic)
         for topic in self.moderator_of.all():
-            queries = queries | Q(content_object__topic=topic)
+            queries = queries | Q(debate__topic=topic)
+        return queries
+    
+    def aintopics(self):
+        queries = Q()
+        for topic in self.topics_owned.all():
+            queries = queries | Q(argument__topic=topic)
+        for topic in self.moderator_of.all():
+            queries = queries | Q(argument__topic=topic)
         return queries
 
     def get_approvedargs(self):
@@ -172,7 +183,7 @@ class User(AbstractUser):
             content_type=ct,)
         if not self.isgmod():
             query = query.filter(
-                self.cintopics(),
+                self.aintopics(),
                 rule__in=modrules,)
         
         return query
@@ -191,7 +202,7 @@ class User(AbstractUser):
             content_type=ct,)
         if not self.isgmod():
             query = query.filter(
-                self.cintopics(),
+                self.dintopics(),
                 rule__in=modrules)
         
         return query
@@ -246,6 +257,30 @@ class User(AbstractUser):
     def acount(self):
         return self.arguments.filter(~Q(approvalstatus=3)).count()
 
+    def report(self, rid):
+        Report = apps.get_model('debates.Report')
+        notfoundmsg = 'Report not found or you do not have permission to view it.'
+        notfoundex = Http404(notfoundmsg)
+        try:
+            report = Report.objects.get(id=rid)
+        except Report.DoesNotExist:
+            raise notfoundex
+        reported = report.content_object
+        ctype = report.content_type.model
+        if not self.isgmod():
+            # If user is not a gmod and report is not arg/deb or
+            # report is not in a topic moderated by them, raise 404
+            if (not (ctype == 'argument' or ctype == 'debate')) or (
+                reported.topic not in self.moderator_of.all() and
+                reported.topic not in self.owner_of.all()):
+                    raise notfoundex
+        else:
+            if ctype == 'user' and not self.isowner():
+                if self.isadmin() and reported == self:
+                    raise notfoundex
+                elif reported.isgmod():
+                    raise notfoundex
+        return report
     def __str__(self):
         return self.username
 

@@ -682,6 +682,14 @@ def save(request):
         return HttpResponse('')
     raise Http404()
 
+def closereport(request):
+    if request.method == 'POST':
+        rid = int(request.POST.get('id'))
+        typ = int(request.POST.get('typ'))
+        modnote = request.POST.get('modnote')
+        report = get_object_or_404(Report, id=rid)
+        user = request.user
+    raise Http404()
 
 '''
 		MISC PAGES
@@ -1098,28 +1106,11 @@ def userreports(request):
 
 @mod_required
 def report(request, rid):
-    user = request.user
     notfoundmsg = 'Report not found or you do not have permission to view it.'
     notfoundex = Http404(notfoundmsg)
-    try:
-        report = Report.objects.get(id=rid)
-    except Report.DoesNotExist:
-        raise notfoundex
+    report = request.user.report(rid)
     reported = report.content_object
     ctype = report.content_type.model
-    if not user.isgmod():
-        # If user is not a gmod and report is not arg/deb or
-        # report is not in a topic moderated by them, raise 404
-        if (not (ctype == 'argument' or ctype == 'debate')) or (
-            reported.topic not in user.moderator_of.all() and
-            reported.topic not in user.owner_of.all()):
-                raise notfoundex
-    else:
-        if ctype == 'user' and not user.isowner():
-            if user.isadmin() and reported == user:
-                raise notfoundex
-            elif reported.isgmod():
-                raise notfoundex
             
     
     context = {

@@ -123,29 +123,32 @@ class User(AbstractUser):
     def hasperm(self):
         return self.is_authenticated and self.active != 2
 
+    def topics(self):
+        return self.topics_owned.all().union(
+            self.moderator_of.all())
+
     def intopics(self):
         queries = Q()
-        for topic in self.topics_owned.all():
-            queries = queries | Q(topic=topic)
-        for topic in self.moderator_of.all():
+        for topic in self.topics():
             queries = queries | Q(topic=topic)
         return queries
     
-    def dintopics(self):
-        queries = Q()
-        for topic in self.topics_owned.all():
-            queries = queries | Q(debate__topic=topic)
-        for topic in self.moderator_of.all():
-            queries = queries | Q(debate__topic=topic)
-        return queries
+    def arintopics(self):
+        Report = apps.get_model('debates.Report')
+        query = Report.objects.none()
+        for topic in self.topics().prefetch_related('arguments'):
+            for argument in topic.arguments.all():
+                query = query.union(argument.reports.filter(status=0))
+        return query
     
-    def aintopics(self):
-        queries = Q()
-        for topic in self.topics_owned.all():
-            queries = queries | Q(argument__topic=topic)
-        for topic in self.moderator_of.all():
-            queries = queries | Q(argument__topic=topic)
-        return queries
+    def drintopics(self):
+        Report = apps.get_model('debates.Report')
+        query = Report.objects.none()
+        for topic in self.topics().prefetch_related('debates'):
+            for debate in topic.debates.all():
+                query = query.union(debate.reports.filter(status=0))
+        return query
+    
 
     def get_approvedargs(self):
         return self.arguments.filter(approvalstatus=0).count()
@@ -174,18 +177,15 @@ class User(AbstractUser):
                 .order_by('-owner__approvedargs', '-created_on'))
 
     def argreportslist(self):
-        Report = apps.get_model('debates.Report')
-        ct = ContentType.objects.get_for_model(
-            apps.get_model('debates.Argument'))
-        
-        query = Report.objects.filter(
-            status=0,
-            content_type=ct,)
-        if not self.isgmod():
-            query = query.filter(
-                self.aintopics(),
-                rule__in=modrules,)
-        
+        if self.isgmod():
+            Report = apps.get_model('debates.Report')
+            ct = ContentType.objects.get_for_model(
+                apps.get_model('debates.Argument'))
+            query = Report.objects.filter(
+                status=0,
+                content_type=ct)
+        else:
+            query = self.arintopics()
         return query
         
     def argreports(self):
@@ -193,18 +193,15 @@ class User(AbstractUser):
             'date'))
     
     def debreportslist(self):
-        Report = apps.get_model('debates.Report')
-        ct = ContentType.objects.get_for_model(
-            apps.get_model('debates.Debate'))
-        
-        query = Report.objects.filter(
-            status=0,
-            content_type=ct,)
-        if not self.isgmod():
-            query = query.filter(
-                self.dintopics(),
-                rule__in=modrules)
-        
+        if self.isgmod():
+            Report = apps.get_model('debates.Report')
+            ct = ContentType.objects.get_for_model(
+                apps.get_model('debates.Debate'))
+            query = Report.objects.filter(
+                status=0,
+                content_type=ct,)
+        else:
+            query = self.drintopics()
         return query
 
     def debreports(self):
@@ -271,8 +268,7 @@ class User(AbstractUser):
             # If user is not a gmod and report is not arg/deb or
             # report is not in a topic moderated by them, raise 404
             if (not (ctype == 'argument' or ctype == 'debate')) or (
-                reported.topic not in self.moderator_of.all() and
-                reported.topic not in self.owner_of.all()):
+                reported.topic not in self.topics()):
                     raise notfoundex
         else:
             if ctype == 'user' and not self.isowner():

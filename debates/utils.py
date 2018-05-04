@@ -1,13 +1,17 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.encoding import force_text
 from diff_match_patch import diff_match_patch
-from django.db.models import Q
+from django.db.models import Q, CharField
 from django import forms
 from .models import Topic, Debate, Argument
 from accounts.models import User
 from django.utils import timezone
 import bleach
 
+class ObjectIDField(CharField):
+    def get_db_prep_value(self, value, connection, prepared=False):
+        value = super().get_db_prep_value(value, connection, prepared)
+        return value
 
 def debateslist(topic):
     if (topic.slvl == 0) or (topic.slvl == 1):

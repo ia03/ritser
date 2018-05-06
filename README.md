@@ -47,4 +47,8 @@ We strongly value freedom of speech. We will not censor certain groups of people
 
 https://io9.gizmodo.com/i-fooled-millions-into-thinking-chocolate-helps-weight-1707251800
 
+https://www.youtube.com/watch?v=itkEU89KAow
+
+https://www.youtube.com/watch?v=mxgOjH7szdk
+
 logo is in futura light

@@ -274,7 +274,7 @@ class User(AbstractUser):
             if ctype == 'user' and not self.isowner():
                 if self.isadmin() and reported == self:
                     raise notfoundex
-                elif reported.isgmod():
+                elif reported.isgmod() and not self.isadmin():
                     raise notfoundex
         return report
     def __str__(self):

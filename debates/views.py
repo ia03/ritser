@@ -687,8 +687,17 @@ def closereport(request):
         rid = int(request.POST.get('id'))
         typ = int(request.POST.get('typ'))
         modnote = request.POST.get('modnote')
-        report = get_object_or_404(Report, id=rid)
         user = request.user
+        report = user.report(rid)
+        if report.status != 0:
+            return HttpResponseBadRequest('error - report already closed')
+        if typ == 1 or typ == 2: #closed, action taken
+            report.status = typ
+        else:
+            return HttpResponseBadRequest('error - invalid "typ" attribute')
+        report.modnote = modnote
+        report.save()
+        return HttpResponse(str(typ))
     raise Http404()
 
 '''

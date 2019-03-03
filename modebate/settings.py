@@ -29,7 +29,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'modebatetesting.ddns.net',
-    '18.188.173.242']
+    '192.168.1.10']
 INTERNAL_IPS = ['127.0.0.1', 'localhost', '38.110.111.153']
 
 
@@ -180,6 +180,9 @@ GR_ARGUMENTFORM = os.environ['GR_ARGUMENTFORM']
 GR_SIGNUPFORM = os.environ['GR_SIGNUPFORM']
 GR_TOPICFORM = os.environ['GR_TOPICFORM']
 GR_ADDEMAILFORM = os.environ['GR_ADDEMAILFORM']
+
+RECAPTCHA_PUBLIC_KEY = os.environ['RECAPTCHA_PUBLIC']
+RECAPTCHA_PRIVATE_KEY = os.environ['RECAPTCHA_PRIVATE']
 
 NOCAPTCHA = True
 RECAPTCHA_USE_SSL = True     # Defaults to False

@@ -29,6 +29,8 @@ GR_ARGUMENTFORM
 GR_SIGNUPFORM
 emailpass
 
+set up social accounts on admin interface
+
 for $5 monthly no ads and unlimited upvotes?
 
 

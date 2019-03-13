@@ -198,7 +198,7 @@ EMAIL_HOST_PASSWORD = 'SG.RRGn6YkWTU6Ab_pBtcwhlg.vjkBGFWpkBdbi_3nBHMSegc4qs6A1S9
 DEFAULT_FROM_EMAIL = 'webmaster@modebate.com'
 
 # All-auth settings
-SITE_ID = 2
+SITE_ID = 3
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 if DEBUG:
     ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'

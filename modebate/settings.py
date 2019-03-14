@@ -29,7 +29,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'modebatetesting.ddns.net',
-    '192.168.1.10']
+    '192.168.1.10',
+    'asdsadwegeagaeg.com']
 INTERNAL_IPS = ['127.0.0.1', 'localhost', '38.110.111.153']
 
 
@@ -198,7 +199,7 @@ EMAIL_HOST_PASSWORD = 'SG.RRGn6YkWTU6Ab_pBtcwhlg.vjkBGFWpkBdbi_3nBHMSegc4qs6A1S9
 DEFAULT_FROM_EMAIL = 'webmaster@modebate.com'
 
 # All-auth settings
-SITE_ID = 3
+SITE_ID = 4
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 if DEBUG:
     ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'

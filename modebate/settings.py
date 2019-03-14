@@ -29,7 +29,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'modebatetesting.ddns.net',
-    '18.188.173.242']
+    '18.188.173.242',
+    'asdsadwegeagaeg.com']
 INTERNAL_IPS = ['127.0.0.1', 'localhost', '38.110.111.153']
 
 
@@ -203,6 +204,9 @@ GR_TOPICFORM = os.environ['GR_TOPICFORM']
 GR_ADDEMAILFORM = os.environ['GR_ADDEMAILFORM']
 GR_REPORTFORM = os.environ['GR_REPORTFORM']
 
+RECAPTCHA_PUBLIC_KEY = os.environ['RECAPTCHA_PUBLIC']
+RECAPTCHA_PRIVATE_KEY = os.environ['RECAPTCHA_PRIVATE']
+
 NOCAPTCHA = True
 RECAPTCHA_USE_SSL = True     # Defaults to False
 
@@ -217,7 +221,7 @@ EMAIL_HOST_PASSWORD = 'SG.RRGn6YkWTU6Ab_pBtcwhlg.vjkBGFWpkBdbi_3nBHMSegc4qs6A1S9
 DEFAULT_FROM_EMAIL = 'webmaster@modebate.com'
 
 # All-auth settings
-SITE_ID = 2
+SITE_ID = 4
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 if DEBUG:
     ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'

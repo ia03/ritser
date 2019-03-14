@@ -15,7 +15,7 @@
         {% if topic %}<a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a> - {% endif %}
         {% endwith %}
         <span title="{{ report.date|date:"c" }}">{{ report.date|date:"D d M Y f A" }}</span> - 
-        {% if report.content_type.model == 'user' %}{% if user.isgmod %}{{ report.content_object.get_ban_url }}">Suspend/Ban</a>{% endif %}{% else %}<a href="{{ report.content_object.get_edit_url }}">Edit</a>{% endif %}
+        {% if report.content_type.model == 'user' %}{% if user.isgmod %}<a href="{{ report.content_object.get_ban_url }}">Suspend/Ban</a>{% endif %}{% else %}<a href="{{ report.content_object.get_edit_url }}">Edit</a>{% endif %}
         
     </div>
     {% endfor %}

@@ -11,7 +11,7 @@
 {% block body %}
     <main role="main" class="container">
       <div class="row">
-        <div class="col-md-1 align-middle" id="karmad">
+        <div class="col-md-1" id="karmad">
           <div class="align-middle" id="voting" data-vote-url="{% url 'votedebate' %}" data-debate-id="{{ debate.id }}">
             {% if user.hasperm %}<div class="arrow-up{% if vote == 1 %}-selected{% endif %} votebtn"></div>{% endif %}
             <span class="karmacount" title="karma (votes)">{{ debate.karma|intcomma }}</span>

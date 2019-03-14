@@ -12,5 +12,5 @@
     {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>
     {% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>
     {% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% endif %}
-    {% if editalist %} - <a href="{{ argument.get_edit_url }}">Edit</a>{% endif %} {% include 'snippets/asavelink.html' %} <a href="{{ argument.get_report_url }}">Report</a></small>
+    {% if editalist %} - <a href="{{ argument.get_edit_url }}">Edit</a>{% endif %} {% include 'snippets/asavelink.html' %} - <a href="{{ argument.get_report_url }}">Report</a></small>
 </div>

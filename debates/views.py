@@ -853,7 +853,7 @@ def move(request):
                 
                 if isinstance(post, Debate):
                     arguments = Argument.objects.filter(debate=post)
-                    difft = not post.topic_id == post2.topic_id
+                    difft = (post.topic_id != post2.topic_id)
                     arguments.update(debate=post2)
                     for argument in arguments:
                         if difft:

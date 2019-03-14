@@ -32,8 +32,7 @@
           {{ debate.description|markdownf }}
         </div>
       </div>
-      {% include 'snippets/dsavelink.html' %}
-      <a href="{{ debate.get_report_url }}">Report</a>
+      {% include 'snippets/dsavelink.html' %} - <a href="{{ debate.get_report_url }}">Report</a>
       <a href="{{ debate.get_submit_url }}" class="btn btn-primary btn-sm">Submit Argument</a>
       <a href="{{ debate.get_absolute_url }}">Default Arguments</a> -
       <a href="{{ debate.get_absolute_url }}?apprs=0">Approved Arguments</a> -

@@ -62,8 +62,8 @@ rules = Choices(
     (29, 'uminote', 'User Policy - 2.8 - Moderator Does Not Leave Detailed Mod Notes'),
     (30, 'uglongsusp', 'User Policy - 3.4 - Global Moderator Issues Unreasonably Long Suspension'),
     )
-    
-    
+
+
 class Report(models.Model):
     rule = models.IntegerField(
         default=rules.other,

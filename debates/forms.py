@@ -20,7 +20,7 @@ from .utils import (
     setapprovedon,
     cleandslvl)
 
-USERNAMEMAXLEN = 150
+USERNAMEMAXLEN = 27
 
 class DebateForm(forms.ModelForm):
     topic_name = forms.CharField(

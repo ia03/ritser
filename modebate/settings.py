@@ -104,9 +104,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'modebate',
+                'NAME': 'postgres',
                 'USER': 'postgres',
-                'PASSWORD': os.environ['dbpass'],
-                'HOST': '127.0.0.1',
+                'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+                'HOST': 'db',
                 'PORT': '5432',
     }
 }

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load markdown humanize static compress %}
 
-{% block title %}{% if topic.title != "" %}{{ topic.title }}{% else %}t/{{ topic.name }}{% endif %} - MoDebate{% endblock %}
+{% block title %}{% if topic.title != "" %}{{ topic.title }}{% else %}t/{{ topic.name }}{% endif %} - Ritser{% endblock %}
 
 {% block head %}{% if topic.description %}<meta name="description" content="{{ topic.description|markdownf|striptags|truncatechars:300 }}">{% endif %}{% endblock %}
 

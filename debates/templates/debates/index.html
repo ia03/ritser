@@ -2,7 +2,7 @@
 
 {% load static compress %}
 
-{% block title %}MoDebate - Debates that change minds.{% endblock %}
+{% block title %}Ritser - Debates that change minds.{% endblock %}
 
 {% block head %}
 {% compress css %}<link rel="stylesheet" href="{% static 'debates/css/index.css' %}" />{% endcompress %}
@@ -12,7 +12,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Morphext/2.4.4/morphext.min.js" integrity="sha256-qG3zvg7/f5CZHwV8IeaQfBY5Hm+M0KR3PMk9lAHp39s=" crossorigin="anonymous"></script>
 <script src="{% static 'debates/js/index.js' %}"></script>
-<meta name="description" content="Many online/real life arguments don't change people's minds. MoDebate is different.">
+<meta name="description" content="Many online/real life arguments don't change people's minds. Ritser is different.">
 {% endblock %}
 
 {% block body %}
@@ -20,7 +20,7 @@
   <section class="jumbotron text-center">
     <div class="container">
       <h1 class="jumbotron-heading">Traditional debates don't work.</h1>
-      <p class="lead">If they did, people generally wouldn't disagree on <span id="topicchgr">politics, religion, history, morality, science</span>. MoDebate changes that by encouraging users to think differently and giving them the tools to do so.</p>
+      <p class="lead">If they did, people generally wouldn't disagree on <span id="topicchgr">politics, religion, history, morality, science</span>. Ritser changes that by encouraging users to think differently and giving them the tools to do so.</p>
       <p>
         <a href="{% url 'account_signup' %}" class="btn btn-outline-primary my-2">Sign Up</a>
         <a href="{% url 'about' %}" class="btn btn-outline-secondary my-2">Learn More</a>

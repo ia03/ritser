@@ -1,6 +1,6 @@
-# modebate
+# ritser
 
-[![Build Status](https://travis-ci.com/ia03/modebate.svg?token=6qe7V8ytfcGZ8NDXzzgq&branch=master)](https://travis-ci.com/ia03/modebate)
+[![Build Status](https://travis-ci.com/ia03/ritser.svg?token=6qe7V8ytfcGZ8NDXzzgq&branch=master)](https://travis-ci.com/ia03/ritser)
 
 Useful links:
 

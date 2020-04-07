@@ -2,7 +2,7 @@
 
 {% load account socialaccount widget_tweaks static compress %}
 
-{% block title %}Log In - MoDebate{% endblock %}
+{% block title %}Log In - Ritser{% endblock %}
 
 {% block head %}{% compress css %}<link rel="stylesheet" href="{% static "account/css/login.css" %}">{% endcompress %}{% endblock %}
 
@@ -21,7 +21,7 @@
     <div class="socialaccount_ballot">
     
       <input type="checkbox" name="tos" required id="tos" />
-      <label for="tos" class="form-check-label">I am at least 13 years old and agree to the <a href="{% url 'terms' %}">Terms of Service</a> and <a href="{% url 'privacy' %}">Privacy Policy</a> of MoDebate.</label>
+      <label for="tos" class="form-check-label">I am at least 13 years old and agree to the <a href="{% url 'terms' %}">Terms of Service</a> and <a href="{% url 'privacy' %}">Privacy Policy</a> of Ritser.</label>
       <ul class="socialaccount_providers list-group">
         {% include "socialaccount/snippets/provider_list.html" with process="login" %}
       </ul>

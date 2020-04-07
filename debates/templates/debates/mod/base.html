@@ -13,6 +13,13 @@
       <li class="nav-item{% if request.path == unapprovedargs or request.path == unapproveddebs %} active{% endif %}">
         <a class="nav-link" href="{{ unapprovedargs }}">Unapproved{% if request.path == unapprovedargs or request.path == unapproveddebs %} <span class="sr-only">(current)</span>{% endif %}</a>
       </li>
+      {% url 'argreports' as argreports %}
+      {% url 'debreports' as debreports %}
+      {% url 'topicreports' as topicreports %}
+      {% url 'userreports' as userreports %}
+      <li class="nav-item{% if request.path == argreports or request.path == debreports or request.path == topicreports or request.path == userreports %} active{% endif %}">
+        <a class="nav-link" href="{{ argreports }}">Reports{% if request.path == argreports or request.path == debreports or request.path == topicreports or request.path == userreports %} <span class="sr-only">(current)</span>{% endif %}</a>
+      </li>
       {% url 'slvls' as slvls %}
       <li class="nav-item{% if request.path == slvls %} active{% endif %}">
         <a class="nav-link" href="{{ slvls }}">Security Levels{% if request.path == slvls %} <span class="sr-only">(current)</span>{% endif %}</a>

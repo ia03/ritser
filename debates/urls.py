@@ -1,5 +1,6 @@
 from django.urls import path, re_path
 from django.contrib.sitemaps.views import sitemap
+from django.views.generic.base import RedirectView
 from . import views
 
 
@@ -10,7 +11,7 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('rules/', views.rules, name='rules'),
     path('cookies/', views.cookies, name='cookies'),
-    #Static pages above listed in sitemap
+    # Static pages above listed in sitemap
     path('feed/', views.feed, name='feed'),
     path('t/<slug:tname>/', views.topic, name='topic'),
     path('t/<slug:tname>/info', views.topicinfo, name='topicinfo'),
@@ -33,6 +34,10 @@ urlpatterns = [
     path('t/<slug:tname>/<int:did>,<slug:ds>/argument/<int:aid>,<slug:ars>/edits/',
          views.argumentedits, name='argumentedits'),
     # TODO: add reports link to base.html moderate link
+    path('mod/', RedirectView.as_view(
+        url='unapproved/arguments/',
+        permanent=True),
+        name='modbase'),
     path('mod/ban/', views.ban, name='ban'),
     path('mod/unsuspend/', views.unsuspend, name='unsuspend'),
     path('mod/move/', views.move, name='move'),
@@ -54,11 +59,29 @@ urlpatterns = [
         'mod/unapproved/debates/',
         views.unapproveddebs,
         name='unapproveddebs'),
+    path(
+        'mod/reports/arguments/',
+        views.argreports,
+        name='argreports'),
+    path(
+        'mod/reports/debates/',
+        views.debreports,
+        name='debreports'),
+    path(
+        'mod/reports/topics/',
+        views.topicreports,
+        name='topicreports'),
+    path(
+        'mod/reports/users/',
+        views.userreports,
+        name='userreports'),
+    path('mod/report/<int:rid>', views.report, name='report'),
     path('mod/slvls/', views.slvls, name='slvls'),
     path('search/', views.search, name='search'),
     path('submit_argument/', views.submitargument, name='submitargument'),
     path('submit_debate/', views.submitdebate, name='submitdebate'),
     path('submit_topic/', views.submittopic, name='submittopic'),
+    path('report/', views.submitreport, name='submitreport'),
     path('ajax/votedebate/', views.votedebate, name='votedebate'),
     path('ajax/save/', views.save, name='save'),
     

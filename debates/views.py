@@ -5,10 +5,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Topic, Debate, Argument, RevisionData
+from django.core.exceptions import PermissionDenied
+from .models import Topic, Debate, Argument, Report, RevisionData
 from .forms import (DebateForm, ArgumentForm, TopicForm, BanForm,
-                    UnsuspendForm, DeleteForm, MoveForm, UpdateSlvlForm)
-from .utils import getpage, newdiff, debateslist, htmldiffs, clean
+                    UnsuspendForm, DeleteForm, MoveForm, UpdateSlvlForm,
+                    ReportForm,)
+from .utils import getpage, newdiff, debateslist, htmldiffs, clean, ats
 from accounts.utils import DeleteUser
 from accounts.models import User, ModAction, SavedDebate, SavedArgument
 from accounts.decorators import mod_required, gmod_required
@@ -106,18 +108,9 @@ def topic(request, tname):
 
     debates = getpage(page, debates_list, 30)
 
-    if (user.is_authenticated):
-        if ((topic.slvl == 1 or topic.slvl == 2) and (user.approvedargs < 10 and not user.ismodof(
-                topic))) or ((topic.slvl == 3) and not user.ismodof(topic)):
-            ats = False
-        else:
-            ats = True
-    else:
-        ats = False
-
     context = {
         'fmods': fmods,
-        'ats': ats,
+        'ats': ats(user, topic),
         'mods': mods,
         'topic': topic,
         'ctopicn': topic.name.capitalize(),
@@ -136,6 +129,7 @@ def topicinfo(request, tname):
     debates = topic.debates.all()
     context = {
         'mods': mods,
+        'ats': ats(request.user, topic),
         'topic': topic,
         'ctopicn': topic.name.capitalize(),
         'debates': debates,
@@ -575,6 +569,33 @@ def topicedits(request, tname):
     }
     return render(request, 'debates/topicedits.html', context)
 
+@login_required
+def submitreport(request):
+    user = request.user
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.user = user
+            client_ip, is_routable = get_client_ip(request)
+            report.ip = client_ip
+            report.content_object = form.obj
+            report.save()
+            messages.success(
+                request,
+                'You have successfully submitted a report.')
+    else:
+        content_type = request.GET.get('type', '')
+        object_id = request.GET.get('id', '')
+        data = {
+            'content_type': content_type,
+            'object_id': object_id,
+        }
+        form = ReportForm(initial=data)
+    context = {
+        'form': form,
+    }
+    return render(request, 'debates/submitreport.html', context)
 '''
       AJAX VIEWS
 '''
@@ -584,8 +605,7 @@ def votedebate(request):
         vote = int(request.POST.get('vote'))
         user = request.user
         if not (user.is_authenticated and user.hasperm()):
-            return HttpResponseBadRequest(
-                'error - you do not have permission to perform that action')
+            raise PermissionDenied
         debate = get_object_or_404(Debate, id=debate_id)
         if (debate.users_upvoting.filter(id=user.id).count() == 1):
             ovote = 1
@@ -662,6 +682,23 @@ def save(request):
         return HttpResponse('')
     raise Http404()
 
+def closereport(request):
+    if request.method == 'POST':
+        rid = int(request.POST.get('id'))
+        typ = int(request.POST.get('typ'))
+        modnote = request.POST.get('modnote')
+        user = request.user
+        report = user.report(rid)
+        if report.status != 0:
+            return HttpResponseBadRequest('error - report already closed')
+        if typ == 1 or typ == 2: #closed, action taken
+            report.status = typ
+        else:
+            return HttpResponseBadRequest('error - invalid "typ" attribute')
+        report.modnote = modnote
+        report.save()
+        return HttpResponse(str(typ))
+    raise Http404()
 
 '''
 		MISC PAGES
@@ -816,7 +853,7 @@ def move(request):
                 
                 if isinstance(post, Debate):
                     arguments = Argument.objects.filter(debate=post)
-                    difft = not post.topic_id == post2.topic_id
+                    difft = (post.topic_id != post2.topic_id)
                     arguments.update(debate=post2)
                     for argument in arguments:
                         if difft:
@@ -1023,3 +1060,71 @@ def slvls(request):
         'form': form,
     }
     return render(request, 'debates/mod/slvls.html', context)
+
+@mod_required
+def argreports(request):
+    user = request.user
+    argreports_list = user.argreports()
+    page = request.GET.get('page', 1)
+    argreports = getpage(page, argreports_list, 30)
+    context = {
+        'reports': argreports,
+        'rulecol': True,
+        'usercol': True,
+    }
+    return render(request, 'debates/mod/argreports.html', context)
+
+@mod_required
+def debreports(request):
+    user = request.user
+    debreports_list = user.debreports()
+    page = request.GET.get('page', 1)
+    debreports = getpage(page, debreports_list, 30)
+    context = {
+        'reports': debreports,
+        'rulecol': True,
+        'usercol': True,
+    }
+    return render(request, 'debates/mod/debreports.html', context)
+
+@gmod_required
+def topicreports(request):
+    user = request.user
+    topicreports_list = user.topicreports()
+    page = request.GET.get('page', 1)
+    topicreports = getpage(page, topicreports_list, 30)
+    context = {
+        'reports': topicreports,
+        'rulecol': True,
+        'usercol': True,
+    }
+    return render(request, 'debates/mod/topicreports.html', context)
+
+@gmod_required
+def userreports(request):
+    user = request.user
+    userreports_list = user.userreports()
+    page = request.GET.get('page', 1)
+    userreports = getpage(page, userreports_list, 30)
+    context = {
+        'reports': userreports,
+        'rulecol': True,
+        'usercol': True,
+    }
+    return render(request, 'debates/mod/userreports.html', context)
+
+@mod_required
+def report(request, rid):
+    notfoundmsg = 'Report not found or you do not have permission to view it.'
+    notfoundex = Http404(notfoundmsg)
+    report = request.user.report(rid)
+    reported = report.content_object
+    ctype = report.content_type.model
+            
+    
+    context = {
+        'report': report,
+        'reported': reported,
+        'ctype': ctype,
+    }
+    return render(request, 'debates/mod/report.html', context)

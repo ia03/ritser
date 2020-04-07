@@ -1,0 +1,26 @@
+{% load markdown %}
+{% if reports %}
+  <div class="list-group" data-close-url="{% url 'votedebate' %}">
+    {% for report in reports %}
+    <div class="list-group-item list-group-item-action flex-column align-items-start itemlisting">
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1"><a href="{{ report.get_absolute_url }}" class="itit">{% if typcol %}{{ report.content_type.model|capfirst }} - {% endif %}{{ report.content_object|stringformat:"s" }}{% if rulecol %} - {{ report.get_rule_display }}{% endif %}</a></h5>
+      </div>
+        <p class="mb-0 argdesc">{{ report.description|markdownf|truncatewords_html:50|truncatechars_html:500 }}</p>
+        <small class="sinfo">
+            {% if usercol %}{% if user.isgmod %}<a href="{{ report.user.get_abs_url_mod }}">{{ report.user.username }}</a>{% else %}<a href="{{ report.user.get_absolute_url }}">{{ report.user.get_username }}</a>{% endif %} - {% endif %}
+            {% with report.content_object.debate as debate %}
+            {% if debate %}<a href="{{ debate.get_absolute_url}}">{{ debate.question }}</a> - {% endif %}
+            {% endwith %}
+            {% with report.content_object.topic as topic %}
+            {% if topic %}<a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a> - {% endif %}
+            {% endwith %}
+            <span title="{{ report.date|date:"c" }}">{{ report.date|date:"D d M Y f A" }}</span> - 
+            {% if report.content_type.model == 'user' %}{% if user.isgmod %}<a href="{{ report.content_object.get_ban_url }}">Suspend/Ban</a>{% endif %}{% else %}<a href="{{ report.content_object.get_edit_url }}">Edit</a>{% endif %}
+        </small>
+    </div>
+    {% endfor %}
+  </div>
+{% else %}
+No reports found.
+{% endif %}

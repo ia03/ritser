@@ -1,24 +1,22 @@
 {% extends "base.html" %}
-{% load markdown humanize static %}
+{% load markdown humanize static compress %}
 
 {% block title %}{% if topic.title != "" %}{{ topic.title }}{% else %}t/{{ topic.name }}{% endif %} - MoDebate{% endblock %}
 
-{% block head %}<link rel="stylesheet" href="{% static "debates/css/topic.css" %}">
-{% if topic.description %}<meta name="description" content="{{ topic.description|markdownf|striptags|truncatechars:300 }}">{% endif %}
-{% endblock %}
+{% block head %}{% if topic.description %}<meta name="description" content="{{ topic.description|markdownf|striptags|truncatechars:300 }}">{% endif %}{% endblock %}
 
 {% block body %}
     <main role="main" class="container">
       <h1 class="mt-5">{{ ctopicn }}</h1>
       <p class="lead">{{ topic.title }}</p>
-      <a href="{{ topic.get_info_url }}">Details Page</a> - <a href="{{ topic.get_edit_url }}">Edit/View source</a> - <a href="{{ topic.get_edits_url }}">Edits</a>
+      <a href="{{ topic.get_info_url }}">Details Page</a> - <a href="{{ topic.get_edit_url }}">Edit/View source</a> - <a href="{{ topic.get_edits_url }}">Edits</a> - <a href="{{ topic.get_report_url }}">Report</a>
       <div class="row">
         <div class="col-md-6">Owner:
           <a href="{{ topic.owner.get_absolute_url }}">
             {{ topic.owner.get_username }}
           </a><br> Security Level: {{ topic.slvl }}
           <br>
-          Default Debate Security Level: {{ topic.debslvl }} <a href="{% url 'rules' %}#securitylevels">What do these numbers mean?</a>
+          Default Debate Security Level: {{ topic.debslvl }}
           <br>
           Created on {{ topic.created_on|date }}
           <br>
@@ -32,7 +30,7 @@
         </div>
         <div class="col-md-6 text-md-right" id="modcol">
           Moderators: {% for mod in fmods|slice:":10" %}{% if not forloop.first %}, {% endif %}<a href="{{ mod.get_absolute_url}}">{{mod.get_username }}</a>{% endfor %}{% if mods|length > 10 %}...{% endif %}
-          <a class="btn btn-primary{% if not ats %} disabled{% endif %}" id="submitdbtn" href="{% if ats %}{{ topic.get_submit_url }}{% else %}#{% endif %}">Submit Debate</a>
+          {% include 'snippets/sdebatebtn.html' %}
         </div>
       </div>
       <hr />
@@ -44,7 +42,6 @@
       {% paginator debates request %}
       {% endif %}
     </main>
-
 {% endblock %}
 
-{% block endjs %}<script src="{% static "debates/js/topic.js" %}"></script>{% endblock %}
+{% block endjs %}{% compress js %}<script src="{% static "debates/js/topic.js" %}"></script>{% endcompress %}{% endblock %}

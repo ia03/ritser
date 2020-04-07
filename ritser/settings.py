@@ -27,11 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
-    '127.0.0.1',
-    'modebatetesting.ddns.net',
-    '192.168.1.10',
-    'asdsadwegeagaeg.com']
-INTERNAL_IPS = ['127.0.0.1', 'localhost', '38.110.111.153']
+    '127.0.0.1']
+INTERNAL_IPS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -59,6 +56,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.reddit',
     'timezone_field',
+    'compressor',
 ]
 
 MIDDLEWARE = [
@@ -73,7 +71,7 @@ MIDDLEWARE = [
     'accounts.middleware.UserMiddleware',
 ]
 
-ROOT_URLCONF = 'modebate.urls'
+ROOT_URLCONF = 'ritser.urls'
 
 TEMPLATES = [
     {
@@ -92,7 +90,7 @@ TEMPLATES = [
 ]
 
 
-WSGI_APPLICATION = 'modebate.wsgi.application'
+WSGI_APPLICATION = 'ritser.wsgi.application'
 
 APPEND_SLASH = True
 
@@ -102,10 +100,11 @@ APPEND_SLASH = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'modebate',
+        'NAME': 'ritser',
+                'NAME': 'postgres',
                 'USER': 'postgres',
-                'PASSWORD': os.environ['dbpass'],
-                'HOST': '127.0.0.1',
+                'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+                'HOST': 'db',
                 'PORT': '5432',
     }
 }
@@ -153,14 +152,20 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 if not DEBUG:
+    AWS_DEFAULT_ACL = 'public-read'
     AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
     AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-    AWS_STORAGE_BUCKET_NAME = 'modebate'
-    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+    AWS_STORAGE_BUCKET_NAME = 'ritser'
+    CLOUDFRONT_DOMAIN = ''
+    CLOUDFRONT_ID = 'E230MDW3NEFU7S'
+    CLOUDFRONT_DOMAIN = 'd10vz1of75uuwi.cloudfront.net'
+    AWS_S3_CUSTOM_DOMAIN = CLOUDFRONT_DOMAIN
+    AWS_IS_GZIPPED = True
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',
     }
@@ -169,9 +174,23 @@ if not DEBUG:
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'debates/static'),
     ]
-
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATICFILES_STORAGE = 'debates.storage.CachedS3Boto3Storage'
     STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+    # Compressor settings
+    COMPRESS_STORAGE = STATICFILES_STORAGE
+    COMPRESS_URL = STATIC_URL
+    COMPRESS_OFFLINE = True
+    STATICFILES_FINDERS = (
+        'django.contrib.staticfiles.finders.FileSystemFinder',
+        'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+        'compressor.finders.CompressorFinder',
+        )
+    COMPRESS_ROOT = STATIC_ROOT
+    COMPRESS_URL = STATIC_URL
+    COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',  'compressor.filters.cssmin.CSSMinFilter']
+
+
+
 
 
 # Google recaptcha settings
@@ -181,6 +200,7 @@ GR_ARGUMENTFORM = os.environ['GR_ARGUMENTFORM']
 GR_SIGNUPFORM = os.environ['GR_SIGNUPFORM']
 GR_TOPICFORM = os.environ['GR_TOPICFORM']
 GR_ADDEMAILFORM = os.environ['GR_ADDEMAILFORM']
+GR_REPORTFORM = os.environ['GR_REPORTFORM']
 
 RECAPTCHA_PUBLIC_KEY = os.environ['RECAPTCHA_PUBLIC']
 RECAPTCHA_PRIVATE_KEY = os.environ['RECAPTCHA_PRIVATE']
@@ -196,7 +216,7 @@ EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = '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'
-DEFAULT_FROM_EMAIL = 'webmaster@modebate.com'
+DEFAULT_FROM_EMAIL = 'webmaster@ritser.com'
 
 # All-auth settings
 SITE_ID = 4
@@ -237,6 +257,14 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
+
+# cache settings
+CACHES = {
+    'default': {
+        'BACKEND':'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION':'127.0.0.1:11211',
+    }
+}
 
 # Debug toolbar settings
 DEBUG_TOOLBAR_PANELS = [

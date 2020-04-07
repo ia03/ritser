@@ -12,9 +12,9 @@
     {% compress css %}<link rel="stylesheet" href="{% static "debates/css/base.css" %}">{% endcompress %}
 
     <link rel="icon" href="{% static 'debates/img/favicon.ico' %}">
-    
+
     <link rel="canonical" href="https://{{ request.get_host }}{{ request.get_full_path }}">
-    
+
     <title>{% block title %}{% endblock %}</title>
     {% block head %}{% endblock %}
   </head>
@@ -75,7 +75,7 @@
     {% block snavbar %}{% endblock %}
     {% if user.active == 2 %}
     <div class="alert alert-danger">
-    This account has been suspended until {{user.bandate|date:"D d M Y"}}. 
+    This account has been suspended until {{user.bandate|date:"D d M Y"}}.
     {% if user.bannote %}
     {% load modnotes markdown %}
     {% modnotes user.bannote|markdownf %}
@@ -98,7 +98,7 @@
       <div class="container">
           <div class="row">
             <div class="col-md-6 text-md-left">
-              © 2018 Ritser. All rights reserved.
+              © 2020 Ritser. All rights reserved.
             </div>
             <div class="col-md-6 text-md-right">
               <a href="{% url 'privacy' %}">Privacy</a> <a href="{% url 'terms' %}">Terms</a>
@@ -106,7 +106,7 @@
         </div>
       </div>
     </footer>
-    
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 

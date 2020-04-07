@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load widget_tweaks static %}
+{% load widget_tweaks static compress %}
 
 {% block title %}Signup - MoDebate{% endblock %}
 
@@ -52,5 +52,5 @@
 {% endblock %}
 
 {% block endjs %}
-<script src="{% static 'account/js/emailconsent.js' %}"></script>
+{% compress js %}<script src="{% static 'account/js/emailconsent.js' %}"></script>{% endcompress %}
 {% endblock %}

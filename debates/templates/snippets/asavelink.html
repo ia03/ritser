@@ -1,1 +1,1 @@
-<a href="#" class="savebtn" data-typ="1" data-id="{{ argument.id }}" data-save-url="{% url 'save' %}">{% if argument in user.saveda.all %}Unsave{% else %}Save{% endif %}</a>
+<a href="{% if not user.is_authenticated %}{% url 'account_login' %}{% else %}#{% endif %}" class="savebtn" data-typ="1" data-id="{{ argument.id }}" data-save-url="{% url 'save' %}">{% if argument in user.saveda.all %}Unsave{% else %}Save{% endif %}</a>

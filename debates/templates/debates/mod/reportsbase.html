@@ -1,0 +1,38 @@
+{% extends 'debates/mod/base.html' %}
+
+{% block body %}
+<main role="main" class="container">
+    {% block htitle %}{% endblock %}
+    <div class="row">
+    <div class="col-md-3">
+      <div class="list-group">
+      {% url 'argreports' as argreports %}
+        <a href="{{ argreports }}" class="list-group-item list-group-item-action{% if request.path == argreports %} active{% endif %}">
+          Arguments
+          <span class="badge badge-{% if request.path == argreports %}light{% else %}primary{% endif %}">{{ user.argreportslist.count }}</span>
+        </a>
+      {% url 'debreports' as debreports %}
+        <a href="{{ debreports }}" class="list-group-item list-group-item-action{% if request.path == debreports %} active{% endif %}">
+          Debates
+          <span class="badge badge-{% if request.path == debreports %}light{% else %}primary{% endif %}">{{ user.debreportslist.count }}</span>
+        </a>
+        {% if user.isgmod %}
+      {% url 'topicreports' as topicreports %}
+        <a href="{{ topicreports }}" class="list-group-item list-group-item-action{% if request.path == topicreports %} active{% endif %}">
+          Topics
+          <span class="badge badge-{% if request.path == debretopicreportsports %}light{% else %}primary{% endif %}">{{ user.topicreportslist.count }}</span>
+        </a>
+      {% url 'userreports' as userreports %}
+        <a href="{{ userreports }}" class="list-group-item list-group-item-action{% if request.path == userreports %} active{% endif %}">
+          Users
+          <span class="badge badge-{% if request.path == userreports %}light{% else %}primary{% endif %}">{{ user.userreportslist.count }}</span>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-md-9">
+        {% block subbody %}{% endblock %}
+    </div>
+  </div>
+</main>
+{% endblock %}

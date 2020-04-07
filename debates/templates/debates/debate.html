@@ -1,10 +1,9 @@
 {% extends "base.html" %}
-{% load markdown humanize static %}
+{% load markdown humanize static compress %}
 
 {% block title %}{{ debate.question }} - {{ topic.name }} - MoDebate{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" href="{% static "debates/css/debate.css" %}">
 {% if debate.description %}<meta name="description" content="{{ debate.description|markdownf|striptags|truncatechars:300 }}">
 {% elif topic.description %}<meta name="description" content="{{ topic.description|markdownf|striptags|truncatechars:300 }}">{% endif %}
 {% endblock %}
@@ -12,7 +11,7 @@
 {% block body %}
     <main role="main" class="container">
       <div class="row">
-        <div class="col-md-1 align-middle" id="karmad">
+        <div class="col-md-1" id="karmad">
           <div class="align-middle" id="voting" data-vote-url="{% url 'votedebate' %}" data-debate-id="{{ debate.id }}">
             {% if user.hasperm %}<div class="arrow-up{% if vote == 1 %}-selected{% endif %} votebtn"></div>{% endif %}
             <span class="karmacount" title="karma (votes)">{{ debate.karma|intcomma }}</span>
@@ -21,20 +20,31 @@
         </div>
         <div class="col-md-11">
           <h1 class="mt-5">{{ debate.question }}</h1>
-          Topic: <a href="{{ topic.get_absolute_url}}">{{topic.name }}</a> -
+          <a href="{{ debate.get_submit_url }}" class="btn btn-primary btn-sm">Submit Argument</a>
+          <a href="{{ debate.get_edit_url }}">Edit/View source</a> -
+          <a href="{{ debate.get_edits_url }}">Edits</a> -
+          {% include 'snippets/dsavelink.html' %} -
+          <a href="{{ debate.get_report_url }}">Report</a>
+          <br>
+          Topic: <a href="{{ topic.get_absolute_url}}">{{topic.name }}</a>
+          <br>
           Owner:
-          <a href="{{ debate.owner.get_absolute_url}}">{{debate.owner.get_username }}</a> -
-          Security Level : {{ debate.slvl }}(<a href="{% url 'rules' %}#securitylevels">?</a>){% if debate.approvalstatus == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% elif debate.approvalstatus == 3 %} <span class="badge badge-pill badge-dark">Hidden</span>{% endif %} - <a href="{{ debate.get_edit_url }}">Edit/View source</a> - <a href="{{ debate.get_edits_url }}">Edits</a> - {% if topic.slvl > 1 %}<span title="{{ debate.approved_on|date:"c" }}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{ debate.created_on|date:"c" }}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}
+          <a href="{{ debate.owner.get_absolute_url}}">{{debate.owner.get_username }}</a>
+          <br>
+          Security Level : {{ debate.slvl }}(<a href="{% url 'rules' %}#securitylevels">?</a>)
+          <br>
+          {% if debate.approvalstatus == 0 %}<span class="badge badge-pill badge-success">Approved</span><br>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span><br>{% elif debate.approvalstatus == 3 %} <span class="badge badge-pill badge-dark">Hidden</span><br>{% endif %}
+          {% if topic.slvl > 1 %}<span title="{{ debate.approved_on|date:"c" }}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{ debate.created_on|date:"c" }}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}
           {% if debate.modnote %}
+          <br>
           {% load modnotes %}
           {% modnotes debate.modnote|markdownf %}
           {% endif %}
-          <br>
+          <hr>
           {{ debate.description|markdownf }}
         </div>
       </div>
-      {% if user.is_authenticated %}{% include 'snippets/dsavelink.html' %}{% endif %}
-      <a href="{{ debate.get_submit_url }}" class="btn btn-primary btn-sm">Submit Argument</a>
+      Show:
       <a href="{{ debate.get_absolute_url }}">Default Arguments</a> -
       <a href="{{ debate.get_absolute_url }}?apprs=0">Approved Arguments</a> -
       <a href="{{ debate.get_absolute_url }}?apprs=1">Unapproved Arguments</a> -
@@ -176,4 +186,4 @@
 
 {% block endjs %}
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2.2.0/src/js.cookie.min.js"></script>
-<script src="{% static "debates/js/debate.js" %}"></script>{% endblock %}
+{% compress js %}<script src="{% static "debates/js/debate.js" %}"></script>{% endcompress %}{% endblock %}

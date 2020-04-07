@@ -23,6 +23,8 @@ This user's account is currently suspended. {% if user.isgmod %}<a href="{% url 
 <a href="{{ puser.get_modstatus_url }}">Change mod status</a>
 <br>
 {% endif %}
+<a href="{{ puser.get_report_url }}">Report</a>
+<br>
 Joined on {{ puser.date_joined|date:"SHORT_DATETIME_FORMAT" }}
 <br>
 {% with puser.topics_owned.all as topics_owned %}

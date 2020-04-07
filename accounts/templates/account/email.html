@@ -1,6 +1,6 @@
 {% extends "account/base.html" %}
 
-{% load static widget_tweaks %}
+{% load static widget_tweaks compress %}
 
 {% block title %}Account - MoDebate{% endblock %}
 
@@ -74,5 +74,5 @@
 {% endblock %}
 
 {% block endjs %}
-<script src="{% static 'account/js/email.js' %}"></script>
+{% compress js %}<script src="{% static 'account/js/email.js' %}"></script>{% endcompress %}
 {% endblock %}

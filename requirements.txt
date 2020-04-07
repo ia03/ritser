@@ -1,4 +1,4 @@
-django>=2.0
+django==2.2
 psycopg2-binary
 boto3
 django-storages
@@ -16,3 +16,5 @@ django-haystack
 django-timezone-field
 django-model-utils
 pymdown-extensions
+django_compressor
+python-memcached

@@ -1,13 +1,17 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.encoding import force_text
 from diff_match_patch import diff_match_patch
-from django.db.models import Q
+from django.db.models import Q, CharField
 from django import forms
 from .models import Topic, Debate, Argument
 from accounts.models import User
 from django.utils import timezone
 import bleach
 
+class ObjectIDField(CharField):
+    def get_db_prep_value(self, value, connection, prepared=False):
+        value = super().get_db_prep_value(value, connection, prepared)
+        return value
 
 def debateslist(topic):
     if (topic.slvl == 0) or (topic.slvl == 1):
@@ -206,9 +210,28 @@ def htmldiffs(original, new):
     dmp.diff_cleanupSemantic(diffs)
     return dmp.diff_prettyHtml(diffs)
 
+def ats(user, topic):
+    if (user.is_authenticated) and not ((
+        topic.slvl == 1 or topic.slvl == 2) and (
+            user.approvedargs < 10 and not user.ismodof(
+                topic))) or ((topic.slvl == 3) and not user.ismodof(topic)):
+        return True
+    else:
+        return False
+
 
 # form utility functions
 
+
+def chkarg(aid):
+    try:
+        return Argument.objects.get(id=aid)
+    except Argument.DoesNotExist:
+        raise forms.ValidationError(
+            'Argument with ID %(aid)s not found.',
+            code='argumentnotfound',
+            params={
+                'aid': aid})
 
 def chkdeb(did):
     try:

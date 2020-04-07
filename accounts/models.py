@@ -3,11 +3,31 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.urls import reverse
 from django.apps import apps
+from django.http import Http404
 from timezone_field import TimeZoneField
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db.models import Q
 from model_utils import Choices
 import django
 # Create your models here.
+
+modrules = [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    ]
 
 class User(AbstractUser):
     modschoices = Choices(
@@ -42,6 +62,7 @@ class User(AbstractUser):
         blank=True,
         through='SavedArgument')
     timezone = TimeZoneField(default='Europe/London')
+    reports = GenericRelation('debates.Report', related_query_name='ruser')
 
     def get_absolute_url(self):  # modlogs bypasses this
         if self.is_active:
@@ -54,6 +75,16 @@ class User(AbstractUser):
     
     def get_modstatus_url(self):
         return reverse('usermodstatus', args=[self.get_username()])
+
+    def get_report_url(self):
+        if not self.is_active:
+            return '#'
+        else:
+            return reverse(
+                'submitreport') + '?type=5&id=' + self.get_username()
+
+    def get_ban_url(self):
+        return reverse('ban') + '?user=' + self.username
 
     def get_username(self):  # modlogs bypasses this
         if self.active == 0 or self.active == 2:
@@ -76,8 +107,12 @@ class User(AbstractUser):
     def ismod(self):
         return self.moderator_of.all().exists() or self.topics_owned.all().exists() or self.modstatus > 0
 
-    def isowner(self, topic):
-        return self.modstatus > 0 or topic.owner == self
+    def isowner(self, *args):
+        if len(args) > 0:
+            topic = args[0]
+            return self.modstatus > 0 or topic.owner == self
+        else:
+            return (self.modstatus > 2)
 
     def isgmod(self):
         return (self.modstatus > 0)
@@ -88,21 +123,42 @@ class User(AbstractUser):
     def hasperm(self):
         return self.is_authenticated and self.active != 2
 
+    def topics(self):
+        return self.topics_owned.all().union(
+            self.moderator_of.all())
+
+    def intopics(self):
+        queries = Q()
+        for topic in self.topics():
+            queries = queries | Q(topic=topic)
+        return queries
+    
+    def arintopics(self):
+        Report = apps.get_model('debates.Report')
+        query = Report.objects.none()
+        for topic in self.topics().prefetch_related('arguments'):
+            for argument in topic.arguments.all():
+                query = query.union(argument.reports.filter(status=0))
+        return query
+    
+    def drintopics(self):
+        Report = apps.get_model('debates.Report')
+        query = Report.objects.none()
+        for topic in self.topics().prefetch_related('debates'):
+            for debate in topic.debates.all():
+                query = query.union(debate.reports.filter(status=0))
+        return query
+    
+
     def get_approvedargs(self):
         return self.arguments.filter(approvalstatus=0).count()
 
     def unapprovedargslist(self):
         Argument = apps.get_model('debates.Argument')
-        if self.isgmod():
-            query = Argument.objects.filter(approvalstatus=1)
-        else:
-            query = Argument.objects.none()
-            queries = Q()
-            for topic in self.topics_owned.all():
-                queries = queries | Q(topic=topic)
-            for topic in self.moderator_of.all():
-                queries = queries | Q(topic=topic)
-            query = Argument.objects.filter(queries & Q(approvalstatus=1))
+        
+        query = Argument.objects.filter(approvalstatus=1)
+        if not self.isgmod():
+            query = query.filter(self.intopics())
         return query
 
     def unapprovedarguments(self):
@@ -111,21 +167,86 @@ class User(AbstractUser):
 
     def unapproveddebslist(self):
         Debate = apps.get_model('debates.Debate')
-        if self.isgmod():
-            query = Debate.objects.filter(approvalstatus=1)
-        else:
-            query = Debate.objects.none()
-            queries = Q()
-            for topic in self.topics_owned.all():
-                queries = queries | Q(topic=topic)
-            for topic in self.moderator_of.all():
-                queries = queries | Q(topic=topic)
-            query = Debate.objects.filter(queries & Q(approvalstatus=1))
+        query = Debate.objects.filter(approvalstatus=1)
+        if not self.isgmod():
+            query = query.filter(self.intopics())
         return query
 
     def unapproveddebates(self):
         return (self.unapproveddebslist()
                 .order_by('-owner__approvedargs', '-created_on'))
+
+    def argreportslist(self):
+        if self.isgmod():
+            Report = apps.get_model('debates.Report')
+            ct = ContentType.objects.get_for_model(
+                apps.get_model('debates.Argument'))
+            query = Report.objects.filter(
+                status=0,
+                content_type=ct)
+        else:
+            query = self.arintopics()
+        return query
+        
+    def argreports(self):
+        return (self.argreportslist().order_by(
+            'date'))
+    
+    def debreportslist(self):
+        if self.isgmod():
+            Report = apps.get_model('debates.Report')
+            ct = ContentType.objects.get_for_model(
+                apps.get_model('debates.Debate'))
+            query = Report.objects.filter(
+                status=0,
+                content_type=ct,)
+        else:
+            query = self.drintopics()
+        return query
+
+    def debreports(self):
+        return (self.debreportslist().order_by(
+            'date'))
+    
+    def topicreportslist(self):
+        Report = apps.get_model('debates.Report')
+        if not self.isgmod():
+            return Report.objects.none()
+        ct = ContentType.objects.get_for_model(
+            apps.get_model('debates.Topic'))
+            
+        query = Report.objects.filter(
+            status=0,
+            content_type=ct)
+        
+        return query
+    
+    def topicreports(self):
+        return (self.topicreportslist().order_by(
+            'date'))
+    
+    def userreportslist(self):
+        Report = apps.get_model('debates.Report')
+        if not self.isgmod():
+            return Report.objects.none()
+        ct = ContentType.objects.get_for_model(
+            apps.get_model('accounts.User'))
+        
+        query = Report.objects.filter(
+            status=0,
+            content_type=ct)
+        
+        if not self.isadmin():
+            query = query.filter(
+                content_object__modstatus=0)
+        elif not self.isowner():
+            query = query.filter(
+                ~Q(content_object=self))
+        return query
+    
+    def userreports(self):
+        return (self.userreportslist().order_by(
+            'date'))
 
     def dcount(self):
         return self.debates.filter(~Q(approvalstatus=3)).count()
@@ -133,6 +254,29 @@ class User(AbstractUser):
     def acount(self):
         return self.arguments.filter(~Q(approvalstatus=3)).count()
 
+    def report(self, rid):
+        Report = apps.get_model('debates.Report')
+        notfoundmsg = 'Report not found or you do not have permission to view it.'
+        notfoundex = Http404(notfoundmsg)
+        try:
+            report = Report.objects.get(id=rid)
+        except Report.DoesNotExist:
+            raise notfoundex
+        reported = report.content_object
+        ctype = report.content_type.model
+        if not self.isgmod():
+            # If user is not a gmod and report is not arg/deb or
+            # report is not in a topic moderated by them, raise 404
+            if (not (ctype == 'argument' or ctype == 'debate')) or (
+                reported.topic not in self.topics()):
+                    raise notfoundex
+        else:
+            if ctype == 'user' and not self.isowner():
+                if self.isadmin() and reported == self:
+                    raise notfoundex
+                elif reported.isgmod() and not self.isadmin():
+                    raise notfoundex
+        return report
     def __str__(self):
         return self.username
 

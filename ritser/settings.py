@@ -23,11 +23,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'localhost',
-    '127.0.0.1']
+    '127.0.0.1',
+    'ritser.com',
+    '206.189.236.80']
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
 
 
@@ -104,7 +106,7 @@ DATABASES = {
                 'NAME': 'postgres',
                 'USER': 'postgres',
                 'PASSWORD': os.environ['POSTGRES_PASSWORD'],
-                'HOST': 'db',
+                'HOST': 'localhost',
                 'PORT': '5432',
     }
 }

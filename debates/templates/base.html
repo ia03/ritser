@@ -11,7 +11,16 @@
 
     {% compress css %}<link rel="stylesheet" href="{% static "debates/css/base.css" %}">{% endcompress %}
 
-    <link rel="icon" href="{% static 'debates/img/favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'debates/img/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'debates/img/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'debates/img/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'debates/img/site.webmanifest' %}">
+    <link rel="shortcut icon" href="{% static 'debates/img/favicon.ico' %}">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="{% static 'debates/img/browserconfig.xml' %}">
+    <meta name="theme-color" content="#ffffff">
+
+
 
     <link rel="canonical" href="https://{{ request.get_host }}{{ request.get_full_path }}">
 

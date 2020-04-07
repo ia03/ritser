@@ -69,10 +69,10 @@ class User(AbstractUser):
             return reverse('user', args=[self.username])
         else:
             return '#'
-    
+
     def get_abs_url_mod(self):
         return reverse('user', args=[self.username])
-    
+
     def get_modstatus_url(self):
         return reverse('usermodstatus', args=[self.get_username()])
 
@@ -132,7 +132,7 @@ class User(AbstractUser):
         for topic in self.topics():
             queries = queries | Q(topic=topic)
         return queries
-    
+
     def arintopics(self):
         Report = apps.get_model('debates.Report')
         query = Report.objects.none()
@@ -140,7 +140,7 @@ class User(AbstractUser):
             for argument in topic.arguments.all():
                 query = query.union(argument.reports.filter(status=0))
         return query
-    
+
     def drintopics(self):
         Report = apps.get_model('debates.Report')
         query = Report.objects.none()
@@ -148,14 +148,14 @@ class User(AbstractUser):
             for debate in topic.debates.all():
                 query = query.union(debate.reports.filter(status=0))
         return query
-    
+
 
     def get_approvedargs(self):
         return self.arguments.filter(approvalstatus=0).count()
 
     def unapprovedargslist(self):
         Argument = apps.get_model('debates.Argument')
-        
+
         query = Argument.objects.filter(approvalstatus=1)
         if not self.isgmod():
             query = query.filter(self.intopics())
@@ -187,11 +187,11 @@ class User(AbstractUser):
         else:
             query = self.arintopics()
         return query
-        
+
     def argreports(self):
         return (self.argreportslist().order_by(
             'date'))
-    
+
     def debreportslist(self):
         if self.isgmod():
             Report = apps.get_model('debates.Report')
@@ -207,50 +207,50 @@ class User(AbstractUser):
     def debreports(self):
         return (self.debreportslist().order_by(
             'date'))
-    
+
     def topicreportslist(self):
         Report = apps.get_model('debates.Report')
         if not self.isgmod():
             return Report.objects.none()
         ct = ContentType.objects.get_for_model(
             apps.get_model('debates.Topic'))
-            
+
         query = Report.objects.filter(
             status=0,
             content_type=ct)
-        
+
         return query
-    
+
     def topicreports(self):
         return (self.topicreportslist().order_by(
             'date'))
-    
+
     def userreportslist(self):
         Report = apps.get_model('debates.Report')
         if not self.isgmod():
             return Report.objects.none()
         ct = ContentType.objects.get_for_model(
             apps.get_model('accounts.User'))
-        
+
         query = Report.objects.filter(
             status=0,
             content_type=ct)
-        
+
         if not self.isadmin():
             query = query.filter(
-                content_object__modstatus=0)
+                ruser__modstatus=0)
         elif not self.isowner():
-            query = query.filter(
-                ~Q(content_object=self))
+            query = query.exclude(
+                object_id=self.id)
         return query
-    
+
     def userreports(self):
         return (self.userreportslist().order_by(
             'date'))
 
     def dcount(self):
         return self.debates.filter(~Q(approvalstatus=3)).count()
-    
+
     def acount(self):
         return self.arguments.filter(~Q(approvalstatus=3)).count()
 
@@ -305,14 +305,14 @@ class SavedDebate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     debate = models.ForeignKey('debates.Debate', on_delete=models.CASCADE)
     added_on = models.DateTimeField(default=timezone.now)
-    
+
     class Meta:
         ordering = ['-added_on']
-    
+
 class SavedArgument(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     argument = models.ForeignKey('debates.Argument', on_delete=models.CASCADE)
     added_on = models.DateTimeField(default=timezone.now)
-    
+
     class Meta:
         ordering = ['-added_on']

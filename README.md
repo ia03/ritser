@@ -55,4 +55,4 @@ https://www.youtube.com/watch?v=mxgOjH7szdk
 
 https://www.youtube.com/watch?v=gv8p-Qo6pr8
 
-logo is in futura light
+logo is in hind semi-bold

@@ -1,11 +1,11 @@
 *.pyc
 __pycache__/
 /modebate/whoosh_index
-/debates/migrations/*
-!/debates/migrations/__init__.py
-/accounts/migrations/*
-!/accounts/migrations/__init__.py
+#/debates/migrations/*
+#!/debates/migrations/__init__.py
+#/accounts/migrations/*
+#!/accounts/migrations/__init__.py
 .~c9_invoke*
 Pipfile
 Pipfile.lock
-Dockerfile
+#Dockerfile

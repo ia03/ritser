@@ -14,12 +14,7 @@
     {% csrf_token %}
     {% include 'snippets/formerrors.html' %}
     {# Include the visible fields #}
-    {% for field in form.visible_fields %}
-        <div class="form-group">
-            <label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
-            {% render_field field class="form-control" %}
-        </div>
-    {% endfor %}
+    {% include 'snippets/formfields.html' %}
     <input type="submit" class="btn btn-primary" value="Submit" />
   </form>
 </main>

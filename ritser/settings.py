@@ -219,7 +219,7 @@ EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = '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'
-DEFAULT_FROM_EMAIL = 'webmaster@ritser.com'
+DEFAULT_FROM_EMAIL = 'support@ritser.com'
 
 # All-auth settings
 SITE_ID = 4

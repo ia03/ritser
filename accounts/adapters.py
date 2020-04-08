@@ -26,7 +26,7 @@ class DefaultAccountAdapter(DefaultAccountAdapter):
     emails = LimitedSizeDict(limit=1500)
 
     def send_mail(self, template_prefix, email, context):
-        if DefaultAccountAdapter.emails.get(email, make_aware(timedelta.min)) < (
+        if DefaultAccountAdapter.emails.get(email, now() - timedelta(400)) < (
                 now() - timedelta(seconds=300)):  # rate limiting, 5 mins per email
             msg = self.render_mail(template_prefix, email, context)
             msg.send()

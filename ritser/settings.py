@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.reddit',
+    'allauth.socialaccount.providers.google',
     'timezone_field',
     'compressor',
 ]
@@ -243,6 +244,15 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {'duration': 'permanent'},
         'SCOPE': ['identity', 'submit'],
         'USER_AGENT': 'django:NIy3rZqS9dKVnQ:1.0 (by /u/fafafefefofo0)',
+    },
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
     }
 }
 

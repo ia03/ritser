@@ -200,10 +200,9 @@ if not DEBUG:
 # Google recaptcha settings
 RECAPTCHA_REQUIRED_SCORE = 0.2
 
-if not DEBUG:
-    # Secret keys:
-    RECAPTCHA_PUBLIC_KEY = os.environ['RECAPTCHA_PUBLIC']
-    RECAPTCHA_PRIVATE_KEY = os.environ['RECAPTCHA_PRIVATE']
+# Secret keys:
+RECAPTCHA_PUBLIC_KEY = os.environ['RECAPTCHA_PUBLIC']
+RECAPTCHA_PRIVATE_KEY = os.environ['RECAPTCHA_PRIVATE']
 
 RECAPTCHA_USE_SSL = True     # Defaults to False
 

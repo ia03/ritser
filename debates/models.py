@@ -98,10 +98,10 @@ class Report(models.Model):
         limit_choices_to=limit)
     object_id = models.CharField(max_length=30)
     content_object = GenericForeignKey()
-    
+
     def get_absolute_url(self):
         return reverse('report', args=[self.id])
-    
+
     def __str__(self):
         return str(self.content_object)
 
@@ -151,7 +151,7 @@ class Topic(models.Model):
         return reverse(
             'edittopic',
             args=[self.name])
-    
+
     def get_edits_url(self):
         return reverse(
             'topicedits',
@@ -164,7 +164,9 @@ class Topic(models.Model):
 
     def get_report_url(self):
         return reverse(
-            'submitreport') + '?type=4&id=' + self.name
+            'submitreport') + ('?type=' +
+            str(ContentType.objects.get_for_model(Topic).id) + '&id=' +
+            self.name)
 
     def __str__(self):
         return self.name
@@ -232,7 +234,7 @@ class Debate(models.Model):
                 self.topic_id,
                 self.id,
                 self.slugify()])
-                
+
     def get_edits_url(self):
         return reverse(
             'debateedits',
@@ -247,7 +249,9 @@ class Debate(models.Model):
 
     def get_report_url(self):
         return reverse(
-            'submitreport') + '?type=2&id=' + str(self.id)
+            'submitreport') + ()'?type=' +
+            str(ContentType.objects.get_for_model(Debate).id) + '&id=' +
+            str(self.id))
 
     def slugify(self):
         return slugify(self.question)
@@ -273,7 +277,7 @@ class Argument(models.Model):
     # 0: approved 1: unapproved 2: denied 3: deleted
     approvalstatus = models.IntegerField(
         default=apprsc.unapproved,
-        choices=apprsc, 
+        choices=apprsc,
         verbose_name='approval status')
     order = models.IntegerField(
         default=0)  # owner.approvedargs?
@@ -311,7 +315,7 @@ class Argument(models.Model):
                 self.debate.slugify(),
                 self.id,
                 self.slugify()])
-                
+
     def get_edits_url(self):
         return reverse(
             'argumentedits',
@@ -324,7 +328,9 @@ class Argument(models.Model):
 
     def get_report_url(self):
         return reverse(
-            'submitreport') + '?type=1&id=' + str(self.id)
+            'submitreport') + ('?type=' +
+            str(ContentType.objects.get_for_model(Argument).id) + '&id=' +
+            str(self.id))
 
     def slugify(self):
         return slugify(self.title)

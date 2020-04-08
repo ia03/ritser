@@ -6,7 +6,7 @@
 
 {% block body %}
     <main role="main" class="container">
-    <h1>Delete Account</h1>
+    <h1 class="mt-5">Delete Account</h1>
     {% include 'snippets/formerrors.html' %}
     <p>Deleting your account will not delete content submitted by it. It will, however, delete e-mails and social accounts associated with it. You need a password to delete your account.</p>
     <form method="POST" action="{% url 'account_delete' %}">

@@ -5,8 +5,8 @@
 {% block body %}
   <div class="container">
     <div class="page-header">
-      <h1>User Inactive</h1>
+      <h1 class="mt-5">User Inactive</h1>
     </div>
-    <p>This account has been {% if puser.active == 1 %}deleted by the user{% elif puser.active == 2 %}temporarily banned{% elif puser.active == 3 %}permanently banned{% endif %} so their profile is unavailable.</h1>
+    <p>This account has been {% if puser.active == 1 %}deleted by the user{% elif puser.active == 2 %}temporarily banned{% elif puser.active == 3 %}permanently banned{% endif %} so their profile is unavailable.</p>
   </div>
 {% endblock %}

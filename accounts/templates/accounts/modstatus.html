@@ -6,7 +6,7 @@
 
 {% block body %}
     <main role="main" class="container">
-    <h1>Change {{ puser.username }}'s mod status</h1>
+    <h1 class="mt-5">Change {{ puser.username }}'s mod status</h1>
     {% include 'snippets/formerrors.html' %}
     {% if user.modstatus == 2 %}<p>Admins can only remove/add global moderators. Please contact someone with owner privileges if you need to do something that requires more authority.</p>{% endif %}
     <form method="POST" action="{{ puser.get_modstatus_url }}">

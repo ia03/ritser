@@ -30,8 +30,7 @@ class DebateForm(forms.ModelForm):
         error_messages={
             'required': 'You must specify the name of the user who will own the debate.'})
     captcha = ReCaptchaField(
-        private_key=settings.GR_DEBATEFORM,
-        public_key='6LcV9EwUAAAAAIt0jamp3Z30425qTsD_paJlpfFo',
+        widget=ReCaptchaV3,
         error_messages={
             'required': 'Invalid ReCAPTCHA. Please try again.'})
 
@@ -179,8 +178,7 @@ class ArgumentForm(forms.ModelForm):
         label='Debate ID (comes after the topic name in the URL)', error_messages={
             'required': 'You must specify the ID of the debate this argument will belong to.'})
     captcha = ReCaptchaField(
-        private_key=settings.GR_ARGUMENTFORM,
-        public_key='6Lcd9EwUAAAAAAExN5gc7KSQ2da-BWNJSAKtH2r4',
+        widget=ReCaptchaV3,
         error_messages={
             'required': 'Invalid ReCAPTCHA. Please try again.'})
 
@@ -340,8 +338,7 @@ class TopicForm(forms.ModelForm):
         error_messages={
             'required': 'You must input the moderators\' names.'})
     captcha = ReCaptchaField(
-        private_key=settings.GR_TOPICFORM,
-        public_key='6Lf2wk4UAAAAAKzFTTvHOnHfwU5-RVbrlxXcDVEm',
+        widget=ReCaptchaV3,
         error_messages={
             'required': 'Invalid ReCAPTCHA. Please try again.'})
     owner_name = forms.CharField(error_messages={
@@ -677,8 +674,7 @@ class UpdateSlvlForm(forms.Form):
 
 class ReportForm(forms.ModelForm):
     captcha = ReCaptchaField(
-        private_key=settings.GR_REPORTFORM,
-        public_key='6LdevVQUAAAAACcOkHk3YbR_LWqZ_iur8vfUxHhW',
+        widget=ReCaptchaV3,
         error_messages={
             'required': 'Invalid ReCAPTCHA. Please try again.'})
     def __init__(self, *args, **kwargs):
@@ -688,7 +684,7 @@ class ReportForm(forms.ModelForm):
         self.fields['content_type'].choices = [
             (choice[0], choice[1].capitalize()) for choice in
             self.fields['content_type'].choices]
-        
+
     def clean(self):
         cleaned_data = super().clean()
         ctype = cleaned_data['content_type'].model
@@ -702,7 +698,7 @@ class ReportForm(forms.ModelForm):
         elif(ctype == 'user'):
             self.obj = chkusr(objid)
         return cleaned_data
-    
+
     class Meta:
         model = Report
         fields = [

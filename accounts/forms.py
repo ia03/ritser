@@ -19,8 +19,7 @@ class SignupForm(forms.Form):
         error_messages={
             'required': 'You must agree to the terms.'})
     captcha = ReCaptchaField(
-        private_key=settings.GR_SIGNUPFORM,
-        public_key='6LfKRk0UAAAAAAVkc0FNDHtLNyzwYwBiEUpVeDCe',
+        widget=ReCaptchaV3,
         error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'}
     )
 
@@ -77,8 +76,7 @@ class ProfileForm(forms.ModelForm):
 class AddEmailForm(forms.Form):
     gdprconsent = forms.BooleanField(label=consentemaillabel)
     captcha = ReCaptchaField(
-        private_key=settings.GR_ADDEMAILFORM,
-        public_key='6Lc71U4UAAAAALLVIW91zfM37xT_8DSYvCdyXA7M',
+        widget=ReCaptchaV3,
         error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'}
     )
     email = forms.EmailField(
@@ -151,7 +149,7 @@ class SetStaffForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
-    
+
     def clean_modstatus(self):
         data = self.cleaned_data['modstatus']
         ums = self.user.modstatus #editing user's mod status

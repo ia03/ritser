@@ -198,18 +198,13 @@ if not DEBUG:
 
 
 # Google recaptcha settings
-# Secret keys:
-GR_DEBATEFORM = os.environ['GR_DEBATEFORM']
-GR_ARGUMENTFORM = os.environ['GR_ARGUMENTFORM']
-GR_SIGNUPFORM = os.environ['GR_SIGNUPFORM']
-GR_TOPICFORM = os.environ['GR_TOPICFORM']
-GR_ADDEMAILFORM = os.environ['GR_ADDEMAILFORM']
-GR_REPORTFORM = os.environ['GR_REPORTFORM']
+RECAPTCHA_REQUIRED_SCORE = 0.2
 
-RECAPTCHA_PUBLIC_KEY = os.environ['RECAPTCHA_PUBLIC']
-RECAPTCHA_PRIVATE_KEY = os.environ['RECAPTCHA_PRIVATE']
+if not DEBUG:
+    # Secret keys:
+    RECAPTCHA_PUBLIC_KEY = os.environ['RECAPTCHA_PUBLIC']
+    RECAPTCHA_PRIVATE_KEY = os.environ['RECAPTCHA_PRIVATE']
 
-NOCAPTCHA = True
 RECAPTCHA_USE_SSL = True     # Defaults to False
 
 

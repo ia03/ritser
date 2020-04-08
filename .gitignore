@@ -8,4 +8,5 @@ __pycache__/
 .~c9_invoke*
 Pipfile
 Pipfile.lock
+debug.log
 #Dockerfile

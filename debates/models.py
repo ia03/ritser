@@ -249,7 +249,7 @@ class Debate(models.Model):
 
     def get_report_url(self):
         return reverse(
-            'submitreport') + ()'?type=' +
+            'submitreport') + ('?type=' +
             str(ContentType.objects.get_for_model(Debate).id) + '&id=' +
             str(self.id))
 

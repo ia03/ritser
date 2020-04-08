@@ -2,6 +2,7 @@ from django import forms
 from .models import User
 from debates.models import Topic
 from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV3
 from django.conf import settings
 from django.contrib.auth.hashers import check_password
 from allauth.account.models import EmailAddress

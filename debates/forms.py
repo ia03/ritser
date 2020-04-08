@@ -3,6 +3,7 @@ from .models import Topic, Debate, Argument, Report
 from accounts.models import User
 from django.utils import timezone
 from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV3
 from django.conf import settings
 from .utils import (
     chkarg,

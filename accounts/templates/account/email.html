@@ -64,12 +64,6 @@
         </div>
         <button class="btn btn-outline-primary" name="action_add" type="submit">Add E-mail</button>
     </form>
-    {% if user.emailaddress_set.all %}
-    A raw list of this account's e-mails:
-    <br>
-    <textarea class="form-control" rows="3">{% for emailaddress in user.emailaddress_set.all %}{{ emailaddress.email }}
-{% endfor %}</textarea>
-    {% endif %}
 </main>
 {% endblock %}
 

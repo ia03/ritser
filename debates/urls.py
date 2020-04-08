@@ -14,9 +14,9 @@ urlpatterns = [
     # Static pages above listed in sitemap
     path('feed/', views.feed, name='feed'),
     path('t/<slug:tname>/', views.topic, name='topic'),
-    path('t/<slug:tname>/info', views.topicinfo, name='topicinfo'),
-    path('t/<slug:tname>/edit', views.edittopic, name='edittopic'),
-    path('t/<slug:tname>/edits', views.topicedits, name='topicedits'),
+    path('t/<slug:tname>/info/', views.topicinfo, name='topicinfo'),
+    path('t/<slug:tname>/edit/', views.edittopic, name='edittopic'),
+    path('t/<slug:tname>/edits/', views.topicedits, name='topicedits'),
     path('t/<slug:tname>/<int:did>,<slug:ds>/', views.debate,
          name='debate'),
     path('t/<slug:tname>/<int:did>,<slug:ds>/edit/', views.editdebate,
@@ -84,10 +84,10 @@ urlpatterns = [
     path('report/', views.submitreport, name='submitreport'),
     path('ajax/votedebate/', views.votedebate, name='votedebate'),
     path('ajax/save/', views.save, name='save'),
-    
-    
-    
-    
+
+
+
+
     # These URLs will redirect as they are not pretty
     # Ugly debate URLs
     path('t/<slug:tname>/<int:did>,/', views.debate,
@@ -115,7 +115,7 @@ urlpatterns = [
         't/<slug:tname>/<int:did>,<slug:ds>/argument/<int:aid>/',
         views.argument,
         name='argument'),
-    
+
     path(
         't/<slug:tname>/<int:did>,/argument/<int:aid>,<slug:ars>/',
         views.argument,
@@ -128,7 +128,7 @@ urlpatterns = [
         't/<slug:tname>/<int:did>,/argument/<int:aid>/',
         views.argument,
         name='argument'),
-    
+
     path(
         't/<slug:tname>/<int:did>/argument/<int:aid>,<slug:ars>/',
         views.argument,
@@ -141,9 +141,9 @@ urlpatterns = [
         't/<slug:tname>/<int:did>/argument/<int:aid>,/',
         views.argument,
         name='argument'),
-        
-    
-    
+
+
+
     path(
         't/<slug:tname>/<int:did>,<slug:ds>/argument/<int:aid>,/edit/',
         views.editargument,
@@ -152,7 +152,7 @@ urlpatterns = [
         't/<slug:tname>/<int:did>,<slug:ds>/argument/<int:aid>/edit/',
         views.editargument,
         name='editargument'),
-    
+
     path(
         't/<slug:tname>/<int:did>,/argument/<int:aid>,<slug:ars>/edit/',
         views.editargument,
@@ -165,7 +165,7 @@ urlpatterns = [
         't/<slug:tname>/<int:did>,/argument/<int:aid>/edit/',
         views.editargument,
         name='editargument'),
-    
+
     path(
         't/<slug:tname>/<int:did>/argument/<int:aid>,<slug:ars>/edit/',
         views.editargument,
@@ -178,9 +178,9 @@ urlpatterns = [
         't/<slug:tname>/<int:did>/argument/<int:aid>,/edit/',
         views.editargument,
         name='editargument'),
-        
-    
-    
+
+
+
     path(
         't/<slug:tname>/<int:did>,<slug:ds>/argument/<int:aid>,/edits/',
         views.editargument,
@@ -189,7 +189,7 @@ urlpatterns = [
         't/<slug:tname>/<int:did>,<slug:ds>/argument/<int:aid>/edits/',
         views.editargument,
         name='argumentedits'),
-    
+
     path(
         't/<slug:tname>/<int:did>,/argument/<int:aid>,<slug:ars>/edits/',
         views.editargument,
@@ -202,7 +202,7 @@ urlpatterns = [
         't/<slug:tname>/<int:did>,/argument/<int:aid>/edits/',
         views.editargument,
         name='argumentedits'),
-    
+
     path(
         't/<slug:tname>/<int:did>/argument/<int:aid>,<slug:ars>/edits/',
         views.editargument,
@@ -215,5 +215,5 @@ urlpatterns = [
         't/<slug:tname>/<int:did>/argument/<int:aid>,/edits/',
         views.editargument,
         name='editargument'),
-    
+
 ]

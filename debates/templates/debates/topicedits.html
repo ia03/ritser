@@ -7,7 +7,7 @@
   <h1 class="mt-5">{{ topic.name }} - Edits</h1>
   Owner:
   <a href="{{ topic.owner.get_absolute_url}}">{{topic.owner.get_username }}</a> -
-  Security Level: {{ topic.slvl }} - 
+  Security Level: {{ topic.slvl }} -
   Default Debate Security Level: {{ topic.debslvl }}
   <hr />
   <div id="accordion">
@@ -20,7 +20,7 @@
           </button>
         </h5>
       </div>
-  
+
       <div id="collapse{{ forloop.counter }}" class="collapse" aria-labelledby="heading{{ forloop.counter }}" data-parent="#accordion">
         <div class="card-body">
           User: <a href="{{ version.revision.user.get_absolute_url}}">{{version.revision.user.get_username }}</a>
@@ -36,14 +36,14 @@
           {% if isadmin %}
           IP: {{ version|ip }}
           <br>{% endif %}
-          Title: {% if forloop.last and not version|titchg %}{{ version|field:"title" }}{% else %}{{ version|titchg }}{% endif %}
+          Title: {{ version|titchg }}
           <br>
-          Description: {% if forloop.last and not version|bodchg %}{{ version|field:"description" }}{% else %}{{ version|bodchg }}{% endif %}
+          Description: {{ version|bodchg }}
         </div>
       </div>
     </div>
     {% endfor %}
-    
+
   </div>
   {% if versions.has_other_pages %}
   {% load paginator %}

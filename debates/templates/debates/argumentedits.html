@@ -24,7 +24,7 @@
           </button>
         </h5>
       </div>
-  
+
       <div id="collapse{{ forloop.counter }}" class="collapse" aria-labelledby="heading{{ forloop.counter }}" data-parent="#accordion">
         <div class="card-body">
           User: <a href="{{ version.revision.user.get_absolute_url}}">{{version.revision.user.get_username }}</a>
@@ -46,14 +46,14 @@
           <br>{% endifchanged %}
           {% ifchanged %}Debate: <a href="{{ version|debate|url}}">{{version|debate|question }}</a>
           <br>{% endifchanged %}
-          Title: {% if forloop.last and not version|titchg %}{{ version|field:"title" }}{% else %}{{ version|titchg }}{% endif %}
+          Title: {{ version|titchg }}
           <br>
-          Body: {% if forloop.last and not version|bodchg %}{{ version|field:"body" }}{% else %}{{ version|bodchg }}{% endif %}
+          Body: {{ version|bodchg }}
         </div>
       </div>
     </div>
     {% endfor %}
-    
+
   </div>
   {% if versions.has_other_pages %}
   {% load paginator %}

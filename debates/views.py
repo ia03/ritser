@@ -201,9 +201,9 @@ def debate(request, tname, did, ds=None):
             vote = 0
     else:
         vote = 0
-    
-    
-    
+
+
+
     context = {
         'debate': debate,
         'topic': topic,
@@ -242,13 +242,23 @@ def submitdebate(request):
         form = DebateForm(request.POST, user=user, edit=0)
         if form.is_valid():
             with reversion.create_revision():
+                titchg = htmldiffs(
+                   '',
+                   form.cleaned_data['question'])
+                bodchg = htmldiffs(
+                   '',
+                   form.cleaned_data['description'])
                 debate = form.save(commit=False)
                 debate.karma = 1
                 debate.save()
                 debate.users_upvoting.add(user)
                 reversion.set_user(user)
                 client_ip, is_routable = get_client_ip(request)
-                reversion.add_meta(RevisionData, ip=client_ip)
+                reversion.add_meta(
+                RevisionData,
+                ip=client_ip,
+                titchg=titchg,
+                bodchg=bodchg)
             messages.success(
                     request,
                     ('You have successfully submitted debate '
@@ -289,7 +299,7 @@ def editdebate(request, tname, did, ds=None):
         if form.is_valid():
             with reversion.create_revision():
                 titchg = htmldiffs(
-                                   oquestion, 
+                                   oquestion,
                                    form.cleaned_data['question'])
                 bodchg = htmldiffs(
                                    odescription,
@@ -327,10 +337,20 @@ def submitargument(request):
         if form.is_valid():
 
             with reversion.create_revision():
+                titchg = htmldiffs(
+                                   '',
+                                   form.cleaned_data['title'])
+                bodchg = htmldiffs(
+                                   '',
+                                   form.cleaned_data['body'])
                 argument = form.save()
                 reversion.set_user(user)
                 client_ip, is_routable = get_client_ip(request)
-                reversion.add_meta(RevisionData, ip=client_ip)
+                reversion.add_meta(
+                    RevisionData,
+                    ip=client_ip,
+                    titchg=titchg,
+                    bodchg=bodchg)
             messages.success(
                 request,
                 ('You have successfully submitted argument '
@@ -384,10 +404,10 @@ def editargument(request, tname, did, aid, ds=None, ars=None):
 
             with reversion.create_revision():
                 titchg = htmldiffs(
-                                   otitle, 
+                                   otitle,
                                    form.cleaned_data['title'])
                 bodchg = htmldiffs(
-                                   obody, 
+                                   obody,
                                    form.cleaned_data['body'])
                 argument = form.save()
                 reversion.set_user(request.user)
@@ -472,12 +492,22 @@ def submittopic(request):
         form = TopicForm(request.POST, user=user, edit=0)
         if form.is_valid():
             with reversion.create_revision():
+                titchg = htmldiffs(
+                    '',
+                    form.cleaned_data['title'])
+                bodchg = htmldiffs(
+                    '',
+                    form.cleaned_data['description'])
                 topic = form.save(commit=False)
                 topic.moderators.set(form.modsl)
                 topic.save()
                 reversion.set_user(user)
                 client_ip, is_routable = get_client_ip(request)
-                reversion.add_meta(RevisionData, ip=client_ip)
+                reversion.add_meta(
+                    RevisionData,
+                    ip=client_ip,
+                    titchg=titchg,
+                    bodchg=bodchg)
                 messages.success(
                     request,
                     ('You have successfully submitted topic '
@@ -517,10 +547,10 @@ def edittopic(request, tname):
         if form.is_valid():
             with reversion.create_revision():
                 titchg = htmldiffs(
-                                   otitle, 
+                                   otitle,
                                    form.cleaned_data['title'])
                 bodchg = htmldiffs(
-                                   obody, 
+                                   obody,
                                    form.cleaned_data['description'])
                 topic = form.save(commit=False)
                 if isowner:
@@ -613,7 +643,7 @@ def votedebate(request):
             ovote = -1
         else:
             ovote = 0
-    
+
         if (vote == 1):
             if (ovote == 1):
                 return HttpResponseBadRequest('error - already upvoted')
@@ -643,11 +673,11 @@ def votedebate(request):
                 debate.users_downvoting.add(user)
             if (ovote == -1):
                 return HttpResponseBadRequest('error - already downvoted')
-    
+
         debate.save()
         return HttpResponse(debate.karma)
     raise Http404()
-    
+
 def save(request):
     if request.method == 'POST':
         pid = int(request.POST.get('id'))
@@ -667,7 +697,7 @@ def save(request):
                     return HttpResponseBadRequest('error - already saved')
             else:
                 SavedDebate.objects.filter(user=user, debate=debate).delete()
-            
+
         else:
             argument = get_object_or_404(Argument, id=pid)
             if save == 0:
@@ -850,7 +880,7 @@ def move(request):
                 L2 = '[Moved from topic %s to topic %s.]'
                 L3 = '[Moderator Action]'
                 f = '<span class="text-secondary">%s</span>'
-                
+
                 if isinstance(post, Debate):
                     arguments = Argument.objects.filter(debate=post)
                     difft = (post.topic_id != post2.topic_id)
@@ -1022,7 +1052,7 @@ def unapproveddebs(request):
     context = {
         'debates': unapproveddebs,
         'editdlist': True,
-        
+
     }
     return render(request, 'debates/mod/unapproveddebs.html', context)
 
@@ -1120,8 +1150,8 @@ def report(request, rid):
     report = request.user.report(rid)
     reported = report.content_object
     ctype = report.content_type.model
-            
-    
+
+
     context = {
         'report': report,
         'reported': reported,

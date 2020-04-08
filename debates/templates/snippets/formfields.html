@@ -1,0 +1,6 @@
+{% for field in form.visible_fields %}
+  <div class="form-group">
+      {% if field != form.captcha %}<label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>{% endif %}
+      {% render_field field class="form-control" %}
+  </div>
+{% endfor %}

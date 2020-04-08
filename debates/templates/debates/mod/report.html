@@ -37,6 +37,8 @@
     {% endif %}
     Date: {{ report.date|date }}
     <br>
+    <a href="{{ reported.get_absolute_url }}">Link</a>
+    <br>
     <hr />
     {{ report.description|markdownf }}
 </main>

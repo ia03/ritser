@@ -5,10 +5,10 @@
 {% block body %}
 
 <main role="main" class="container">
-  <h1>Log Out</h1>
-  
+  <h1 class="mt-5">Log Out</h1>
+
   <p>Are you sure you want to log out?</p>
-  
+
   <form method="post" action="{% url 'account_logout' %}">
     {% csrf_token %}
     {% if redirect_field_value %}

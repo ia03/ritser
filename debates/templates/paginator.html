@@ -35,7 +35,7 @@
     </li>
     {% endif %}
     {% if obj.number == obj.paginator.num_pages %}
-    <li class="page-item disabled"><span class="page-link">⇥</a></li>
+    <li class="page-item disabled"><a class="page-link">⇥</a></li>
     {% else %}
     <li class="page-item"><a class="page-link" href="{{ request.get_full_path|link_name:obj.paginator.num_pages }}">⇥</a></li>
     {% endif %}

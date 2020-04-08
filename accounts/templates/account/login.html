@@ -9,37 +9,37 @@
 {% block body %}
 
 <main role="main" class="container">
-    <h1>Log In</h1>
-    
+    <h1 class="mt-5">Log In</h1>
+
     {% get_providers as socialaccount_providers %}
-    
+
     {% if socialaccount_providers %}
     <p>Please log in with one
     of your existing third party accounts by agreeing to the terms and clicking on the appropriate link or <a href="{{ signup_url }}">sign up</a>
     for a {{ site.name }} account and log in below.</p>
     <p><strong>Third Party Account:</strong></p>
     <div class="socialaccount_ballot">
-    
+
       <input type="checkbox" name="tos" required id="tos" />
       <label for="tos" class="form-check-label">I am at least 13 years old and agree to the <a href="{% url 'terms' %}">Terms of Service</a> and <a href="{% url 'privacy' %}">Privacy Policy</a> of Ritser.</label>
       <ul class="socialaccount_providers list-group">
         {% include "socialaccount/snippets/provider_list.html" with process="login" %}
       </ul>
-   
-    
+
+
       <div class="login-or"><strong>or</strong></div>
-    
+
     </div>
-    
+
     {% include "socialaccount/snippets/login_extra.html" %}
-    
+
     {% else %}
     <p>If you have not created an account yet, then please
     <a href="{{ signup_url }}">sign up</a> first.</p>
     {% endif %}
-    
+
     {% include 'snippets/formerrors.html' %}
-    
+
     <form class="login" method="POST" action="{% url 'account_login' %}">
       {% csrf_token %}
       <div class="form-group">

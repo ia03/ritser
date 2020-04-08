@@ -8,14 +8,14 @@
 {% block body %}
   <main role="main" class="container">
     <div class="page-header">
-      <h1>Move Posts</h1>
+      <h1 class="mt-5">Move Posts</h1>
     </div>
     <p>If you select "Topic", all debates in the first topic will be moved to the second topic, and if you select "Debate", all arguments in the first debate will be moved to the second debate.</p>
     <form action="{% url 'move' %}" method="post">
       {% csrf_token %}
       {% include 'snippets/formerrors.html' %}
       {# Include the visible fields #}
-      
+
       <div class="form-group">
           <label for="{{ form.mtype.id_for_label }}">{{ form.mtype.label_tag }}</label>
           {% for choice in form.mtype %}
@@ -32,7 +32,7 @@
           <label for="{{ form.sid.id_for_label }}">{{ form.sid.label_tag }}</label>
           {% render_field form.sid class="form-control" %}
       </div>
-    
+
       <input type="submit" class="btn btn-primary" value="Submit" />
     </form>
   </main>

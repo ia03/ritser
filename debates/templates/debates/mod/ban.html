@@ -13,7 +13,7 @@
 {% block body %}
   <main role="main" class="container">
     <div class="page-header">
-      <h1>Suspend/Terminate a User</h1>
+      <h1 class="mt-5">Suspend/Terminate a User</h1>
     </div>
     <form action="{% url 'ban' %}" method="post">
       {% csrf_token %}
@@ -35,7 +35,7 @@
           <label for="{{ form.bannote.id_for_label }}">{{ form.bannote.label_tag }}</label>
           {% render_field form.bannote class="form-control" %}
       </div>
-    
+
       <input type="submit" class="btn btn-primary" value="Submit" />
     </form>
   </main>

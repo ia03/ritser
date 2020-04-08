@@ -7,12 +7,12 @@
 <main role="main" class="container">
     {% if useria %}
     {% if useria.active == 1 %}
-    <h1>Account Deleted</h1>
-    
+    <h1 class="mt-5">Account Deleted</h1>
+
     <p>This account has been deleted and its email addresses have been wiped from Ritser's servers.</p>
     {% elif useria.active == 3 %}
     <h1>Account Terminated</h1>
-    
+
     <p>This account has been terminated by Ritser staff and its email addresses have been wiped from Ritser's servers.</p>
     {% if useria.bannote %}
     Moderator note:
@@ -22,7 +22,7 @@
     {% endif %}
     {% else %}
     <h1>Invalid Session</h1>
-    
+
     <p>Please try logging in again.</p>
     {% endif %}
 </main>

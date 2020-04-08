@@ -8,7 +8,7 @@
 {% block body %}
 
 <main role="main" class="container">
-  <h1>Edit Argument "{{ argument.title }}"</h1>
+  <h1 class="mt-5">Edit Argument "{{ argument.title }}"</h1>
   <p>View the rules <a href="{% url 'rules' %}">here.</a></p>
   <form action="{{ argument.get_edit_url }}" method="post">
     {% csrf_token %}

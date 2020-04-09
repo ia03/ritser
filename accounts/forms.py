@@ -39,7 +39,7 @@ class SignupForm(forms.Form):
 class ProfileForm(forms.ModelForm):
     stopicsf = forms.CharField(
         required=False,
-        label='Subscribed Topics (a space-separated list of their names)')
+        label='Subscribed Topics (type in a list of the topics\' names separated by spaces)')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

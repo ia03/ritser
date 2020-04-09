@@ -67,7 +67,6 @@
          <li class="nav-item{% if request.path == profile %} active{% endif %}">
         <a class="nav-link" href="{{ profile}}">{{user.get_username }}{% if request.path == profile %} <span class="sr-only">(current)</span>{% endif %}</a>
          </li>
-         </ul>
         {% else %}
         {% url 'account_login' as login %}
         <li class="nav-item{% if request.path == login %} active{% endif %}">

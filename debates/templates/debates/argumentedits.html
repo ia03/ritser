@@ -33,7 +33,7 @@
           Owner: <a href="{{ version|owner|url}}">{{version|owner|username }}</a> <br />{% endifchanged %}
           {% ifchanged %}Order: {{ version|field:"order" }}
           <br />{% endifchanged%}
-          {% ifchanged %}Side: {{ version|field:"side" }}
+          {% ifchanged %}Side: {% if version|field:"side" == 0 %}For{% else %}Against{% endif %}
           <br />{% endifchanged%}
           {% ifchanged %}Approval Status: {% if version|field:"approvalstatus" == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif version|field:"approvalstatus" == 1 %} <span class="badge badge-secondary">Unapproved</span>{% elif version|field:"approvalstatus" == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% elif version|field:"approvalstatus" == 3 %} <span class="badge badge-pill badge-dark">Hidden</span>{% endif %}
           <br />{% endifchanged %}

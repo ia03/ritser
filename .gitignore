@@ -1,6 +1,7 @@
 *.pyc
 __pycache__/
-/modebate/whoosh_index
+/static/
+/ritser/whoosh_index
 #/debates/migrations/*
 #!/debates/migrations/__init__.py
 #/accounts/migrations/*

@@ -14,12 +14,12 @@
         <div class="col-md-6">Owner:
           <a href="{{ topic.owner.get_absolute_url }}">
             {{ topic.owner.get_username }}
-          </a><br> Security Level: {{ topic.slvl }}
-          <br>
+          </a><br /> Security Level: {{ topic.slvl }}
+          <br />
           Default Debate Security Level: {{ topic.debslvl }}
-          <br>
+          <br />
           Created on {{ topic.created_on|date }}
-          <br>
+          <br />
           Sorting method:
           <select onchange="changesort()" id="sorts">
             <option value="top">Top</option>
@@ -34,7 +34,7 @@
         </div>
       </div>
       <hr />
-       <br>
+       <br />
       {% include 'snippets/debateslist.html' %}
       {% if debates.has_other_pages %}
       {% load paginator %}

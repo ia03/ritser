@@ -28,22 +28,22 @@
       <div id="collapse{{ forloop.counter }}" class="collapse" aria-labelledby="heading{{ forloop.counter }}" data-parent="#accordion">
         <div class="card-body">
           User: <a href="{{ version.revision.user.get_absolute_url}}">{{version.revision.user.get_username }}</a>
-          <br>
+          <br />
           {% ifchanged %}
-          Owner: <a href="{{ version|owner|url}}">{{version|owner|username }}</a> <br>{% endifchanged %}
+          Owner: <a href="{{ version|owner|url}}">{{version|owner|username }}</a> <br />{% endifchanged %}
           {% ifchanged %}Security level: {{ version|field:"slvl" }}
-          <br>{% endifchanged%}
+          <br />{% endifchanged%}
           {% ifchanged %}Approval Status: {% if version|field:"approvalstatus" == 0 %} <span class="badge badge-pill badge-success">Approved</span>{% elif version|field:"approvalstatus" == 1 %} <span class="badge badge-secondary">Unapproved</span>{% elif version|field:"approvalstatus" == 2 %} <span class="badge badge-pill badge-danger">Denied</span>{% elif version|field:"approvalstatus" == 3 %} <span class="badge badge-pill badge-dark">Hidden</span>{% endif %}
-          <br>{% endifchanged %}
+          <br />{% endifchanged %}
           {% ifchanged version|field:"modnote" %}{% modnotes version|field:"modnote" forloop.counter %}
-          <br>{% endifchanged %}
+          <br />{% endifchanged %}
           {% if isadmin %}
           IP: {{ version|ip }}
-          <br>{% endif %}
+          <br />{% endif %}
           {% ifchanged %}Topic: <a href="{{ version|topic|url}}">{{version|field:"topic_id" }}</a>
-          <br>{% endifchanged %}
+          <br />{% endifchanged %}
           Question: {{ version|titchg }}
-          <br>
+          <br />
           Description: {{ version|bodchg }}
         </div>
       </div>

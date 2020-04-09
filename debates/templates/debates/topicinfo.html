@@ -11,7 +11,7 @@
       <p class="lead">{{ topic.title }}</p>
       <a href="{{ topic.get_absolute_url }}">Main Page</a> - <a href="{{ topic.get_edit_url }}">Edit/View source</a> - <a href="{{ topic.get_edits_url }}">Edits</a> - <a href="{{ topic.get_report_url }}">Report</a>
       <div class="row">
-        <div class="col-md-6">Owner: <a href="{{ topic.owner.get_absolute_url }}">{{ topic.owner.get_username }}</a><br>Security Level: {{ topic.slvl }}<br>Default Debate Security Level: {{ topic.debslvl }} <a href="{% url 'rules' %}#securitylevels">What do these numbers mean?</a><br>Created on {{ topic.created_on|date }}</div>
+        <div class="col-md-6">Owner: <a href="{{ topic.owner.get_absolute_url }}">{{ topic.owner.get_username }}</a><br />Security Level: {{ topic.slvl }}<br />Default Debate Security Level: {{ topic.debslvl }} <a href="{% url 'rules' %}#securitylevels">What do these numbers mean?</a><br />Created on {{ topic.created_on|date }}</div>
         <div class="col-md-6 text-md-right">Moderators: {% for mod in mods %}{% if not forloop.first %}, {% endif %}<a href="{{ mod.get_absolute_url}}">{{mod.get_username }}</a>{% endfor %}{% include 'snippets/sdebatebtn.html' %}</div>
       </div>
       <hr />

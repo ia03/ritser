@@ -14,15 +14,15 @@
       <a href="{{ argument.get_edit_url }}">Edit/View source</a> -
       <a href="{{ argument.get_edits_url }}">Edits</a> -
       {% include 'snippets/asavelink.html' %} - <a href="{{ argument.get_report_url }}">Report</a>
-      <br>
+      <br />
       Owner: <a href="{{ argument.owner.get_absolute_url}}">{{ argument.owner.get_username }}</a>
-      <br>
+      <br />
       Status: {% if argument.approvalstatus == 0 %}<span class="badge badge-pill badge-primary">Approved</span>{% elif argument.approvalstatus == 1 %}<span class="badge badge-pill badge-secondary">Unapproved</span>{% elif argument.approvalstatus == 2 %}<span class="badge badge-pill badge-danger">Denied</span>{% elif argument.approvalstatus == 3 %}<span class="badge badge-pill badge-dark">Hidden</span>{% endif %}</small>
-      <br>
+      <br />
       Topic: <a href="{{ topic.get_absolute_url}}">{{ topic.name }}</a>
-      <br>
+      <br />
       Debate: <a href="{{ debate.get_absolute_url}}">{{ debate.question }}</a>
-      <br>
+      <br />
       Created on <span title="{{ argument.created_on|date:"c" }}">{{ argument.created_on|date:"D d M Y f A"}}</span>
       {% if argument.modnote %}
       {% load modnotes %}

@@ -3,13 +3,13 @@
 <h1 class="mt-5">{{ puser.username }}'s profile</h1>
 {% if puser.modstatus == 1 %}
 <span class="badge badge-secondary">Global Moderator</span>
-<br>
+<br />
 {% elif puser.modstatus == 2 %}
 <span class="badge badge-danger">Admin</span>
-<br>
+<br />
 {% elif puser.modstatus == 3 %}
 <span class="badge badge-dark">Owner</span>
-<br>
+<br />
 {% endif %}
 {% if puser.active == 2 %}
 <div class="alert alert-danger">
@@ -17,25 +17,25 @@ This user's account is currently suspended. {% if user.isgmod %}<a href="{% url 
 </div>
 {% elif user.isgmod %}
 <a href="{% url 'ban' %}?user={{ puser.username }}" class="text-danger">Suspend/Terminate</a>
-<br>
+<br />
 {% endif %}
 {% if user.isowner or user.isadmin and user.modstatus > puser.modstatus %}
 <a href="{{ puser.get_modstatus_url }}">Change mod status</a>
-<br>
+<br />
 {% endif %}
 <a href="{{ puser.get_report_url }}">Report</a>
-<br>
+<br />
 Joined on {{ puser.date_joined|date:"SHORT_DATETIME_FORMAT" }}
-<br>
+<br />
 {% with puser.topics_owned.all as topics_owned %}
-{% if topics_owned %}Topics owned: {% for topic in puser.topics_owned.all %}{% if not forloop.first %}, {% endif %}<a href="{{ topic.get_absolute_url}}">{{topic.name }}</a>{% endfor %} <br>{% endif %}
+{% if topics_owned %}Topics owned: {% for topic in puser.topics_owned.all %}{% if not forloop.first %}, {% endif %}<a href="{{ topic.get_absolute_url}}">{{topic.name }}</a>{% endfor %} <br />{% endif %}
 {% endwith %}
 {% with puser.moderator_of.all as moderator_of %}
-{% if moderator_of %}Moderator of: {% for topic in moderator_of %}{% if not forloop.first %}, {% endif %}<a href="{{ topic.get_absolute_url}}">{{topic.name }}</a>{% endfor %} <br>{% endif %}
+{% if moderator_of %}Moderator of: {% for topic in moderator_of %}{% if not forloop.first %}, {% endif %}<a href="{{ topic.get_absolute_url}}">{{topic.name }}</a>{% endfor %} <br />{% endif %}
 {% endwith %}
 {% if puser.bio %}
 Bio:
-<br>
+<br />
 {{ puser.bio|markdownf }}
 {% endif %}
 <ul class="nav nav-tabs">
@@ -50,4 +50,4 @@ Bio:
     {% endwith %}
   </li>
 </ul>
-<br>
+<br />

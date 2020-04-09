@@ -25,18 +25,18 @@
           <a href="{{ debate.get_edits_url }}">Edits</a> -
           {% include 'snippets/dsavelink.html' %} -
           <a href="{{ debate.get_report_url }}">Report</a>
-          <br>
+          <br />
           Topic: <a href="{{ topic.get_absolute_url}}">{{topic.name }}</a>
-          <br>
+          <br />
           Owner:
           <a href="{{ debate.owner.get_absolute_url}}">{{debate.owner.get_username }}</a>
-          <br>
+          <br />
           Security Level : {{ debate.slvl }} (<a href="{% url 'rules' %}#securitylevels">?</a>)
-          <br>
-          {% if debate.approvalstatus == 0 %}<span class="badge badge-pill badge-success">Approved</span><br>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span><br>{% elif debate.approvalstatus == 3 %} <span class="badge badge-pill badge-dark">Hidden</span><br>{% endif %}
+          <br />
+          {% if debate.approvalstatus == 0 %}<span class="badge badge-pill badge-success">Approved</span><br />{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span><br />{% elif debate.approvalstatus == 3 %} <span class="badge badge-pill badge-dark">Hidden</span><br />{% endif %}
           {% if topic.slvl > 1 %}<span title="{{ debate.approved_on|date:"c" }}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{ debate.created_on|date:"c" }}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}
           {% if debate.modnote %}
-          <br>
+          <br />
           {% load modnotes %}
           {% modnotes debate.modnote|markdownf %}
           {% endif %}
@@ -58,7 +58,7 @@
           <a class="nav-link" id="against-tab" data-toggle="tab" href="#against" role="tab" aria-controls="against" aria-selected="false">Against <span class="badge badge-primary">{{ argumentsa|length }}</span></a>
         </li>
       </ul>
-      <br>
+      <br />
       <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="for" role="tabpanel" aria-labelledby="for-tab">
           {% if argumentsf %}

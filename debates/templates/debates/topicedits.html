@@ -24,20 +24,20 @@
       <div id="collapse{{ forloop.counter }}" class="collapse" aria-labelledby="heading{{ forloop.counter }}" data-parent="#accordion">
         <div class="card-body">
           User: <a href="{{ version.revision.user.get_absolute_url}}">{{version.revision.user.get_username }}</a>
-          <br>
+          <br />
           {% ifchanged %}
-          Owner: <a href="{{ version|owner|url}}">{{version|owner|username }}</a> <br>{% endifchanged %}
+          Owner: <a href="{{ version|owner|url}}">{{version|owner|username }}</a> <br />{% endifchanged %}
           {% ifchanged %}
-          Moderators: {% for mod in version|moderators %}{% if not forloop.first %}, {% endif %}<a href="{{ mod.get_absolute_url}}">{{mod.get_username }}</a>{% endfor %}<br>{% endifchanged %}
+          Moderators: {% for mod in version|moderators %}{% if not forloop.first %}, {% endif %}<a href="{{ mod.get_absolute_url}}">{{mod.get_username }}</a>{% endfor %}<br />{% endifchanged %}
           {% ifchanged %}Security level: {{ version|field:"slvl" }}
-          <br>{% endifchanged%}
+          <br />{% endifchanged%}
           {% ifchanged %}Default Debate Security level: {{ version|field:"debslvl" }}
-          <br>{% endifchanged%}
+          <br />{% endifchanged%}
           {% if isadmin %}
           IP: {{ version|ip }}
-          <br>{% endif %}
+          <br />{% endif %}
           Title: {{ version|titchg }}
-          <br>
+          <br />
           Description: {{ version|bodchg }}
         </div>
       </div>

@@ -64,7 +64,6 @@ class ProfileForm(forms.ModelForm):
 
 
 class AddEmailForm(forms.Form):
-    gdprconsent = forms.BooleanField(label=consentemaillabel)
     captcha = ReCaptchaField(
         widget=ReCaptchaV3,
         error_messages={'required': 'Invalid ReCAPTCHA. Please try again.'}
@@ -99,13 +98,6 @@ class AddEmailForm(forms.Form):
         if on_diff_account and app_settings.UNIQUE_EMAIL:
             raise forms.ValidationError(errors["different_account"])
         return value
-
-    def clean(self):
-        cleaned_data = super().clean()
-        if cleaned_data['email'] != '' and cleaned_data['gdprconsent'] == False:
-            raise forms.ValidationError(
-                'You have not checked the consent checkbox.')
-        return cleaned_data
 
     def save(self, request):
         return EmailAddress.objects.add_email(request,

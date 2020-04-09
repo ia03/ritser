@@ -75,7 +75,7 @@
          </li>
          {% url 'account_signup' as signup %}
          <li class="nav-item{% if request.path == signup %} active{% endif %}">
-        <a class="nav-link" href="{{ signup }}">Signup{% if request.path == signup %} <span class="sr-only">(current)</span>{% endif %}</a>
+        <a class="nav-link" href="{{ signup }}">Sign up{% if request.path == signup %} <span class="sr-only">(current)</span>{% endif %}</a>
          </li>
         {% endif %}
         </ul>

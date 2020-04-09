@@ -16,8 +16,10 @@
     {% if arguments.has_other_pages %}
     {% load paginator %}
     {% load link_name %}
+    <br />
     {% paginator arguments request %}
     {% endif %}
+    <br />
 </main>
 
 {% endblock %}

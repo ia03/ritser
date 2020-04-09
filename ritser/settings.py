@@ -198,7 +198,7 @@ if not DEBUG:
 
 
 # Google recaptcha settings
-RECAPTCHA_REQUIRED_SCORE = 0.2
+RECAPTCHA_REQUIRED_SCORE = 0.1
 
 # Secret keys:
 RECAPTCHA_PUBLIC_KEY = os.environ['RECAPTCHA_PUBLIC']

@@ -31,7 +31,7 @@
           Owner:
           <a href="{{ debate.owner.get_absolute_url}}">{{debate.owner.get_username }}</a>
           <br>
-          Security Level : {{ debate.slvl }}(<a href="{% url 'rules' %}#securitylevels">?</a>)
+          Security Level : {{ debate.slvl }} (<a href="{% url 'rules' %}#securitylevels">?</a>)
           <br>
           {% if debate.approvalstatus == 0 %}<span class="badge badge-pill badge-success">Approved</span><br>{% elif debate.approvalstatus == 2 %} <span class="badge badge-pill badge-danger">Denied</span><br>{% elif debate.approvalstatus == 3 %} <span class="badge badge-pill badge-dark">Hidden</span><br>{% endif %}
           {% if topic.slvl > 1 %}<span title="{{ debate.approved_on|date:"c" }}">Approved on {{debate.approved_on|date:"D d M Y f A"}}</span>{% else %}<span title="{{ debate.created_on|date:"c" }}">Created on {{debate.created_on|date:"D d M Y f A"}}</span>{% endif %}

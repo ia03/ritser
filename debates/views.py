@@ -51,10 +51,6 @@ def terms(request):
     return render(request, 'debates/terms.html')
 
 
-def cookies(request):
-    return render(request, 'debates/cookies.html')
-
-
 def topic(request, tname):
 
     topic = get_object_or_404(Topic, name=tname)
@@ -1145,8 +1141,6 @@ def userreports(request):
 
 @mod_required
 def report(request, rid):
-    notfoundmsg = 'Report not found or you do not have permission to view it.'
-    notfoundex = Http404(notfoundmsg)
     report = request.user.report(rid)
     reported = report.content_object
     ctype = report.content_type.model

@@ -33,9 +33,11 @@ Joined on {{ puser.date_joined|date:"SHORT_DATETIME_FORMAT" }}
 {% with puser.moderator_of.all as moderator_of %}
 {% if moderator_of %}Moderator of: {% for topic in moderator_of %}{% if not forloop.first %}, {% endif %}<a href="{{ topic.get_absolute_url}}">{{topic.name }}</a>{% endfor %} <br>{% endif %}
 {% endwith %}
+{% if puser.bio %}
 Bio:
 <br>
 {{ puser.bio|markdownf }}
+{% endif %}
 <ul class="nav nav-tabs">
   <li class="nav-item">
     {% with puser.get_arguments as args %}

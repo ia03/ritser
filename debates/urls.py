@@ -10,7 +10,6 @@ urlpatterns = [
     path('terms/', views.terms, name='terms'),
     path('about/', views.about, name='about'),
     path('rules/', views.rules, name='rules'),
-    path('cookies/', views.cookies, name='cookies'),
     # Static pages above listed in sitemap
     path('feed/', views.feed, name='feed'),
     path('t/<slug:tname>/', views.topic, name='topic'),

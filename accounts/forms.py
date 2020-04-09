@@ -11,11 +11,7 @@ from allauth.account.utils import filter_users_by_email
 from allauth.account import app_settings
 from django.utils.translation import pgettext, ugettext, ugettext_lazy as _
 
-consentemaillabel = 'I consent to any e-mails submitted being used for account recovery and an error message shown to new users when they try to sign up with any of them until I revoke this consent by deleting them.'
-
-
 class SignupForm(forms.Form):
-    gdprconsent = forms.BooleanField(required=False, label=consentemaillabel)
     tos = forms.BooleanField(
         error_messages={
             'required': 'You must agree to the terms.'})
@@ -27,13 +23,6 @@ class SignupForm(forms.Form):
     def signup(self, request, user):
         """ Required, or else it throws deprecation warnings """
         pass
-
-    def clean(self):
-        cleaned_data = super().clean()
-        if cleaned_data['email'] != '' and cleaned_data['gdprconsent'] == False:
-            raise forms.ValidationError(
-                'You have not checked the consent checkbox.')
-        return cleaned_data
 
 
 class ProfileForm(forms.ModelForm):

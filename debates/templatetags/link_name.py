@@ -9,7 +9,7 @@ def link_name(path, page_number):
     output = re.search('(page=\d+)', path)
     if output is not None:
         # print(str(output.group(1)))
-        return path.replace(str(output.group(1)), "page={page_number}")
+        return path.replace(str(output.group(1)), "page=" + str(page_number))
     if re.search('(page=\d+)', path):
         path.replace()
     page_number = str(page_number)
@@ -23,7 +23,7 @@ def link_namef(path, page_number):
     output = re.search('(pagef=\d+)', path)
     if output is not None:
         # print(str(output.group(1)))
-        return path.replace(str(output.group(1)), "pagef={page_number}")
+        return path.replace(str(output.group(1)), "pagef=" + str(page_number))
     if re.search('(pagef=\d+)', path):
         path.replace()
     page_number = str(page_number)
@@ -37,7 +37,7 @@ def link_namea(path, page_number):
     output = re.search('(pagea=\d+)', path)
     if output is not None:
         # print(str(output.group(1)))
-        return path.replace(str(output.group(1)), "pagea={page_number}")
+        return path.replace(str(output.group(1)), "pagea=" + str(page_number))
     if re.search('(pagea=\d+)', path):
         path.replace()
     page_number = str(page_number)

@@ -12,6 +12,8 @@ urlpatterns = [
     path('rules/', views.rules, name='rules'),
     # Static pages above listed in sitemap
     path('feed/', views.feed, name='feed'),
+    path('discord/', RedirectView.as_view(url='https://discord.gg/cmDv3B2',
+        permanent=True), name='discord'),
     path('t/<slug:tname>/', views.topic, name='topic'),
     path('t/<slug:tname>/info/', views.topicinfo, name='topicinfo'),
     path('t/<slug:tname>/edit/', views.edittopic, name='edittopic'),

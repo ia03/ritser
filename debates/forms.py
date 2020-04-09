@@ -681,7 +681,7 @@ class ReportForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['content_type'].label = 'Type of thing reported'
-        self.fields['object_id'].label = 'ID'
+        self.fields['object_id'].label = 'ID/Name'
         self.fields['content_type'].choices = [
             (choice[0], choice[1].capitalize()) for choice in
             self.fields['content_type'].choices]

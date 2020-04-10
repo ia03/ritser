@@ -373,7 +373,6 @@ class TopicForm(forms.ModelForm):
             disablefield(self, 'owner_name')
         elif self.edit == 1:
             disablefield(self, 'owner_name', 'name', 'modsf')
-            self.fields['owner_name'].initial = self.instance.owner.get_username()
         else:
             disablefield(self, 'name')
             self.fields['owner_name'].initial = self.instance.owner.get_username()
@@ -381,6 +380,8 @@ class TopicForm(forms.ModelForm):
             for mod in self.instance.moderators.all():
                 modns.append(mod.get_username())
             self.fields['modsf'].initial = ' '.join(modns)
+        if not self.user.isgmod():
+            disablefield(self, 'is_default')
 
     def clean_name(self):
         data = self.cleaned_data['name']
@@ -504,7 +505,8 @@ class TopicForm(forms.ModelForm):
             'description',
             'created_on',
             'created_by',
-            'edited_on']
+            'edited_on',
+            'is_default']
         widgets = {
             'owner': forms.HiddenInput(),
             'created_on': forms.HiddenInput(),

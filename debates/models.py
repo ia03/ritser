@@ -113,7 +113,8 @@ class Topic(models.Model):
         unique=True)
     # to be displayed in the HTML title of the topic
     title = models.CharField(max_length=30, blank=True)
-    private = models.BooleanField(default=False)
+    is_default = models.BooleanField(default=False,
+        verbose_name='users are subscribed by default')
     description = models.TextField(
         max_length=600000,
         default='The description has not been set yet.',

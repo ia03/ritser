@@ -9,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db.models import Q
 from model_utils import Choices
+from django.db.models.signals import post_save
 import django
 # Create your models here.
 
@@ -316,3 +317,16 @@ class SavedArgument(models.Model):
 
     class Meta:
         ordering = ['-added_on']
+
+def get_default_topics():
+    return apps.get_model('debates.Topic').objects.filter(is_default=True)
+
+
+def set_default_topics(**kwargs):
+    if kwargs.get('created'):
+        instance = kwargs.get('instance')
+
+        instance.stopics.set(apps.get_model('debates.Topic').objects.filter(
+            is_default=True))
+
+post_save.connect(set_default_topics, User)

@@ -10,7 +10,7 @@ from .models import Topic, Debate, Argument, Report, RevisionData
 from .forms import (DebateForm, ArgumentForm, TopicForm, BanForm,
                     UnsuspendForm, DeleteForm, MoveForm, UpdateSlvlForm,
                     ReportForm,)
-from .utils import getpage, newdiff, debateslist, htmldiffs, clean, ats
+from .utils import getpage, newdiff, debateslist, htmldiffs, clean, able_to_submit
 from accounts.utils import DeleteUser
 from accounts.models import User, ModAction, SavedDebate, SavedArgument
 from accounts.decorators import mod_required, gmod_required
@@ -106,7 +106,7 @@ def topic(request, tname):
 
     context = {
         'fmods': fmods,
-        'ats': ats(user, topic),
+        'able_to_submit': able_to_submit(user, topic),
         'mods': mods,
         'topic': topic,
         'ctopicn': topic.name.capitalize(),
@@ -125,7 +125,7 @@ def topicinfo(request, tname):
     debates = topic.debates.all()
     context = {
         'mods': mods,
-        'ats': ats(request.user, topic),
+        'able_to_submit': able_to_submit(request.user, topic),
         'topic': topic,
         'ctopicn': topic.name.capitalize(),
         'debates': debates,

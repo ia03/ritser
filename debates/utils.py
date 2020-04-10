@@ -210,11 +210,11 @@ def htmldiffs(original, new):
     dmp.diff_cleanupSemantic(diffs)
     return dmp.diff_prettyHtml(diffs)
 
-def ats(user, topic):
-    if (user.is_authenticated) and not ((
+def able_to_submit(user, topic):
+    if (user.is_authenticated) and not (((
         topic.slvl == 1 or topic.slvl == 2) and (
             user.approvedargs < 10 and not user.ismodof(
-                topic))) or ((topic.slvl == 3) and not user.ismodof(topic)):
+                topic))) or ((topic.slvl == 3) and not user.ismodof(topic))):
         return True
     else:
         return False

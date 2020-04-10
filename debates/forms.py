@@ -136,6 +136,7 @@ class DebateForm(forms.ModelForm):
             cleaned_data['owner'] = owner
             if self.edit == 0:
                 cleaned_data['slvl'] = topic.debslvl
+            # see able_to_submit()
             if ((topic.slvl == 1 or topic.slvl == 2) and (owner.get_approvedargs() < 10 and not self.user.ismodof(
                     topic)) and (self.edit == 0 or owner != self.user)):  # add subscriber status here
                 raise forms.ValidationError(

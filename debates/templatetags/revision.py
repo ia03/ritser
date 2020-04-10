@@ -48,12 +48,16 @@ def owner(version):
 
 @register.filter(name='topic')
 def topic(version):
-    return Topic.objects.get(name=version.field_dict['topic_id'])
+    return Topic.objects.get(id=version.field_dict['topic_id'])
 
 
 @register.filter(name='debate')
 def debate(version):
     return Debate.objects.get(id=version.field_dict['debate_id'])
+
+@register.filter(name='name')
+def name(obj):
+    return obj.name
 
 
 @register.filter(name='url')

@@ -42,7 +42,7 @@
           {% if isadmin %}
           IP: {{ version|ip }}
           <br />{% endif %}
-          {% ifchanged %}Topic: <a href="{{ version|topic|url}}">{{version|field:"topic_id" }}</a>
+          {% ifchanged %}Topic: <a href="{{ version|topic|url}}">{{version|topic|name }}</a>
           <br />{% endifchanged %}
           {% ifchanged %}Debate: <a href="{{ version|debate|url}}">{{version|debate|question }}</a>
           <br />{% endifchanged %}

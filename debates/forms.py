@@ -72,7 +72,7 @@ class DebateForm(forms.ModelForm):
                 'required': 'You must specify a security level for the debate.'}
             self.fields['approvalstatus'].error_messages = {
                 'required': 'You must specify the approval status for the debate.'}
-            self.fields['topic_name'].initial = self.instance.topic_id
+            self.fields['topic_name'].initial = self.instance.topic.name
             self.fields['owner_name'].initial = self.instance.owner.get_username()
 
     def clean_topic_name(self):

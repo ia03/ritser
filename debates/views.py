@@ -495,8 +495,8 @@ def submittopic(request):
                     '',
                     form.cleaned_data['description'])
                 topic = form.save(commit=False)
-                topic.moderators.set(form.modsl)
                 topic.save()
+                topic.moderators.set(form.modsl)
                 reversion.set_user(user)
                 client_ip, is_routable = get_client_ip(request)
                 reversion.add_meta(

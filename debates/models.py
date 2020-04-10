@@ -108,7 +108,6 @@ class Report(models.Model):
 @reversion.register()
 class Topic(models.Model):
     name = ISlugField(
-        primary_key=True,
         max_length=30,
         unique=True)
     # to be displayed in the HTML title of the topic
@@ -232,7 +231,7 @@ class Debate(models.Model):
         return reverse(
             'editdebate',
             args=[
-                self.topic_id,
+                self.topic.name,
                 self.id,
                 self.slugify()])
 
@@ -240,7 +239,7 @@ class Debate(models.Model):
         return reverse(
             'debateedits',
             args=[
-                self.topic_id,
+                self.topic.name,
                 self.id,
                 self.slugify()])
 
@@ -301,7 +300,7 @@ class Argument(models.Model):
         return reverse(
             'argument',
             args=[
-                self.topic_id,
+                self.topic.name,
                 self.debate_id,
                 self.debate.slugify(),
                 self.id,
@@ -311,7 +310,7 @@ class Argument(models.Model):
         return reverse(
             'editargument',
             args=[
-                self.topic_id,
+                self.topic.name,
                 self.debate_id,
                 self.debate.slugify(),
                 self.id,
@@ -321,7 +320,7 @@ class Argument(models.Model):
         return reverse(
             'argumentedits',
             args=[
-                self.topic_id,
+                self.topic.name,
                 self.debate_id,
                 self.debate.slugify(),
                 self.id,

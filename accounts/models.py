@@ -82,7 +82,9 @@ class User(AbstractUser):
             return '#'
         else:
             return reverse(
-                'submitreport') + '?type=5&id=' + self.get_username()
+                'submitreport') + ('?type=' +
+                str(ContentType.objects.get_for_model(User).id) + '&id=' +
+                str(self.get_username()))
 
     def get_ban_url(self):
         return reverse('ban') + '?user=' + self.username

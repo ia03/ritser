@@ -42,13 +42,13 @@
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbartoggler" aria-controls="navbartoggler" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'debates/img/logo.png' %}" height="48" width="120"></a>
+      {% url 'index' as index %}
+      {% url 'feed' as feed %}
+      <a class="navbar-brand" href="{% if user.is_authenticated %}{{ feed }}{% else %}{{ index }}{% endif %}"><img src="{% static 'debates/img/logo.png' %}" height="48" width="120"></a>
 
 
       <div class="collapse navbar-collapse" id="navbartoggler">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-          {% url 'index' as index %}
-          {% url 'feed' as feed %}
           <li class="nav-item{% if request.path == index or request.path == feed %} active{% endif %}">
             <a class="nav-link" href="{% if user.is_authenticated %}{{ feed }}{% else %}{{ index }}{% endif %}">Home {% if request.path == index or request.path == feed %}<span class="sr-only">(current)</span>{% endif %}</a>
           </li>

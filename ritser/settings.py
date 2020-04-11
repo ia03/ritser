@@ -238,7 +238,7 @@ SOCIALACCOUNT_PROVIDERS = {
     'reddit': {
         'AUTH_PARAMS': {'duration': 'permanent'},
         'SCOPE': ['identity'],
-        'USER_AGENT': 'django:NIy3rZqS9dKVnQ:1.0 (by /u/fafafefefofo0)',
+        'USER_AGENT': 'django:o9qXs7qhwOpjMA:1.0 (by /u/ritserofficial)',
     },
     'google': {
         'SCOPE': [

@@ -11,14 +11,14 @@
 {% block body %}
     <main role="main" class="container">
       <div class="row">
-        <div class="col-md-1" id="karmad">
-          <div class="align-middle" id="voting" data-vote-url="{% url 'votedebate' %}" data-debate-id="{{ debate.id }}">
+        <div class="col-md-1 col-3" id="karmad">
+          <div id="voting" data-vote-url="{% url 'votedebate' %}" data-debate-id="{{ debate.id }}">
             {% if user.hasperm %}<div class="arrow-up{% if vote == 1 %}-selected{% endif %} votebtn"></div>{% endif %}
             <span class="karmacount" title="karma (votes)">{{ debate.karma|intcomma }}</span>
             {% if user.hasperm %}<div class="arrow-down{% if vote == -1 %}-selected{% endif %} votebtn"></div>{% endif %}
           </div>
         </div>
-        <div class="col-md-11">
+        <div class="col-md-11 col-9">
           <h1 class="mt-5">{{ debate.question }}</h1>
           <a href="{{ debate.get_submit_url }}" class="btn btn-primary btn-sm">Submit Argument</a>
           <a href="{{ debate.get_edit_url }}">Edit/View source</a> -

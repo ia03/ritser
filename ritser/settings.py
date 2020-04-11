@@ -236,7 +236,7 @@ ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 SOCIALACCOUNT_PROVIDERS = {
     'reddit': {
         'AUTH_PARAMS': {'duration': 'permanent'},
-        'SCOPE': ['identity', 'submit'],
+        'SCOPE': ['identity'],
         'USER_AGENT': 'django:NIy3rZqS9dKVnQ:1.0 (by /u/fafafefefofo0)',
     },
     'google': {

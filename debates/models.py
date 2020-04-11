@@ -132,7 +132,8 @@ class Topic(models.Model):
     debslvl = models.IntegerField(
         default=1,
         verbose_name='default debate security level')
-    moderators = models.ManyToManyField(User, related_name='moderator_of')
+    moderators = models.ManyToManyField(User, related_name='moderator_of',
+        blank=True)
     created_on = models.DateTimeField(default=timezone.now)
     created_by = models.ForeignKey(
         User,

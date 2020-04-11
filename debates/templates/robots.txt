@@ -14,13 +14,4 @@ Disallow: /accounts/
 Disallow: /report/
 
 
-# to protect the anonymity of those who delete their accounts, but we want
-# index and about pages to be visible
-
-User-agent: ia_archiver
-Allow: /$
-Allow: /about
-Disallow: /
-
-
 Sitemap: https://{{ request.get_host }}{% url 'sitemapindex' %}

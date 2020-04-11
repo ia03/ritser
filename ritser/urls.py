@@ -37,7 +37,7 @@ urlpatterns = [
     path(
         'favicon.ico',
         RedirectView.as_view(
-            url=staticfiles_storage.url('img/favicon.ico')),
+            url=staticfiles_storage.url('debates/img/favicon.ico')),
         name="favicon"),
     # favicon for older browsers
     re_path(r'^', include('accounts.urls')),

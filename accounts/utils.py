@@ -12,3 +12,6 @@ def DeleteUser(user, active, bannote=None):
     user.save()
     EmailAddress.objects.filter(user=user).delete()
     SocialAccount.objects.filter(user=user).delete()
+
+def get_user_or_404(username):
+    return get_object_or_404(User, username__iexact=username)

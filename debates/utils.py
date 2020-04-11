@@ -257,7 +257,7 @@ def chktop(tname):
 
 def chkusr(uname):
     try:
-        return User.objects.get(username=uname)
+        return User.objects.get(username__iexact=uname)
     except User.DoesNotExist:
         raise forms.ValidationError(
             'User %(uname)s not found.',

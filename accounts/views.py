@@ -1,11 +1,11 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.db.models import Q
 from .models import User, ModAction
 from .forms import ProfileForm, DeleteUserForm, SetStaffForm
-from .utils import DeleteUser
+from .utils import DeleteUser, get_user_or_404
 from .decorators import admin_required
 from debates.utils import getpage
 from django.conf import settings
@@ -16,7 +16,7 @@ from django.conf import settings
 
 def userarguments(request, uname):
 
-    user = get_object_or_404(User, username=uname)
+    user = get_user_or_404(uname)
 
     if (user.active == 1 or user.active == 3) and not (
             request.user.is_authenticated and request.user.isgmod()):
@@ -39,7 +39,7 @@ def userarguments(request, uname):
 
 def userdebates(request, uname):
 
-    user = get_object_or_404(User, username=uname)
+    user = get_user_or_404(uname)
 
     if (user.active == 1 or user.active == 3) and not (
             request.user.is_authenticated and request.user.isgmod()):
@@ -139,7 +139,7 @@ def usermodlogs(request):
 
 @admin_required
 def modstatus(request, uname):
-    user = get_object_or_404(User, username=uname)
+    user = get_user_or_404(uname)
     if request.method == 'POST':
         form = SetStaffForm(request.POST, instance=user, user=request.user)
         if form.is_valid():

@@ -11,7 +11,7 @@ from .forms import (DebateForm, ArgumentForm, TopicForm, BanForm,
                     UnsuspendForm, DeleteForm, MoveForm, UpdateSlvlForm,
                     ReportForm,)
 from .utils import getpage, newdiff, debateslist, htmldiffs, clean, able_to_submit
-from accounts.utils import DeleteUser
+from accounts.utils import DeleteUser, get_user_or_404
 from accounts.models import User, ModAction, SavedDebate, SavedArgument
 from accounts.decorators import mod_required, gmod_required
 from ipware import get_client_ip
@@ -805,7 +805,7 @@ def ban(request):
     if request.method == 'POST':
         form = BanForm(request.POST, user=request.user)
         if form.is_valid():
-            user = User.objects.get(username=form.cleaned_data['username'])
+            user = User.objects.get(username__iexact=form.cleaned_data['username'])
             t = form.cleaned_data['terminate']
             bannote = form.cleaned_data['bannote']
             bandate = form.cleaned_data['bandate']
@@ -845,7 +845,7 @@ def unsuspend(request):
     if request.method == 'POST':
         form = UnsuspendForm(request.POST)
         if form.is_valid():
-            user = User.objects.get(username=form.cleaned_data['username'])
+            user = User.objects.get(username__iexact=form.cleaned_data['username'])
             user.active = 0
             user.save()
             ModAction.objects.create(user=user, mod=request.user, action=1)
@@ -989,10 +989,10 @@ def modlogs(request):
     modname = request.GET.get('mod', '')
     modactions_list = ModAction.objects.all()
     if username != '':
-        user = get_object_or_404(User, username=username)
+        user = get_user_or_404(username)
         modactions_list = modactions_list.filter(user=user)
     if modname != '':
-        mod = get_object_or_404(User, username=modname)
+        mod = get_user_or_404(modname)
         modactions_list = modactions_list.filter(mod=mod)
     page = request.GET.get('page', 1)
     modactions = getpage(page, modactions_list, 50)

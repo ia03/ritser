@@ -125,7 +125,7 @@ class DebateForm(forms.ModelForm):
             if self.edit == 0:
                 owner = cleaned_data.get('owner')
             else:
-                owner = User.objects.get(username=owner_name)
+                owner = User.objects.get(username__iexact=owner_name)
             if (not self.user.hasperm()) or (self.edit ==
                                              1 and self.user != self.instance.owner):
                 raise forms.ValidationError(
@@ -286,7 +286,7 @@ class ArgumentForm(forms.ModelForm):
                 if self.user.ismodof(debate.topic):
                     cleaned_data['approvalstatus'] = 0
             else:
-                owner = User.objects.get(username=owner_name)
+                owner = User.objects.get(username__iexact=owner_name)
             if (not self.user.hasperm()) or (
                 self.edit == 1 and self.user != self.instance.owner):
                 raise forms.ValidationError(
@@ -426,7 +426,7 @@ class TopicForm(forms.ModelForm):
                     'modnl': self.modnl})
         for modname in self.modnl:
             try:
-                mod = User.objects.get(username=modname)
+                mod = User.objects.get(username__iexact=modname)
             except User.DoesNotExist:
                 raise forms.ValidationError(
                     'Moderator %(modname)s not found.',
@@ -471,7 +471,7 @@ class TopicForm(forms.ModelForm):
             elif self.edit == 1:
                 owner = self.instance.owner
             else:
-                owner = User.objects.get(username=owner_name)
+                owner = User.objects.get(username__iexact=owner_name)
             if (not self.user.hasperm()) or (self.edit ==
                                              1 and (not self.user.ismodof(self.instance))):
                 raise forms.ValidationError(

@@ -2,6 +2,7 @@ from allauth.account.models import EmailAddress
 from allauth.socialaccount.models import SocialAccount
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
+from .models import User
 
 
 def DeleteUser(user, active, bannote=None):

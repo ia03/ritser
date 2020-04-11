@@ -8,6 +8,8 @@ Disallow: /*?*pagea=
 Disallow: /submit_topic$
 Disallow: /submit_debate$
 Disallow: /submit_argument$
+Disallow: /accounts/*
+Disallow: /report/*
 
 
 # to protect the anonymity of those who delete their accounts, but we want

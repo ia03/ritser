@@ -246,15 +246,17 @@ def submitdebate(request):
                    form.cleaned_data['description'])
                 debate = form.save(commit=False)
                 debate.karma = 1
+                if user.ismodof(debate.topic):
+                    debate.approvalstatus = 0
                 debate.save()
                 debate.users_upvoting.add(user)
                 reversion.set_user(user)
                 client_ip, is_routable = get_client_ip(request)
                 reversion.add_meta(
-                RevisionData,
-                ip=client_ip,
-                titchg=titchg,
-                bodchg=bodchg)
+                    RevisionData,
+                    ip=client_ip,
+                    titchg=titchg,
+                    bodchg=bodchg)
             messages.success(
                     request,
                     ('You have successfully submitted debate '
@@ -339,7 +341,10 @@ def submitargument(request):
                 bodchg = htmldiffs(
                                    '',
                                    form.cleaned_data['body'])
-                argument = form.save()
+                argument = form.save(commit=False)
+                if user.ismodof(argument.topic):
+                    argument.approvalstatus = 0
+                argument.save()
                 reversion.set_user(user)
                 client_ip, is_routable = get_client_ip(request)
                 reversion.add_meta(

@@ -124,8 +124,6 @@ class DebateForm(forms.ModelForm):
                 topic = Topic.objects.get(name=tname)
             if self.edit == 0:
                 owner = cleaned_data.get('owner')
-                if self.user.ismodof(topic):
-                    cleaned_data['approvalstatus'] = 0
             else:
                 owner = User.objects.get(username=owner_name)
             if (not self.user.hasperm()) or (self.edit ==

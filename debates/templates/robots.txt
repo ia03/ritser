@@ -1,17 +1,5 @@
 User-agent: *
-Disallow: */edit/
-Disallow: */edits/
-Disallow: /*?*apprs=
-Disallow: /*?*sort=
-Disallow: /*?*pagef=
-Disallow: /*?*pagea=
-Disallow: /*?*page=
-Disallow: /search/?q=
-Disallow: /submit_topic$
-Disallow: /submit_debate$
-Disallow: /submit_argument$
-Disallow: /accounts/
-Disallow: /report/
+Allow: /
 
 
 Sitemap: https://{{ request.get_host }}{% url 'sitemapindex' %}

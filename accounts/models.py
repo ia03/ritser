@@ -62,7 +62,7 @@ class User(AbstractUser):
         related_name='usaved',
         blank=True,
         through='SavedArgument')
-    timezone = TimeZoneField(default='Europe/London')
+    timezone = TimeZoneField(default='America/New_York')
     reports = GenericRelation('debates.Report', related_query_name='ruser')
 
     def get_absolute_url(self):  # modlogs bypasses this

@@ -7,6 +7,11 @@
 
 
 {% block body %}
+<script>
+  fbq('track', 'ViewContent', {
+    value: 1,
+  });
+</script>
 <main role="main" class="container">
     <h1 class="mt-5">Sign Up</h1>
 
@@ -44,10 +49,5 @@
       {% endif %}
       <button class="btn btn-primary" type="submit">Sign Up &raquo;</button>
     </form>
-    <script>
-      fbq('track', 'ViewContent', {
-        value: 1,
-      });
-    </script>
 </main>
 {% endblock %}

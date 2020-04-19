@@ -8,7 +8,10 @@
       <h1 class="mt-5">Feed</h1>
       {% if topics %}Topics: {% for topic in topics %}{% if forloop.counter <= 20 %}{% if not forloop.first %}, {% endif %}<a href="{{ topic.get_absolute_url}}">{{ topic.name }}</a>{% endif %}{% endfor %}{% if topics|length > 20 %}...{% endif %}
       <br />
-      Remove or add topics in your <a href="{% url 'profile' %}">profile page.</a>
+      {% if user.is_authenticated %}Remove or add topics in your <a href="{% url 'profile' %}">profile page.</a>
+      {% else %}
+      <a href="{% url 'account_login' %}">Sign in</a> to customize your feed.
+      {% endif %}
       <hr />
        <br />
       {% include 'snippets/debateslist.html' %}
@@ -17,7 +20,7 @@
       {% load link_name %}
       {% paginator debates request %}
       {% endif %}
-      {% else %}No subscribed topics found. Add a few topics in your <a href="{% url 'profile' %}">profile page</a> to get started.{% endif %}
+      {% else %}{% if user.is_authenticated %}No subscribed topics found. Add a few topics in your <a href="{% url 'profile' %}">profile page</a> to get started.{% else %}The feed is not available at this time.{% endif %}{% endif %}
     </main>
 
 {% endblock %}

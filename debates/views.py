@@ -12,7 +12,8 @@ from .forms import (DebateForm, ArgumentForm, TopicForm, BanForm,
                     ReportForm,)
 from .utils import getpage, newdiff, debateslist, htmldiffs, clean, able_to_submit
 from accounts.utils import DeleteUser, get_user_or_404
-from accounts.models import User, ModAction, SavedDebate, SavedArgument
+from accounts.models import (User, ModAction, SavedDebate, SavedArgument,
+    get_default_topics)
 from accounts.decorators import mod_required, gmod_required
 from ipware import get_client_ip
 import reversion
@@ -735,12 +736,13 @@ def closereport(request):
 		MISC PAGES
 '''
 
-
-@login_required
 def feed(request):
     user = request.user
     query = Debate.objects.none()
-    topics = user.stopics.all()
+    if user.is_authenticated:
+        topics = user.stopics.all()
+    else:
+        topics = get_default_topics()
     for topic in topics:
         query = query.union(
             debateslist(topic),
@@ -751,14 +753,9 @@ def feed(request):
 
     debates = getpage(page, debates_list, 30)
 
-    dupvoted = user.debates_upvoted.all()
-    ddownvoted = user.debates_downvoted.all()
-
     context = {
         'topics': topics,
-        'debates': debates,
-        'dupvoted': dupvoted,
-        'ddownvoted': ddownvoted,
+        'debates': debates
     }
     return render(request, 'debates/feed.html', context)
 

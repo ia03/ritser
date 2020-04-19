@@ -10,7 +10,7 @@
       <br />
       {% if user.is_authenticated %}Remove or add topics in your <a href="{% url 'profile' %}">profile page.</a>
       {% else %}
-      <a href="{% url 'account_login' %}">Sign in</a> to customize your feed.
+      <a href="{% url 'account_signup' %}">Sign up</a> to customize your feed.
       {% endif %}
       <hr />
        <br />
